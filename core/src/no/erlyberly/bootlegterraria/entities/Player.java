@@ -14,7 +14,7 @@ public class Player extends Entity {
     private Texture image;
 
     public Player(float x, float y, GameMap map) {
-        super(x, y, EntityType.PLAYER, map);
+        super(x, y, map);
         image = new Texture("woofer.png");
     }
 
@@ -37,6 +37,21 @@ public class Player extends Entity {
             moveX(SPEED * deltaTime);
         }
 
+    }
+
+    @Override
+    public float getWeight() {
+        return 70;
+    }
+
+    @Override
+    public int getWidth() {
+        return TileType.TILE_SIZE - 1;
+    }
+
+    @Override
+    public int getHeight() {
+        return 2 * TileType.TILE_SIZE;
     }
 
     @Override

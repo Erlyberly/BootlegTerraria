@@ -7,14 +7,12 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 public abstract class Entity {
 
     Vector2 pos;
-    private EntityType type;
     float velocityY = 0;
     private GameMap map;
-    boolean grounded = false;
+    boolean onGround = false;
 
-    Entity(float x, float y, EntityType type, GameMap map) {
+    Entity(float x, float y, GameMap map) {
         this.pos = new Vector2(x, y);
-        this.type = type;
         this.map = map;
     }
 
@@ -25,29 +23,16 @@ public abstract class Entity {
         if (map.checkMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight())) {
             if (velocityY < 0) {
                 this.pos.y = (float) Math.floor(pos.y);
-                grounded = true;
+                onGround = true;
             }
             this.velocityY = 0;
         }
         else {
             this.pos.y += deltaY;
-            grounded = false;
+            onGround = false;
         }
     }
 
-    float getWeight() {
-        return type.getWeight();
-    }
-
-    int getWidth() {
-        return type.getWidth();
-    }
-
-    int getHeight() {
-        return type.getHeight();
-    }
-
-    public abstract void render(SpriteBatch batch);
 
     void moveX(float amount) {
         float newX = pos.x + amount;
@@ -68,11 +53,15 @@ public abstract class Entity {
         return pos.y;
     }
 
-    public EntityType getType() {
-        return type;
+    public boolean isOnGround() {
+        return onGround;
     }
 
-    public boolean isGrounded() {
-        return grounded;
-    }
+    public abstract float getWeight();
+
+    public abstract int getWidth();
+
+    public abstract int getHeight();
+
+    public abstract void render(SpriteBatch batch);
 }
