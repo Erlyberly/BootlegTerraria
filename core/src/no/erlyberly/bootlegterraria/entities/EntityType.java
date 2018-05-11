@@ -27,7 +27,7 @@ public enum EntityType {
         return height;
     }
 
-    public float getWeight(){
+    public float getWeight() {
         return weight;
     }
 

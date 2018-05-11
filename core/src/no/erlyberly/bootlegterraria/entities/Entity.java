@@ -6,14 +6,14 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 
 public abstract class Entity {
 
-    protected Vector2 pos;
-    protected EntityType type;
-    protected float velocityY = 0;
-    protected GameMap map;
-    protected boolean grounded = false;
+    Vector2 pos;
+    private EntityType type;
+    float velocityY = 0;
+    private GameMap map;
+    boolean grounded = false;
 
-    public Entity(float x, float y, EntityType type, GameMap map) {
-        this.pos = new Vector2(x,y);
+    Entity(float x, float y, EntityType type, GameMap map) {
+        this.pos = new Vector2(x, y);
         this.type = type;
         this.map = map;
     }
@@ -22,23 +22,36 @@ public abstract class Entity {
         this.velocityY += gravity * deltaTime * getWeight();
         float deltaY = this.velocityY * deltaTime;
 
-        if (map.checkMapCollid(pos.x, pos.y + deltaY, getWidth(), getHeight())) {
+        if (map.checkMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight())) {
             if (velocityY < 0) {
                 this.pos.y = (float) Math.floor(pos.y);
                 grounded = true;
             }
             this.velocityY = 0;
-        } else {
+        }
+        else {
             this.pos.y += deltaY;
             grounded = false;
         }
     }
 
-    public abstract void render (SpriteBatch batch);
+    float getWeight() {
+        return type.getWeight();
+    }
 
-    protected void moveX(float amount){
+    int getWidth() {
+        return type.getWidth();
+    }
+
+    int getHeight() {
+        return type.getHeight();
+    }
+
+    public abstract void render(SpriteBatch batch);
+
+    void moveX(float amount) {
         float newX = pos.x + amount;
-        if(!map.checkMapCollid(newX, pos.y, getWidth(), getHeight())){
+        if (!map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
             this.pos.x = newX;
         }
     }
@@ -47,11 +60,11 @@ public abstract class Entity {
         return pos;
     }
 
-    public float getX(){
+    public float getX() {
         return pos.x;
     }
 
-    public float getY(){
+    public float getY() {
         return pos.y;
     }
 
@@ -61,17 +74,5 @@ public abstract class Entity {
 
     public boolean isGrounded() {
         return grounded;
-    }
-
-    public int getWidth(){
-        return type.getWidth();
-    }
-
-    public int getHeight(){
-        return type.getHeight();
-    }
-
-    public float getWeight(){
-        return type.getWeight();
     }
 }

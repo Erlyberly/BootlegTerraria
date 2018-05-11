@@ -8,12 +8,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-public class TiledGameMap extends GameMap{
+public class TiledGameMap extends GameMap {
 
-    TiledMap tiledMap;
-    OrthogonalTiledMapRenderer tiledMapRenderer;
+    private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
 
-    public TiledGameMap(){
+    public TiledGameMap() {
         this.tiledMap = new TmxMapLoader().load("map.tmx");
         this.tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
@@ -41,13 +41,12 @@ public class TiledGameMap extends GameMap{
 
     @Override
     public TileType getTileTypeByCoordinate(int layer, int col, int row) {
-        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer)
-                tiledMap.getLayers().get(layer)).getCell(col,row);
+        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer) tiledMap.getLayers().get(layer)).getCell(col, row);
 
-        if(cell != null){
+        if (cell != null) {
             TiledMapTile tile = cell.getTile();
 
-            if(tile != null){
+            if (tile != null) {
                 int id = tile.getId();
                 return TileType.getTileTypeById(id);
             }
@@ -56,19 +55,17 @@ public class TiledGameMap extends GameMap{
     }
 
     @Override
+    public int getLayers() {
+        return tiledMap.getLayers().getCount();
+    }
+
+    @Override
     public int getWidth() {
-        return ((TiledMapTileLayer)
-                tiledMap.getLayers().get(0)).getWidth();
+        return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getWidth();
     }
 
     @Override
     public int getHeight() {
-        return ((TiledMapTileLayer)
-                tiledMap.getLayers().get(0)).getHeight();
-    }
-
-    @Override
-    public int getLayers() {
-        return tiledMap.getLayers().getCount();
+        return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getHeight();
     }
 }
