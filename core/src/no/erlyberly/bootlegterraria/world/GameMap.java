@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public abstract class GameMap {
 
-    private final static float GRAVITY = -20f;
+    public final static float GRAVITY = -9.81f;
 
     private ArrayList<Entity> entities;
     private Player player;

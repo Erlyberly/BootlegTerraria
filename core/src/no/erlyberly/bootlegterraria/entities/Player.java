@@ -9,7 +9,7 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 public class Player extends Entity {
 
     private static final int SPEED = 120;
-    private static final int JUMP_VELOCITY = 8;
+    private static final int JUMP_VELOCITY = 4;
 
     private Texture image;
 
