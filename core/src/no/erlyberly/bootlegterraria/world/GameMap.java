@@ -10,17 +10,23 @@ import java.util.ArrayList;
 public abstract class GameMap {
 
     protected ArrayList<Entity> entities;
+
+    Player player;
+
     private final float GRAVITY = -20f;
 
     public GameMap(){
         entities = new ArrayList<Entity>();
-        entities.add(new Player(600, 600, this));
+        player = new Player(600, 600, this);
+        entities.add(player);
     }
 
     public void render (OrthographicCamera camera, SpriteBatch batch){
         for(Entity entity : entities){
             entity.render(batch);
         }
+        camera.position.x = player.getX();
+        camera.position.y = player.getY();
     }
 
     public void update (float delta){
