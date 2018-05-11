@@ -45,10 +45,6 @@ public class GameMain extends Game {
 	    Gdx.gl.glClearColor(1,1,1,1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	    if(Gdx.input.isTouched()){
-	        camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
-        }
-
         if(Gdx.input.justTouched()){
             Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
