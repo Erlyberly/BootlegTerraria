@@ -1,4 +1,4 @@
-package world;
+package no.erlyberly.bootlegterraria.world;
 
 import java.util.HashMap;
 

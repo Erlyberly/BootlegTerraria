@@ -1,14 +1,10 @@
-package entities;
+package no.erlyberly.bootlegterraria.entities;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
-import helpers.GameInfo;
-import world.GameMap;
+import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Player extends Entity {
 

@@ -1,10 +1,9 @@
-package no.erlyberly.mfg.desktop;
+package no.erlyberly.bootlegterraria.desktop;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import helpers.GameInfo;
-import no.erlyberly.mfg.GameMain;
+import no.erlyberly.bootlegterraria.helpers.GameInfo;
+import no.erlyberly.bootlegterraria.GameMain;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

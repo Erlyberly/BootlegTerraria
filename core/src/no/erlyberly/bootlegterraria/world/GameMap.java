@@ -1,10 +1,9 @@
-package world;
+package no.erlyberly.bootlegterraria.world;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import entities.Entity;
-import entities.Player;
+import no.erlyberly.bootlegterraria.entities.Entity;
+import no.erlyberly.bootlegterraria.entities.Player;
 
 import java.util.ArrayList;
 

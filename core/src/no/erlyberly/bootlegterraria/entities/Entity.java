@@ -1,8 +1,8 @@
-package entities;
+package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import world.GameMap;
+import no.erlyberly.bootlegterraria.world.GameMap;
 
 public abstract class Entity {
 

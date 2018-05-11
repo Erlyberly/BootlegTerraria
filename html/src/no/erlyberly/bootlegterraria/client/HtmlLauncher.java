@@ -1,9 +1,9 @@
-package no.erlyberly.mfg.client;
+package no.erlyberly.bootlegterraria.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import no.erlyberly.mfg.GameMain;
+import no.erlyberly.bootlegterraria.GameMain;
 
 public class HtmlLauncher extends GwtApplication {
 

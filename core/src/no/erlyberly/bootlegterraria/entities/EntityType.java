@@ -1,4 +1,4 @@
-package entities;
+package no.erlyberly.bootlegterraria.entities;
 
 public enum EntityType {
 

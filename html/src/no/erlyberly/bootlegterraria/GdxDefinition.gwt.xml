@@ -5,7 +5,7 @@
 	<inherits name='com.badlogic.gdx.physics.box2d.box2d-gwt' />
 
 	<inherits name='GameMain' />
-	<entry-point class='no.erlyberly.mfg.client.HtmlLauncher' />
+	<entry-point class='no.erlyberly.bootlegterraria.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
 </module>

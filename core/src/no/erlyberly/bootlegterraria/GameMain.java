@@ -1,29 +1,17 @@
-package no.erlyberly.mfg;
+package no.erlyberly.bootlegterraria;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import entities.Player;
-import helpers.GameInfo;
-import world.GameMap;
-import world.TileType;
-import world.TiledGameMap;
-
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import no.erlyberly.bootlegterraria.entities.Player;
+import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.world.TileType;
+import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
 public class GameMain extends Game {
 
