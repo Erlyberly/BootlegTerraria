@@ -34,8 +34,8 @@ public class GameMain extends Game {
 		this.gameMap = new TiledGameMap();
 
 		this.camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(),
-                Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth() /2,
+                Gdx.graphics.getHeight() /2);
 		camera.update();
 	}
 
