@@ -5,10 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Player extends Entity {
 
-    private static final int SPEED = 120;
+    private static final int HORIZONTAL_SPEED = 120;
     private static final int JUMP_VELOCITY = 4;
 
     private Texture image;
@@ -19,22 +20,22 @@ public class Player extends Entity {
     }
 
     public void update(float deltaTime, float gravity) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && grounded) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !grounded && this.velocityY > 0) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !onGround && this.velocityY > 0) {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
         super.update(deltaTime, gravity);//Apply gravity
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            moveX(-SPEED * deltaTime);
+            moveX(-HORIZONTAL_SPEED * deltaTime);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            moveX(SPEED * deltaTime);
+            moveX(HORIZONTAL_SPEED * deltaTime);
         }
 
     }
