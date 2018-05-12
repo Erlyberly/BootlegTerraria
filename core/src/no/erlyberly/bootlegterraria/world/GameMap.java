@@ -61,7 +61,11 @@ public abstract class GameMap {
 
         //stamina bar
         Texture staminaBar = new Texture("stamina_fill.png");
-        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, (((float)player.getStamina() / (float)player.getMaxStamina()) * hpBar.getWidth()), hpBar.getHeight());
+        float staminaPercent = (float)player.getStamina() / (float)player.getMaxStamina();
+        if(staminaPercent < 0){
+            staminaPercent = 0;
+        }
+        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, staminaPercent * hpBar.getWidth(), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.2f);
         font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.2f);
 

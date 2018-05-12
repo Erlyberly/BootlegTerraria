@@ -22,7 +22,7 @@ public class Player extends Entity {
     private int hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
     private int stamina = 10000;
-    private int staminaRegen = 1;
+    private int staminaRegen = 50;
     private boolean invincible = false;
 
     private Texture image;
@@ -62,7 +62,9 @@ public class Player extends Entity {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.E)){
-            weapon.use(map);
+            if(stamina > 0) {
+                addStamina(weapon.use(map));
+            }
         }
 
     }
@@ -88,7 +90,7 @@ public class Player extends Entity {
     }
 
     public void addHp(int amount) {
-        if(this.hp > 0) {
+        if(this.hp >= 0) {
             this.hp += amount;
         }
 
@@ -118,12 +120,12 @@ public class Player extends Entity {
     }
 
     public void addStamina(int amount) {
-        if(this.stamina > 0) {
+        if(this.stamina >= -this.maxStamina) {
             this.stamina += amount;
         }
 
-        if(this.stamina < 0){
-            this.stamina = 0;
+        if(this.stamina < -this.maxStamina){
+            this.stamina = -this.maxStamina;
         }
 
         if(this.stamina > this.maxStamina){

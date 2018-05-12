@@ -27,7 +27,7 @@ public abstract class Weapon {
         this.cooldown = 0;
     }
 
-    public abstract void use(GameMap map);
+    public abstract int use(GameMap map);
 
     public String getName() {
         return name;

@@ -23,10 +23,13 @@ public class Gun extends Weapon{
         super(name, image);
     }
 
-    public void use(GameMap map){
+    public int use(GameMap map){
         if(getCooldownTimer() >= getCooldown()){
             map.addEntity(new Bullet(map.getPlayer().getX() + (map.getPlayer().getWidth()/3f * map.getPlayer().getFacingX()), map.getPlayer().getY() + 16f, map, map.getPlayer().getFacingX()));
             setCooldownTimer(0);
+            return -500;
+        }else{
+            return 0;
         }
     }
 }
