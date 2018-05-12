@@ -12,12 +12,25 @@ public abstract class GameMap {
     public final static float GRAVITY = -9.81f;
 
     private ArrayList<Entity> entities;
+    private ArrayList<Entity> addEntities;
+    private boolean addWaiting = false;
+    private boolean removeWaiting = false;
     private Player player;
 
     GameMap() {
         entities = new ArrayList<Entity>();
+        addEntities = new ArrayList<Entity>();
         player = new Player(600, 600, this);
         entities.add(player);
+    }
+
+    public void addEntity(Entity entity){
+        addEntities.add(entity);
+        addWaiting = true;
+    }
+
+    public void removeEntity(){
+        removeWaiting = true;
     }
 
     public void render(OrthographicCamera camera, SpriteBatch batch) {
@@ -28,7 +41,29 @@ public abstract class GameMap {
         camera.position.y = player.getY();
     }
 
+    @SuppressWarnings("Duplicates")
     public void update(float delta) {
+        if(addWaiting){
+            for(Entity add : addEntities) {
+                entities.add(add);
+            }
+            addEntities.clear();
+            addWaiting = false;
+        }
+
+        if(removeWaiting){
+            ArrayList<Entity> removeEntities = new ArrayList<Entity>();
+            for(Entity i : entities) {
+                if(i.getDestroy()){
+                    removeEntities.add(i);
+                }
+            }
+            for(Entity remove : removeEntities){
+                entities.remove(remove);
+            }
+            removeWaiting = false;
+        }
+
         for (Entity entity : entities) {
             entity.update(delta, GRAVITY);
         }
@@ -77,4 +112,12 @@ public abstract class GameMap {
     public abstract int getWidth();
 
     public abstract int getHeight();
+
+    public Player getPlayer(){
+        return player;
+    }
+
+    public void render(SpriteBatch batch){
+
+    }
 }
