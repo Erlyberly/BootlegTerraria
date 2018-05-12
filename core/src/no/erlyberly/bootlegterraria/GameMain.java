@@ -12,7 +12,7 @@ import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
 public class GameMain extends Game {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
     public static final String TEST_MAP = "testmaps/testmap2.tmx";
 
     private SpriteBatch batch;
