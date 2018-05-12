@@ -21,6 +21,10 @@ public abstract class Entity {
         this.velocityY += gravity * deltaTime * getWeight();
         float deltaY = this.velocityY * deltaTime;
 
+        if(this instanceof Player){
+            map.checkPlayerMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight());
+        }
+
         if (map.checkMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight())) {
             if (velocityY < 0) {
                 this.pos.y = (float) Math.floor(pos.y);

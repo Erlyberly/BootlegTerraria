@@ -11,6 +11,7 @@ import no.erlyberly.bootlegterraria.helpers.GameInfo;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public abstract class GameMap {
 
     BitmapFont font = new BitmapFont();
@@ -111,6 +112,26 @@ public abstract class GameMap {
     public abstract TileType getTileTypeByCoordinate(int layer, int col, int row);
 
     public boolean checkMapCollision(float x, float y, int width, int height) {
+
+        if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
+            return true;
+        }
+
+        for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y + height) / TileType.TILE_SIZE); row++) {
+            for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x + width) / TileType.TILE_SIZE); col++) {
+                for (int layer = 0; layer < getLayers(); layer++) {
+                    TileType type = getTileTypeByCoordinate(layer, col, row);
+                    if (type != null && type.isCollidable()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkPlayerMapCollision(float x, float y, int width, int height) {
 
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
