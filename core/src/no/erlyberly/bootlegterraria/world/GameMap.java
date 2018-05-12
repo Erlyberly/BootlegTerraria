@@ -1,6 +1,8 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
@@ -33,12 +35,21 @@ public abstract class GameMap {
         removeWaiting = true;
     }
 
-    public void render(OrthographicCamera camera, SpriteBatch batch) {
+    public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
         for (Entity entity : entities) {
             entity.render(batch);
         }
         camera.position.x = player.getX();
         camera.position.y = player.getY();
+        batch.end();
+
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+        batch.draw(new Texture("hp_fill.png"), 7f + (getPlayer().getHp() / 100), Gdx.graphics.getHeight() / 2.1f, 20f, new Texture("hp_fill.png").getHeight());
+        batch.draw(new Texture("hp_outline.png"), 5f, Gdx.graphics.getHeight() / 2.1f);
+        batch.end();
     }
 
     @SuppressWarnings("Duplicates")

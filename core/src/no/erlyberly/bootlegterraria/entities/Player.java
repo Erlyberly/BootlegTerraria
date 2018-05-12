@@ -2,10 +2,12 @@ package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.entities.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
+import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -16,6 +18,7 @@ public class Player extends Entity {
     private GameMap map;
     private int facingX = 1;
     private Weapon weapon = new Gun();
+    private int hp = 100;
 
     private Texture image;
 
@@ -56,6 +59,14 @@ public class Player extends Entity {
 
     public int getFacingX() {
         return facingX;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     @Override

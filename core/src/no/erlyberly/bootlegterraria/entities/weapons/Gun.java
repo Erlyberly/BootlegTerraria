@@ -13,7 +13,6 @@ public class Gun extends Weapon{
     }
 
     public void use(GameMap map){
-        System.out.println("Gun!");
         map.addEntity(new Bullet(map.getPlayer().getX() + (map.getPlayer().getWidth()/3f * map.getPlayer().getFacingX()), map.getPlayer().getY() + 7f, map, map.getPlayer().getFacingX()));
     }
 
