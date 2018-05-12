@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -11,8 +12,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.google.common.base.Preconditions;
 
-import java.util.Iterator;
-
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
@@ -23,7 +22,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     public static final float LIGHT_CUTOFF = 0.33f;
 
 
-    public SimpleOrthogonalTiledMapRenderer(TiledMap map) {
+    public SimpleOrthogonalTiledMapRenderer(TiledMap map, boolean test) {
         super(map);
 
         //get the width of the map
@@ -34,9 +33,13 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         for (int i = 0; i < mapWidth; i++) {
             topBlocking[i] = Integer.MIN_VALUE;
         }
+        if (test) {
+            test();
+        }
     }
 
     public void updateSurfaceBlockAll() {
+//        System.out.println("topBlocking.length = " + topBlocking.length);
         updateSurfaceBlock(0, topBlocking.length);
     }
 
@@ -50,19 +53,21 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
         Preconditions.checkArgument(max <= topBlocking.length,
                                     "Maximum argument must be less than or equal to topBlocking.length");
-        Preconditions.checkArgument(min >= max, "Minimum argument must be less than maximum argument");
+        Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
 
-        for (Iterator<MapLayer> it = map.getLayers().iterator(); it.hasNext(); ) {
-            MapLayer layer = it.next();
+//        System.out.println("min = [" + min + "], max = [" + max + "]");
+
+        for (MapLayer layer : map.getLayers()) {
             if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
                 TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
+                int height = tiledLayer.getHeight();
                 for (int x = min; x < max; x++) {
-                    for (int y = 0; y < tiledLayer.getHeight(); y++) {
+                    for (int y = height - 1; y >= 0; y--) {
                         //check if the current cell is collidable
                         Cell cell = tiledLayer.getCell(x, y);
                         TileType tt = TileType.getTileTypeById(cell.getTile().getId());
                         if (tt.isCollidable()) {
-                            topBlocking[x] = topBlocking[x] < y ? y : topBlocking[x];
+                            topBlocking[x] = topBlocking[x] < y ? height - y - 2 : topBlocking[x];
                             break; //no further looping required
                         }
                     }
@@ -72,11 +77,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     }
 
     public void updateSurfaceBlockAt(int x) {
+        Preconditions.checkArgument(x >= 0, "x must be greater than 0");
+        Preconditions.checkArgument(x < topBlocking.length, "x must be less than the width of the world");
         updateSurfaceBlock(x, x + 1);
-    }
-
-    private void updateSurfaceBlockAt0(int x, TiledMapTileLayer tiledLayer) {
-
     }
 
     /**
@@ -238,5 +241,14 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             }
             y -= layerTileHeight;
         }
+    }
+
+    public void test() {
+        SimpleOrthogonalTiledMapRendererTest mapRendererTest = new SimpleOrthogonalTiledMapRendererTest();
+
+        mapRendererTest.updateSurfaceBlock(this);
+        mapRendererTest.updateSurfaceBlockAll(this);
+        mapRendererTest.updateSurfaceBlockAt(this);
+        Gdx.app.exit();
     }
 }
