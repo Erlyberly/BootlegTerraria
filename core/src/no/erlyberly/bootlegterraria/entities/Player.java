@@ -18,7 +18,9 @@ public class Player extends Entity {
     private GameMap map;
     private int facingX = 1;
     private Weapon weapon = new Gun();
-    private int hp = 100;
+    private int maxHp = 1000;
+    private int hp = 1000;
+    private boolean invincible = false;
 
     private Texture image;
 
@@ -29,6 +31,9 @@ public class Player extends Entity {
     }
 
     public void update(float deltaTime, float gravity) {
+
+        weapon.cooldown();
+
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
@@ -61,12 +66,42 @@ public class Player extends Entity {
         return facingX;
     }
 
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public void setMaxHp(int maxHp){
+        this.maxHp = maxHp;
+    }
+
     public int getHp() {
         return hp;
     }
 
     public void setHp(int hp) {
         this.hp = hp;
+    }
+
+    public void addHp(int hp) {
+        if(this.hp > 0) {
+            this.hp += hp;
+        }
+
+        if(this.hp < 0){
+            this.hp = 0;
+        }
+
+        if(this.hp > this.maxHp){
+            this.hp = maxHp;
+        }
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
     }
 
     @Override

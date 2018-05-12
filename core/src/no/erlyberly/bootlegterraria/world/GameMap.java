@@ -3,6 +3,7 @@ package no.erlyberly.bootlegterraria.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
@@ -10,6 +11,8 @@ import no.erlyberly.bootlegterraria.entities.Player;
 import java.util.ArrayList;
 
 public abstract class GameMap {
+
+    BitmapFont font = new BitmapFont();
 
     public final static float GRAVITY = -9.81f;
 
@@ -36,6 +39,7 @@ public abstract class GameMap {
     }
 
     public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
+        System.out.println(player.getWeapon().getCooldownTimer());
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Entity entity : entities) {
@@ -47,8 +51,11 @@ public abstract class GameMap {
 
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
-        batch.draw(new Texture("hp_fill.png"), 7f + (getPlayer().getHp() / 100), Gdx.graphics.getHeight() / 2.1f, 20f, new Texture("hp_fill.png").getHeight());
-        batch.draw(new Texture("hp_outline.png"), 5f, Gdx.graphics.getHeight() / 2.1f);
+        Texture hpBar = new Texture("hp_fill.png");
+        Texture hpOutline = new Texture("hp_outline.png");
+        batch.draw(hpBar, 6f, Gdx.graphics.getHeight() / 2.1f, (((float)player.getHp() / (float)player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(hpOutline, 5f, Gdx.graphics.getHeight() / 2.1f);
+        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), hpOutline.getWidth() + 10f, 12f + Gdx.graphics.getHeight() / 2.1f);
         batch.end();
     }
 
@@ -99,6 +106,9 @@ public abstract class GameMap {
                 for (int layer = 0; layer < getLayers(); layer++) {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
+                        if(type.getDamage() != 0){
+                            player.addHp(-type.getDamage());
+                        }
                         return true;
                     }
                 }

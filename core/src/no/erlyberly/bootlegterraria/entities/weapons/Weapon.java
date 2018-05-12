@@ -8,12 +8,19 @@ public abstract class Weapon {
 
     private String name;
     private Texture image;
+    private int cooldown;
+    private int cooldownTimer = 0;
 
     public Weapon(){}
+
+    public Weapon(int cooldown){
+        this.cooldown = cooldown;
+    }
 
     public Weapon(String name, Texture image){
         this.name = name;
         this.image = image;
+        this.cooldown = 0;
     }
 
     public abstract void use(GameMap map);
@@ -21,4 +28,26 @@ public abstract class Weapon {
     public abstract String getName();
 
     public abstract Texture getImage();
+
+    public int getCooldown(){
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldown){
+        this.cooldown = cooldown;
+    }
+
+    public int getCooldownTimer() {
+        return cooldownTimer;
+    }
+
+    public void setCooldownTimer(int cooldownTimer) {
+        this.cooldownTimer = cooldownTimer;
+    }
+
+    public void cooldown(){
+        if(cooldownTimer < cooldown){
+            cooldownTimer++;
+        }
+    }
 }

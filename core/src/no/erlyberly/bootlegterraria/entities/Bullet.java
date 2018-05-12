@@ -42,12 +42,12 @@ public class Bullet extends Entity {
 
     @Override
     public int getWidth() {
-        return TileType.TILE_SIZE;
+        return Math.round((float)TileType.TILE_SIZE / 1.5f);
     }
 
     @Override
     public int getHeight() {
-        return TileType.TILE_SIZE * 2;
+        return Math.round((float)TileType.TILE_SIZE * 1.2f);
     }
 
     public boolean getDestroy(){
