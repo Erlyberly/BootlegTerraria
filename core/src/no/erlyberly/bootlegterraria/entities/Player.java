@@ -94,7 +94,8 @@ public class Player extends Entity {
 
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
-            map.addEntity(new Zombie(pos.x + TileType.TILE_SIZE * 2, pos.y + TileType.TILE_SIZE * 2, map));
+            System.out.println("Zombie!");
+            map.addEnemy(new Zombie(pos.x + TileType.TILE_SIZE * 2, pos.y + TileType.TILE_SIZE * 2, map));
         }
 
     }
@@ -119,12 +120,12 @@ public class Player extends Entity {
         this.hp = hp;
     }
 
-    public void addHp(int amount) {
-        if(this.hp >= 0) {
+    public void modifyHp(int amount) {
+        if(this.hp > 0) {
             this.hp += amount;
         }
 
-        if(this.hp < 0){
+        if(this.hp <= 0){
             this.hp = 0;
         }
 
@@ -181,27 +182,32 @@ public class Player extends Entity {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return TileType.TILE_SIZE - 1;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return 2 * TileType.TILE_SIZE;
     }
 
     @Override
-    public boolean getDestroy() {
+    public boolean isDestroyed() {
         return false;
     }
 
     @Override
-    public void setDestroy(boolean destroy) {
-        this.destroy  = destroy;
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed  = destroyed;
     }
 
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+    }
+
+    @Override
+    public int getDamage() {
+        return 0;
     }
 }

@@ -10,7 +10,7 @@ public abstract class Entity {
     float velocityY = 0;
     private GameMap map;
     boolean onGround = false;
-    boolean destroy = false;
+    boolean destroyed = false;
 
     Entity(float x, float y, GameMap map) {
         this.pos = new Vector2(x, y);
@@ -64,13 +64,19 @@ public abstract class Entity {
 
     public abstract float getWeight();
 
-    public abstract int getWidth();
+    public abstract float getWidth();
 
-    public abstract int getHeight();
+    public abstract float getHeight();
 
-    public abstract boolean getDestroy();
+    public abstract boolean isDestroyed();
 
-    public abstract void setDestroy(boolean destroy);
+    public abstract void setDestroyed(boolean destroyed);
 
     public abstract void render(SpriteBatch batch);
+
+    public abstract void modifyHp(int amount);
+
+    public abstract int getDamage();
+
+    public abstract int getHp();
 }

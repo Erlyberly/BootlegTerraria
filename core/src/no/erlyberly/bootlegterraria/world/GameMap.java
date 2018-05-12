@@ -1,10 +1,11 @@
 package no.erlyberly.bootlegterraria.world;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.helpers.GameInfo;
@@ -18,34 +19,58 @@ public abstract class GameMap {
 
     public final static float GRAVITY = -9.81f;
 
+    private ArrayList<Entity> enimies;
+    private ArrayList<Entity> addEnimies;
+    private boolean addWaitingEnimies = false;
+    private boolean removeWaitingEnimies = false;
+
     private ArrayList<Entity> entities;
     private ArrayList<Entity> addEntities;
-    private boolean addWaiting = false;
-    private boolean removeWaiting = false;
+    private boolean addWaitingEntities = false;
+    private boolean removeWaitingEntities = false;
+
     private Player player;
 
     GameMap() {
+        enimies = new ArrayList<Entity>();
+        addEnimies = new ArrayList<Entity>();
         entities = new ArrayList<Entity>();
         addEntities = new ArrayList<Entity>();
         player = new Player(600, 600, this);
-        entities.add(player);
+    }
+
+    public void addEnemy(Entity entity){
+        addEnimies.add(entity);
+        addWaitingEnimies = true;
+    }
+
+    public void removeEnemy(){
+        removeWaitingEnimies = true;
     }
 
     public void addEntity(Entity entity){
         addEntities.add(entity);
-        addWaiting = true;
+        addWaitingEntities = true;
     }
 
     public void removeEntity(){
-        removeWaiting = true;
+        removeWaitingEntities = true;
     }
 
     public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
+        player.render(batch);
+
+        for (Entity enimies : enimies) {
+            enimies.render(batch);
+        }
+
         for (Entity entity : entities) {
             entity.render(batch);
         }
+
         camera.position.x = player.getX();
         camera.position.y = player.getY();
         batch.end();
@@ -77,25 +102,59 @@ public abstract class GameMap {
 
     @SuppressWarnings("Duplicates")
     public void update(float delta) {
-        if(addWaiting){
+
+        checkEntityEnemyCollision();
+
+        player.update(delta, GRAVITY);
+
+        if(addWaitingEnimies){
+            for(Entity add : addEnimies) {
+                enimies.add(add);
+            }
+            addEnimies.clear();
+            addWaitingEnimies = false;
+        }
+
+        if(removeWaitingEnimies){
+            ArrayList<Entity> removeEnimies = new ArrayList<Entity>();
+            for(Entity i : enimies) {
+                if(i.isDestroyed()){
+                    removeEnimies.add(i);
+                }
+            }
+            for(Entity remove : removeEnimies){
+                enimies.remove(remove);
+            }
+            removeWaitingEnimies = false;
+        }
+
+        for (Entity entity : entities) {
+            entity.update(delta, GRAVITY);
+        }
+
+        if(addWaitingEntities){
             for(Entity add : addEntities) {
                 entities.add(add);
             }
             addEntities.clear();
-            addWaiting = false;
+            addWaitingEntities = false;
         }
 
-        if(removeWaiting){
+        if(removeWaitingEntities){
             ArrayList<Entity> removeEntities = new ArrayList<Entity>();
             for(Entity i : entities) {
-                if(i.getDestroy()){
+                if(i.isDestroyed()){
                     removeEntities.add(i);
                 }
             }
             for(Entity remove : removeEntities){
                 entities.remove(remove);
             }
-            removeWaiting = false;
+            removeWaitingEntities = false;
+        }
+
+        for (Entity entity : enimies) {
+            entity.update(delta, GRAVITY);
         }
 
         for (Entity entity : entities) {
@@ -111,7 +170,7 @@ public abstract class GameMap {
 
     public abstract TileType getTileTypeByCoordinate(int layer, int col, int row);
 
-    public boolean checkMapCollision(float x, float y, int width, int height) {
+    public boolean checkMapCollision(float x, float y, float width, float height) {
 
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
@@ -131,7 +190,7 @@ public abstract class GameMap {
         return false;
     }
 
-    public boolean checkPlayerMapCollision(float x, float y, int width, int height) {
+    public boolean checkPlayerMapCollision(float x, float y, float width, float height) {
 
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
@@ -143,7 +202,7 @@ public abstract class GameMap {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
                         if(type.getDamage() != 0 && !player.isInvincible()){
-                            player.addHp(-type.getDamage());
+                            player.modifyHp(-type.getDamage());
                         }
                         return true;
                     }
@@ -154,21 +213,31 @@ public abstract class GameMap {
         return false;
     }
 
+    public void checkEntityEnemyCollision(){
+        for(Entity entities : entities){
+            for(Entity enimies : enimies){
+                if(Intersector.overlaps(new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()), new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))){
+                    enimies.modifyHp(-entities.getDamage());
+                }
+            }
+        }
+    }
+
     @SuppressWarnings("WeakerAccess")
-    public int getPixelWidth() {
+    public float getPixelWidth() {
         return this.getWidth() * TileType.TILE_SIZE;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public int getPixelHeight() {
+    public float getPixelHeight() {
         return this.getHeight() * TileType.TILE_SIZE;
     }
 
     public abstract int getLayers();
 
-    public abstract int getWidth();
+    public abstract float getWidth();
 
-    public abstract int getHeight();
+    public abstract float getHeight();
 
     public Player getPlayer(){
         return player;

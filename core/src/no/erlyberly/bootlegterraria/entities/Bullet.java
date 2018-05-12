@@ -13,6 +13,7 @@ public class Bullet extends Entity {
     private int facingX;
     private static final int SPEED = 10;
     private GameMap map;
+    private int damage = 1000;
 
     private Texture image;
 
@@ -31,7 +32,7 @@ public class Bullet extends Entity {
         moveX(SPEED * facingX);
         float newX = pos.x + SPEED * facingX;
         if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
-            this.destroy = true;
+            this.destroyed = true;
             map.removeEntity();
         }
     }
@@ -42,26 +43,40 @@ public class Bullet extends Entity {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return Math.round((float)TileType.TILE_SIZE / 1.5f);
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return Math.round((float)TileType.TILE_SIZE * 1.2f);
     }
 
-    public boolean getDestroy(){
-        return destroy;
+    public boolean isDestroyed(){
+        return destroyed;
     }
 
-    public void setDestroy(boolean destroy){
-        this.destroy = destroy;
+    public void setDestroyed(boolean destroyed){
+        this.destroyed = destroyed;
+    }
+
+    public int getDamage(){
+        return damage;
+    }
+
+    @Override
+    public int getHp() {
+        return 0;
     }
 
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+    }
+
+    @Override
+    public void modifyHp(int amount) {
+
     }
 
 }

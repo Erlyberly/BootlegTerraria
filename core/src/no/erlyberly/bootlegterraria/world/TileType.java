@@ -11,7 +11,7 @@ public enum TileType {
     CLOUD(5, true, "Cloud"),
     STONE(6, true, "Stone");
 
-    public static final int TILE_SIZE = 16;
+    public static final float TILE_SIZE = 16;
     private static HashMap<Integer, TileType> tileMap;
 
     static {

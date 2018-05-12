@@ -58,12 +58,12 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getWidth();
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getHeight();
     }
 }

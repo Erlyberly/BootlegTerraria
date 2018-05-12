@@ -13,6 +13,9 @@ public class Zombie extends Entity {
     private int facingX = 1;
     private int maxHp = 10000; //Should be able to increase
     private int hp = 10000;
+    private boolean invincible = false;
+    private boolean dodging = false;
+    private int dodgeFrames = 0;
 
     private Texture image;
 
@@ -22,29 +25,54 @@ public class Zombie extends Entity {
         this.map = map;
     }
 
+    public void modifyHp(int amount) {
+        if(this.hp > 0) {
+            this.hp += amount;
+        }
+
+        if(this.hp <= 0){
+            this.hp = 0;
+            this.destroyed = true;
+            map.removeEnemy();
+        }
+
+        if(this.hp > this.maxHp){
+            this.hp = maxHp;
+        }
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    @Override
+    public int getDamage() {
+        return 5;
+    }
+
     @Override
     public float getWeight() {
         return 70;
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return TileType.TILE_SIZE - 1;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return 2 * TileType.TILE_SIZE;
     }
 
     @Override
-    public boolean getDestroy() {
-        return false;
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     @Override
-    public void setDestroy(boolean destroy) {
-        this.destroy  = destroy;
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
     }
 
     @Override
