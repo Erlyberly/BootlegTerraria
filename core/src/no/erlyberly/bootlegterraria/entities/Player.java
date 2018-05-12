@@ -22,8 +22,12 @@ public class Player extends Entity {
     private int hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
     private int stamina = 10000;
-    private int staminaRegen = 50;
+    private int staminaRegen = 30;
     private boolean invincible = false;
+    private int dodgeTimer = 60;
+    private int dodgeSpeed = HORIZONTAL_SPEED * 3;
+    private boolean dodging = false;
+    private int dodgeFrames = 0;
 
     private Texture image;
 
@@ -35,36 +39,62 @@ public class Player extends Entity {
 
     public void update(float deltaTime, float gravity) {
 
+        if (Gdx.input.isKeyPressed(Input.Keys.W) && !dodging) {
+            if(dodgeTimer >= 60 && stamina > 0) {
+                dodging = true;
+                dodgeFrames = 10;
+                dodgeTimer = 0;
+                invincible = true;
+                addStamina(-2000);
+            }
+        }
+
+        if(dodging){
+            moveX(dodgeSpeed * facingX * deltaTime);
+            dodgeFrames--;
+            if(dodgeFrames == 0){
+                dodging = false;
+                invincible = false;
+            }
+        }
+
         weapon.cooldown();
-
         addStamina(staminaRegen);
+        if(dodgeTimer < 60){
+            dodgeTimer++;
+        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround && !dodging) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !onGround && this.velocityY > 0) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !onGround && this.velocityY > 0 && !dodging) {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
         super.update(deltaTime, gravity);//Apply gravity
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
             moveX(-HORIZONTAL_SPEED * deltaTime);
             image = new Texture("wooferL.png");
             facingX = -1;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !dodging) {
             moveX(HORIZONTAL_SPEED * deltaTime);
             image = new Texture("wooferR.png");
             facingX = 1;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.E)){
+        if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging){
             if(stamina > 0) {
                 addStamina(weapon.use(map));
             }
+        }
+
+        //For testing purposes only
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
+            map.addEntity(new Zombie(pos.x + TileType.TILE_SIZE * 2, pos.y + TileType.TILE_SIZE * 2, map));
         }
 
     }

@@ -10,10 +10,11 @@ import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Bullet extends Entity {
 
-    private Texture image;
     private int facingX;
     private static final int SPEED = 10;
     private GameMap map;
+
+    private Texture image;
 
     public Bullet(float x, float y, GameMap map, int facingX) {
         super(x, y, map);
