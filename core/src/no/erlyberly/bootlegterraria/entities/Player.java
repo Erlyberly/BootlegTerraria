@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.Gun;
+import no.erlyberly.bootlegterraria.entities.weapons.Sword;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
@@ -17,7 +19,7 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 4;
     private GameMap map;
     private int facingX = 1;
-    private Weapon weapon = new Gun("Gun");
+    private Weapon weapon = new Sword("Sword");
     private int maxHp = 10000; //Should be able to increase
     private int hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
@@ -29,11 +31,18 @@ public class Player extends Entity {
     private boolean dodging = false;
     private int dodgeFrames = 0;
 
-    private Texture image;
+    private Texture imageR;
+    private TextureRegion regionR;
+
+    private Texture imageL;
+    private TextureRegion regionL;
 
     public Player(float x, float y, GameMap map) {
         super(x, y, map);
-        image = new Texture("wooferR.png");
+        imageR = new Texture("wooferR.png");
+        regionR = new TextureRegion(imageR);
+        imageL = new Texture("wooferL.png");
+        regionL = new TextureRegion(imageL);
         this.map = map;
     }
 
@@ -42,7 +51,7 @@ public class Player extends Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.W) && !dodging) {
             if(dodgeTimer >= 60 && stamina > 0) {
                 dodging = true;
-                dodgeFrames = 10;
+                dodgeFrames = 14;
                 dodgeTimer = 0;
                 invincible = true;
                 addStamina(-2000);
@@ -76,13 +85,11 @@ public class Player extends Entity {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
             moveX(-HORIZONTAL_SPEED * deltaTime);
-            image = new Texture("wooferL.png");
             facingX = -1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !dodging) {
             moveX(HORIZONTAL_SPEED * deltaTime);
-            image = new Texture("wooferR.png");
             facingX = 1;
         }
 
@@ -114,6 +121,11 @@ public class Player extends Entity {
 
     public int getHp() {
         return hp;
+    }
+
+    @Override
+    public int getHorizontalSpeed() {
+        return HORIZONTAL_SPEED;
     }
 
     public void setHp(int hp) {
@@ -203,7 +215,11 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+        if(facingX == 1) {
+            batch.draw(regionR, pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, dodgeFrames * facingX * 360 / 14);
+        }else{
+            batch.draw(regionL, pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, dodgeFrames * facingX * 360 / 14);
+        }
     }
 
     @Override

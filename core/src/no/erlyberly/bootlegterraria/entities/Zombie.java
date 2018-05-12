@@ -11,7 +11,8 @@ public class Zombie extends Entity {
     Texture hpBar = new Texture("hp_fill.png");
     Texture barOutline = new Texture("bar_outline.png");
 
-    private static final int HORIZONTAL_SPEED = 60;
+    private static java.util.Random rng = new java.util.Random();
+    private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
     private static final int JUMP_VELOCITY = 4;
     private GameMap map;
     private int facingX = 1;
@@ -67,6 +68,16 @@ public class Zombie extends Entity {
     }
 
     @Override
+    public int getHorizontalSpeed() {
+        return HORIZONTAL_SPEED;
+    }
+
+    @Override
+    public int getFacingX() {
+        return facingX;
+    }
+
+    @Override
     public int getDamage() {
         return 5;
     }
@@ -102,4 +113,5 @@ public class Zombie extends Entity {
         batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float)hp / (float)maxHp) * getWidth() * 2f), 5f);
         batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
     }
+
 }

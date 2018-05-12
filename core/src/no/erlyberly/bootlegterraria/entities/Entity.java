@@ -8,9 +8,11 @@ public abstract class Entity {
 
     Vector2 pos;
     float velocityY = 0;
+    private static final int HORIZONTAL_SPEED = 0;
     private GameMap map;
     boolean onGround = false;
     boolean destroyed = false;
+    private int facingX = 1;
 
     Entity(float x, float y, GameMap map) {
         this.pos = new Vector2(x, y);
@@ -39,7 +41,7 @@ public abstract class Entity {
     }
 
 
-    void moveX(float amount) {
+    public void moveX(float amount) {
         float newX = pos.x + amount;
         if (!map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
             this.pos.x = newX;
@@ -79,4 +81,8 @@ public abstract class Entity {
     public abstract int getDamage();
 
     public abstract int getHp();
+
+    public abstract int getHorizontalSpeed();
+
+    public abstract int getFacingX();
 }

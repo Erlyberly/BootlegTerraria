@@ -11,7 +11,7 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Bullet extends Entity {
 
     private int facingX;
-    private static final int SPEED = 10;
+    private static final int HORIZONTAL_SPEED = 10;
     private GameMap map;
     private int damage = 1000;
 
@@ -29,8 +29,8 @@ public class Bullet extends Entity {
     }
 
     public void update(float deltaTime, float gravity) {
-        moveX(SPEED * facingX);
-        float newX = pos.x + SPEED * facingX;
+        moveX(HORIZONTAL_SPEED * facingX);
+        float newX = pos.x + HORIZONTAL_SPEED * facingX;
         if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
             this.destroyed = true;
             map.removeEntity();
@@ -66,6 +66,16 @@ public class Bullet extends Entity {
 
     @Override
     public int getHp() {
+        return 0;
+    }
+
+    @Override
+    public int getHorizontalSpeed() {
+        return HORIZONTAL_SPEED;
+    }
+
+    @Override
+    public int getFacingX() {
         return 0;
     }
 

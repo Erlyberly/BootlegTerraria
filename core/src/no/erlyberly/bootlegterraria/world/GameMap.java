@@ -219,6 +219,7 @@ public abstract class GameMap {
             for(Entity enimies : enimies){
                 if(Intersector.overlaps(new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()), new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))){
                     enimies.modifyHp(-entities.getDamage());
+                    enimies.moveX((enimies.getHorizontalSpeed() / 8f) * -enimies.getFacingX());
                 }
             }
         }

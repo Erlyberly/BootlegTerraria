@@ -12,7 +12,7 @@ public class Gun extends Weapon{
 
     public Gun(String name){
         super(name);
-        setCooldown(5);
+        setCooldown(10);
     }
 
     public Gun(int cooldown){
