@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import no.erlyberly.bootlegterraria.GameMain;
 
 public class TiledGameMap extends GameMap {
 
@@ -14,8 +15,8 @@ public class TiledGameMap extends GameMap {
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
     public TiledGameMap() {
-        this.tiledMap = new TmxMapLoader().load("map.tmx");
-        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(tiledMap);
+        this.tiledMap = new TmxMapLoader().load(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
+        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(tiledMap, GameMain.TEST);
     }
 
     @Override
