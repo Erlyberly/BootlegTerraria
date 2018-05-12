@@ -2,12 +2,16 @@ package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Zombie extends Entity {
 
-    private static final int HORIZONTAL_SPEED = 120;
+    Texture hpBar = new Texture("hp_fill.png");
+    Texture barOutline = new Texture("bar_outline.png");
+
+    private static final int HORIZONTAL_SPEED = 60;
     private static final int JUMP_VELOCITY = 4;
     private GameMap map;
     private int facingX = 1;
@@ -23,6 +27,23 @@ public class Zombie extends Entity {
         super(x, y, map);
         image = new Texture("zombie.png");
         this.map = map;
+    }
+
+    public void update(float deltaTime, float gravity){
+
+        super.update(deltaTime, gravity);//Apply gravity
+
+        if(pos.x - map.getPlayer().getPos().x > 0){
+            moveX(-HORIZONTAL_SPEED * deltaTime);
+            facingX = -1;
+        }else{
+            moveX(HORIZONTAL_SPEED * deltaTime);
+            facingX = 1;
+        }
+
+        if(map.checkMapCollision(pos.x + HORIZONTAL_SPEED / 2 * facingX, pos.y, getWidth(), getHeight()) && onGround){
+            this.velocityY += JUMP_VELOCITY * getWeight();
+        }
     }
 
     public void modifyHp(int amount) {
@@ -78,5 +99,7 @@ public class Zombie extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+        batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float)hp / (float)maxHp) * getWidth() * 2f), 5f);
+        batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
     }
 }

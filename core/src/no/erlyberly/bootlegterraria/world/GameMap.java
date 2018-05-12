@@ -67,8 +67,8 @@ public abstract class GameMap {
             enimies.render(batch);
         }
 
-        for (Entity entity : entities) {
-            entity.render(batch);
+        for (Entity entities : entities) {
+            entities.render(batch);
         }
 
         camera.position.x = player.getX();
@@ -104,8 +104,17 @@ public abstract class GameMap {
     public void update(float delta) {
 
         checkEntityEnemyCollision();
+        checkPlayerEnemyCollision();
 
         player.update(delta, GRAVITY);
+
+        for (Entity entity : enimies) {
+            entity.update(delta, GRAVITY);
+        }
+
+        for (Entity entity : entities) {
+            entity.update(delta, GRAVITY);
+        }
 
         if(addWaitingEnimies){
             for(Entity add : addEnimies) {
@@ -151,14 +160,6 @@ public abstract class GameMap {
                 entities.remove(remove);
             }
             removeWaitingEntities = false;
-        }
-
-        for (Entity entity : enimies) {
-            entity.update(delta, GRAVITY);
-        }
-
-        for (Entity entity : entities) {
-            entity.update(delta, GRAVITY);
         }
     }
 
@@ -219,6 +220,20 @@ public abstract class GameMap {
                 if(Intersector.overlaps(new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()), new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))){
                     enimies.modifyHp(-entities.getDamage());
                 }
+            }
+        }
+    }
+
+    public void checkPlayerEnemyCollision(){
+
+        float playerX = player.getX();
+        float playerY = player.getY();
+        float playerWidth = player.getWidth();
+        float playerHeight = player.getHeight();
+
+        for(Entity enemies : enimies){
+            if(Intersector.overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()), new Rectangle(playerX, playerY, playerWidth, playerHeight))){
+                player.modifyHp(-enemies.getDamage());
             }
         }
     }
