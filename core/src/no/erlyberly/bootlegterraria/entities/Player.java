@@ -17,9 +17,12 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 4;
     private GameMap map;
     private int facingX = 1;
-    private Weapon weapon = new Gun();
-    private int maxHp = 1000;
-    private int hp = 1000;
+    private Weapon weapon = new Gun("Gun");
+    private int maxHp = 10000; //Should be able to increase
+    private int hp = 10000;
+    private int maxStamina = 10000; //Should be able to increase
+    private int stamina = 10000;
+    private int staminaRegen = 1;
     private boolean invincible = false;
 
     private Texture image;
@@ -33,6 +36,8 @@ public class Player extends Entity {
     public void update(float deltaTime, float gravity) {
 
         weapon.cooldown();
+
+        addStamina(staminaRegen);
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround) {
             this.velocityY += JUMP_VELOCITY * getWeight();
@@ -82,9 +87,9 @@ public class Player extends Entity {
         this.hp = hp;
     }
 
-    public void addHp(int hp) {
+    public void addHp(int amount) {
         if(this.hp > 0) {
-            this.hp += hp;
+            this.hp += amount;
         }
 
         if(this.hp < 0){
@@ -96,12 +101,46 @@ public class Player extends Entity {
         }
     }
 
+    public int getMaxStamina() {
+        return maxStamina;
+    }
+
+    public void setMaxStamina(int maxStamina) {
+        this.maxStamina = maxStamina;
+    }
+
+    public int getStamina() {
+        return stamina;
+    }
+
+    public void setStamina(int stamina) {
+        this.stamina = stamina;
+    }
+
+    public void addStamina(int amount) {
+        if(this.stamina > 0) {
+            this.stamina += amount;
+        }
+
+        if(this.stamina < 0){
+            this.stamina = 0;
+        }
+
+        if(this.stamina > this.maxStamina){
+            this.stamina = maxStamina;
+        }
+    }
+
     public Weapon getWeapon() {
         return weapon;
     }
 
     public void setWeapon(Weapon weapon) {
         this.weapon = weapon;
+    }
+
+    public boolean isInvincible() {
+        return invincible;
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
+import no.erlyberly.bootlegterraria.helpers.GameInfo;
 
 import java.util.ArrayList;
 
@@ -39,7 +40,6 @@ public abstract class GameMap {
     }
 
     public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
-        System.out.println(player.getWeapon().getCooldownTimer());
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Entity entity : entities) {
@@ -51,11 +51,22 @@ public abstract class GameMap {
 
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
+
+        //hp bar
         Texture hpBar = new Texture("hp_fill.png");
-        Texture hpOutline = new Texture("hp_outline.png");
-        batch.draw(hpBar, 6f, Gdx.graphics.getHeight() / 2.1f, (((float)player.getHp() / (float)player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
-        batch.draw(hpOutline, 5f, Gdx.graphics.getHeight() / 2.1f);
-        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), hpOutline.getWidth() + 10f, 12f + Gdx.graphics.getHeight() / 2.1f);
+        Texture barOutline = new Texture("bar_outline.png");
+        batch.draw(hpBar, 6f, GameInfo.HEIGHT / 2.1f, (((float)player.getHp() / (float)player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.1f);
+        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.1f);
+
+        //stamina bar
+        Texture staminaBar = new Texture("stamina_fill.png");
+        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, (((float)player.getStamina() / (float)player.getMaxStamina()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.2f);
+        font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.2f);
+
+        //hud text
+        font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 2.28f);
         batch.end();
     }
 
@@ -106,7 +117,7 @@ public abstract class GameMap {
                 for (int layer = 0; layer < getLayers(); layer++) {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
-                        if(type.getDamage() != 0){
+                        if(type.getDamage() != 0 && !player.isInvincible()){
                             player.addHp(-type.getDamage());
                         }
                         return true;

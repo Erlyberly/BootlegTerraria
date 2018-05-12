@@ -10,6 +10,11 @@ public class Gun extends Weapon{
         setCooldown(5);
     }
 
+    public Gun(String name){
+        super(name);
+        setCooldown(5);
+    }
+
     public Gun(int cooldown){
         super(cooldown);
     }
@@ -23,15 +28,5 @@ public class Gun extends Weapon{
             map.addEntity(new Bullet(map.getPlayer().getX() + (map.getPlayer().getWidth()/3f * map.getPlayer().getFacingX()), map.getPlayer().getY() + 16f, map, map.getPlayer().getFacingX()));
             setCooldownTimer(0);
         }
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public Texture getImage() {
-        return null;
     }
 }

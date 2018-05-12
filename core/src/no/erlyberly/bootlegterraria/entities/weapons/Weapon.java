@@ -13,6 +13,10 @@ public abstract class Weapon {
 
     public Weapon(){}
 
+    public Weapon(String name){
+        this.name = name;
+    }
+
     public Weapon(int cooldown){
         this.cooldown = cooldown;
     }
@@ -25,9 +29,13 @@ public abstract class Weapon {
 
     public abstract void use(GameMap map);
 
-    public abstract String getName();
+    public String getName() {
+        return name;
+    }
 
-    public abstract Texture getImage();
+    public Texture getImage() {
+        return image;
+    }
 
     public int getCooldown(){
         return cooldown;
