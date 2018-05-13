@@ -23,7 +23,7 @@ public class Player extends Entity {
     private float stamina = 10000;
     private int staminaRegen = 30;
     private boolean invincible = false;
-    private float dodgeTimer = 60;
+    private float dodgeTimer = 1;
     private int dodgeSpeed = HORIZONTAL_SPEED * 3;
     private boolean dodging = false;
     private float dodgeFrames = 0;
@@ -44,7 +44,7 @@ public class Player extends Entity {
     public void update(float deltaTime, float gravity) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
-            if (dodgeTimer >= 60 && stamina - 2000 >= 0) {
+            if (dodgeTimer >= 1 && stamina - 2000 >= 0) {
                 dodging = true;
                 dodgeFrames = 14;
                 dodgeTimer = 0;
@@ -64,8 +64,8 @@ public class Player extends Entity {
 
         weapon.cooldown();
         addStamina(staminaRegen);
-        if (dodgeTimer < 60) {
-            dodgeTimer++;
+        if (dodgeTimer < 1) {
+            dodgeTimer += deltaTime;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
