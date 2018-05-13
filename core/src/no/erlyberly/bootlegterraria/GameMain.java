@@ -13,7 +13,7 @@ import no.erlyberly.bootlegterraria.world.TiledGameMap;
 public class GameMain extends Game {
 
     public static final boolean TEST = false;
-    public static final String TEST_MAP = "testmaps/testmap2.tmx";
+    public static final String TEST_MAP = "testmaps/testmap3.tmx";
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -44,7 +44,7 @@ public class GameMain extends Game {
 
         batch.setProjectionMatrix(camera.combined);
 
-        Gdx.gl.glClearColor(0, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.justTouched()) {
@@ -52,7 +52,9 @@ public class GameMain extends Game {
             TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
 
             if (type != null) {
-                System.out.println("Tile clicked: " + type.getName() + ", " + type.getId() + ", " + type.getDamage());
+                System.out.println(
+                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDamage() +
+                    " coord: " + (int) (pos.x / TileType.TILE_SIZE) + "," + (int) (pos.y / TileType.TILE_SIZE));
             }
             else {
                 System.out.println("Not a tile");

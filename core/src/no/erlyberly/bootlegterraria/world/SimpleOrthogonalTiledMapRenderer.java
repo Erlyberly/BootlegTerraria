@@ -10,16 +10,26 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.helpers.LightLevel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
+import static no.erlyberly.bootlegterraria.helpers.LightLevel.LVL_0;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
-    private int[] topBlocking;
+    private final int mapWidth;
+    private final int mapHeight;
+    private int[] skyLight;
+    private HashMap<Vector2, LightLevel> lightSources;
+    private LightLevel[][] brightness;
 
-
-    public static final float LIGHT_CUTOFF = 0.33f;
+    public static final int LIGHT_CUTOFF = 1;
+    public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
 
 
     public SimpleOrthogonalTiledMapRenderer(TiledMap map, boolean test) {
@@ -27,76 +37,135 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
         //get the width of the map
         MapProperties prop = map.getProperties();
-        int mapWidth = prop.get("width", Integer.class);
+        mapWidth = prop.get("width", Integer.class);
+        mapHeight = prop.get("height", Integer.class);
 
-        topBlocking = new int[mapWidth];
+        skyLight = new int[mapWidth];
+        lightSources = new HashMap<>();
+        brightness = new LightLevel[mapWidth][mapHeight];
+        for (int x = 0; x < brightness.length; x++) {
+            for (int y = 0; y < brightness[x].length; y++) {
+                brightness[x][y] = LightLevel.LVL_0;
+            }
+        }
+
         for (int i = 0; i < mapWidth; i++) {
-            topBlocking[i] = Integer.MIN_VALUE;
+            skyLight[i] = Integer.MIN_VALUE;
         }
         if (test) {
             test();
         }
+        else {
+            updateLights();
+        }
+        calculateLight();
     }
 
-    public void updateSurfaceBlockAll() {
-//        System.out.println("topBlocking.length = " + topBlocking.length);
-        updateSurfaceBlock(0, topBlocking.length);
+
+    public void updateLights() {
+        updateLightBetween(0, skyLight.length);
     }
 
     /**
-     * Update the surfaceblocks between {@code min} and {@code max}
+     * Update the skylight between {@code min} and {@code max}
      *
      * @param min
      *     The minimum
      */
-    public void updateSurfaceBlock(int min, int max) {
+    public void updateLightBetween(int min, int max) {
         Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
-        Preconditions.checkArgument(max <= topBlocking.length,
-                                    "Maximum argument must be less than or equal to topBlocking.length");
+        Preconditions
+            .checkArgument(max <= skyLight.length, "Maximum argument must be less than or equal to skyLight.length");
         Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
-
-//        System.out.println("min = [" + min + "], max = [" + max + "]");
 
         for (MapLayer layer : map.getLayers()) {
             if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
                 TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
                 int height = tiledLayer.getHeight();
                 for (int x = min; x < max; x++) {
+                    boolean skyFound = false;
                     for (int y = height - 1; y >= 0; y--) {
                         //check if the current cell is collidable
                         Cell cell = tiledLayer.getCell(x, y);
+                        //batch.setColor(1.0f, 1.0f, 1.0f, brightness[x][y].getPercentage());
+                        if (cell == null) {
+                            //empty cell
+                            continue;
+                        }
+                        //int yLoc = height - y - 1; //actual map y loc
                         TileType tt = TileType.getTileTypeById(cell.getTile().getId());
-                        if (tt.isCollidable()) {
-                            topBlocking[x] = topBlocking[x] < y ? height - y - 2 : topBlocking[x];
-                            break; //no further looping required
+                        if (!skyFound && tt.isCollidable()) {
+                            skyLight[x] = skyLight[x] < y ? y - 1 : skyLight[x];
+                            skyFound = true; //no further looping required
+                        }
+                        if (tt.getLuminosity() != LightLevel.LVL_0) {
+                            lightSources.put(new Vector2(x, y), tt.getLuminosity());
                         }
                     }
                 }
             }
         }
+        updateLightSources();
     }
 
-    public void updateSurfaceBlockAt(int x) {
+    public void updateLightAt(int x) {
         Preconditions.checkArgument(x >= 0, "x must be greater than 0");
-        Preconditions.checkArgument(x < topBlocking.length, "x must be less than the width of the world");
-        updateSurfaceBlock(x, x + 1);
+        Preconditions.checkArgument(x < skyLight.length, "x must be less than the width of the world");
+        updateLightBetween(x, x + 1);
     }
 
     /**
      * @return A copy of the blocking lighting positions
      */
-    public int[] getLightBlockBlocks() {
-        int[] cpy = new int[topBlocking.length];
-        System.arraycopy(topBlocking, 0, cpy, 0, topBlocking.length);
+    public int[] getSkyLights() {
+        int[] cpy = new int[skyLight.length];
+        System.arraycopy(skyLight, 0, cpy, 0, skyLight.length);
         return cpy;
+    }
+
+    public void updateLightSources() {
+        for (int x = 0; x < skyLight.length; x++) {
+            for (int y = mapHeight - 1; y > skyLight[x]; y--) {
+                Vector2 v = new Vector2(x, y);
+                lightSources.put(v, SKY_LIGHT_BRIGHTNESS);
+            }
+        }
+    }
+
+    public void calculateLight() {
+        //first pass, set all light sources to their own level
+        for (Map.Entry<Vector2, LightLevel> entry : lightSources.entrySet()) {
+            Vector2 coord = entry.getKey();
+            brightness[(int) coord.x][(int) coord.y] = entry.getValue();
+        }
+
+        //do 7(LIGHT_LEVELS) passes to make sure the brightness is correct on all blocks
+        for (int i = 0; i < LightLevel.LIGHT_LEVELS; i++) {
+            for (int x = 0; x < brightness.length; x++) {
+                for (int y = 0; y < brightness[x].length; y++) {
+                    LightLevel currBrightness = brightness[x][y];
+                    LightLevel dimmer = currBrightness.dimmer();
+                    if (currBrightness == LVL_0) {
+                        continue;
+                    }
+                    for (int x1 = Math.max(x - 1, 0); x1 <= Math.min(x + 1, brightness.length - 1); x1++) {
+                        for (int y1 = Math.max(y - 1, 0); y1 <= Math.min(y + 1, brightness[x].length - 1); y1++) {
+                            if (brightness[x1][y1].getLvl() < currBrightness.getLvl()) {
+                                brightness[x1][y1] = dimmer;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+//        System.out.println(Arrays.deepToString(brightness).replace("], ", "]\n"));
     }
 
     @SuppressWarnings("Duplicates")
     @Override
     public void renderTileLayer(TiledMapTileLayer layer) {
         final Color batchColor = batch.getColor();
-        final float color =
-            Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
         final int layerWidth = layer.getWidth();
         final int layerHeight = layer.getHeight();
@@ -147,6 +216,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                     float v1 = region.getV2();
                     float u2 = region.getU2();
                     float v2 = region.getV();
+
+                    final float color = Color
+                        .toFloatBits(batchColor.r, batchColor.g, batchColor.b, brightness[col][row].getPercentage());
 
                     vertices[X1] = x1;
                     vertices[Y1] = y1;
@@ -243,12 +315,16 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         }
     }
 
-    public void test() {
+    private void test() {
         SimpleOrthogonalTiledMapRendererTest mapRendererTest = new SimpleOrthogonalTiledMapRendererTest();
 
-        mapRendererTest.updateSurfaceBlock(this);
-        mapRendererTest.updateSurfaceBlockAll(this);
-        mapRendererTest.updateSurfaceBlockAt(this);
+        mapRendererTest.updateSkylightsAt(this);
+        mapRendererTest.updateSkylightsAll(this);
+        mapRendererTest.testLightSources(this);
         Gdx.app.exit();
+    }
+
+    HashMap<Vector2, LightLevel> getLightSources() {
+        return lightSources;
     }
 }
