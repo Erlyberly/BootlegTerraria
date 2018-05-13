@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
-import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
@@ -24,11 +23,16 @@ public class ConsoleHandler {
 
     CommandExecutor executor = new CommandExecutor() {
 
-        public void GOD() {
+        public void god() {
             Player player = game.getPlayer();
-            boolean in = !player.isInvincible();
-            player.setInvincible(in);
-            console.log("You are now" + (in ? "" : " not") + " invincible", LogLevel.SUCCESS);
+            player.god = !player.god;
+            heal();
+        }
+
+        public void heal() {
+            Player player = game.getPlayer();
+            player.setHp(player.getMaxHp());
+            player.setStamina(player.getMaxStamina());
         }
     };
 

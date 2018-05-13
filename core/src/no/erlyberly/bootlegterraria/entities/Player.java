@@ -32,6 +32,9 @@ public class Player extends Entity {
     private Texture image;
     private TextureRegion region;
 
+
+    public boolean god = false;
+
     public Player(float x, float y, GameMap map) {
         super(x, y, map);
         image = new Texture("woofer.png");
@@ -126,6 +129,9 @@ public class Player extends Entity {
     }
 
     public void modifyHp(int amount) {
+        if (god) {
+            return;
+        }
         if(this.hp > 0) {
             this.hp += amount;
         }
@@ -156,6 +162,9 @@ public class Player extends Entity {
     }
 
     public void addStamina(int amount) {
+        if (god) {
+            return;
+        }
         if(this.stamina >= -this.maxStamina) {
             this.stamina += amount;
         }
