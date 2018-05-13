@@ -1,16 +1,17 @@
-package no.erlyberly.bootlegterraria.world;
+package no.erlyberly.bootlegterraria.render;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import no.erlyberly.bootlegterraria.helpers.LightLevel;
+import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static no.erlyberly.bootlegterraria.world.SimpleOrthogonalTiledMapRenderer.SKY_LIGHT_BRIGHTNESS;
+import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.SKY_LIGHT_BRIGHTNESS;
 
 public class SimpleOrthogonalTiledMapRendererTest {
 
