@@ -6,7 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
+import com.strongjoshua.console.LogLevel;
+import com.strongjoshua.console.annotation.ConsoleDoc;
 import no.erlyberly.bootlegterraria.entities.Player;
+import no.erlyberly.bootlegterraria.helpers.RoundTo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class ConsoleHandler {
@@ -26,18 +29,29 @@ public class ConsoleHandler {
         public void god() {
             Player player = game.getPlayer();
             player.god = !player.god;
-            heal();
+            heal((byte) 4);
         }
 
-        public void heal() {
+        @ConsoleDoc(description = "Heal player in different ways",
+                    paramDescriptions = {"\n0b01 - health\n0b10 - stamina"})
+        public void heal(byte type) {
             Player player = game.getPlayer();
-            player.setHp(player.getMaxHp());
-            player.setStamina(player.getMaxStamina());
+
+            if ((type & 1) != 0) { player.setHp(player.getMaxHp()); }
+            if ((type & 2) != 0) { player.setStamina(player.getMaxStamina()); }
+        }
+
+        public void vsync(boolean vsync) {
+            Gdx.graphics.setVSync(vsync);
         }
     };
 
 
     public void draw() {
         console.draw();
+    }
+
+    public boolean isConsoleVisible() {
+        return console.isVisible();
     }
 }
