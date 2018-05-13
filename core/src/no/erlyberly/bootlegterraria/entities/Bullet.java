@@ -29,7 +29,7 @@ public class Bullet extends Entity {
     public void update(float deltaTime, float gravity) {
         moveX(HORIZONTAL_SPEED * facingX);
         float newX = pos.x + HORIZONTAL_SPEED * facingX;
-        if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
+        if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight()) || Math.abs(pos.x - map.getPlayer().getX()) > map.getPlayer().getWidth() * 15) {
             this.destroyed = true;
             map.removeEntity();
         }
