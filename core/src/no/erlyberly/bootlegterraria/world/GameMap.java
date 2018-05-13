@@ -233,7 +233,7 @@ public abstract class GameMap {
         float playerHeight = player.getHeight();
 
         for(Entity enemies : enimies){
-            if(Intersector.overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()), new Rectangle(playerX, playerY, playerWidth, playerHeight))){
+            if(!player.isInvincible() && Intersector.overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()), new Rectangle(playerX, playerY, playerWidth, playerHeight))){
                 player.modifyHp(-enemies.getDamage());
             }
         }
