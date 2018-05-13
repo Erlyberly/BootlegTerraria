@@ -31,6 +31,11 @@ public abstract class GameMap {
     private boolean addWaitingEntities = false;
     private boolean removeWaitingEntities = false;
 
+    
+    Texture hpBar = new Texture("hp_fill.png");
+    Texture barOutline = new Texture("bar_outline.png");
+    Texture staminaBar = new Texture("stamina_fill.png");
+
     private Player player;
     Texture hpBar = new Texture("hp_fill.png");
     Texture barOutline = new Texture("bar_outline.png");

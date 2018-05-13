@@ -17,19 +17,23 @@ public class ConsoleHandler {
 
     public ConsoleHandler(GameMap game) {
         this.game = game;
-        console = new GUIConsole(new Skin(Gdx.files.classpath("default_skin/uiskin.json")), true, Input.Keys.DEL);
+        console = new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.DEL);
         console.setCommandExecutor(executor);
     }
 
     CommandExecutor executor = new CommandExecutor() {
 
-        public void GOD() {
+        public void god() {
             Player player = game.getPlayer();
-            boolean in = !player.isInvincible();
-            player.setInvincible(in);
-            console.log("You are now" + (in ? "" : " not") + " invincible");
+            player.god = !player.god;
+            heal();
         }
 
+        public void heal() {
+            Player player = game.getPlayer();
+            player.setHp(player.getMaxHp());
+            player.setStamina(player.getMaxStamina());
+        }
     };
 
 
