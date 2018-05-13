@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.helpers.GameInfo;
+import no.erlyberly.bootlegterraria.helpers.RoundTo;
 
 import java.util.ArrayList;
 
@@ -39,21 +41,21 @@ public abstract class GameMap {
         player = new Player(600, 600, this);
     }
 
-    public void addEnemy(Entity entity){
+    public void addEnemy(Entity entity) {
         addEnimies.add(entity);
         addWaitingEnimies = true;
     }
 
-    public void removeEnemy(){
+    public void removeEnemy() {
         removeWaitingEnimies = true;
     }
 
-    public void addEntity(Entity entity){
+    public void addEntity(Entity entity) {
         addEntities.add(entity);
         addWaitingEntities = true;
     }
 
-    public void removeEntity(){
+    public void removeEntity() {
         removeWaitingEntities = true;
     }
 
@@ -71,7 +73,7 @@ public abstract class GameMap {
             entities.render(batch);
         }
 
-        camera.position.x = player.getX();
+        camera.position.x = RoundTo.RoundToNearest(player.getX(), CameraPixel(camera));
         camera.position.y = player.getY();
         batch.end();
 
@@ -87,17 +89,32 @@ public abstract class GameMap {
 
         //stamina bar
         Texture staminaBar = new Texture("stamina_fill.png");
-        float staminaPercent = (float)player.getStamina() / (float)player.getMaxStamina();
-        if(staminaPercent < 0){
+        float staminaPercent = (float) player.getStamina() / (float) player.getMaxStamina();
+        if (staminaPercent < 0) {
             staminaPercent = 0;
         }
         batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, staminaPercent * hpBar.getWidth(), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.2f);
-        font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.2f);
+        font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / 2.2f);
 
         //hud text
         font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 2.28f);
         batch.end();
+    }
+
+    public static float CameraPixel(final OrthographicCamera pCamera) {
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+        float CameraPixel;
+
+        float targetRatio = (float) width / (float) height;
+        float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
+
+        if (targetRatio > sourceRatio) { CameraPixel = height / pCamera.viewportHeight; }
+        else { CameraPixel = width / pCamera.viewportWidth; }
+
+        return (int) CameraPixel;
     }
 
     @SuppressWarnings("Duplicates")
@@ -116,22 +133,22 @@ public abstract class GameMap {
             entity.update(delta, GRAVITY);
         }
 
-        if(addWaitingEnimies){
-            for(Entity add : addEnimies) {
+        if (addWaitingEnimies) {
+            for (Entity add : addEnimies) {
                 enimies.add(add);
             }
             addEnimies.clear();
             addWaitingEnimies = false;
         }
 
-        if(removeWaitingEnimies){
+        if (removeWaitingEnimies) {
             ArrayList<Entity> removeEnimies = new ArrayList<Entity>();
-            for(Entity i : enimies) {
-                if(i.isDestroyed()){
+            for (Entity i : enimies) {
+                if (i.isDestroyed()) {
                     removeEnimies.add(i);
                 }
             }
-            for(Entity remove : removeEnimies){
+            for (Entity remove : removeEnimies) {
                 enimies.remove(remove);
             }
             removeWaitingEnimies = false;
@@ -141,22 +158,22 @@ public abstract class GameMap {
             entity.update(delta, GRAVITY);
         }
 
-        if(addWaitingEntities){
-            for(Entity add : addEntities) {
+        if (addWaitingEntities) {
+            for (Entity add : addEntities) {
                 entities.add(add);
             }
             addEntities.clear();
             addWaitingEntities = false;
         }
 
-        if(removeWaitingEntities){
+        if (removeWaitingEntities) {
             ArrayList<Entity> removeEntities = new ArrayList<Entity>();
-            for(Entity i : entities) {
-                if(i.isDestroyed()){
+            for (Entity i : entities) {
+                if (i.isDestroyed()) {
                     removeEntities.add(i);
                 }
             }
-            for(Entity remove : removeEntities){
+            for (Entity remove : removeEntities) {
                 entities.remove(remove);
             }
             removeWaitingEntities = false;
@@ -202,7 +219,7 @@ public abstract class GameMap {
                 for (int layer = 0; layer < getLayers(); layer++) {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
-                        if(type.getDamage() != 0 && !player.isInvincible()){
+                        if (type.getDamage() != 0 && !player.isInvincible()) {
                             player.modifyHp(-type.getDamage());
                         }
                         return true;
@@ -214,10 +231,12 @@ public abstract class GameMap {
         return false;
     }
 
-    public void checkEntityEnemyCollision(){
-        for(Entity entities : entities){
-            for(Entity enimies : enimies){
-                if(Intersector.overlaps(new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()), new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))){
+    public void checkEntityEnemyCollision() {
+        for (Entity entities : entities) {
+            for (Entity enimies : enimies) {
+                if (Intersector.overlaps(
+                    new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
+                    new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))) {
                     enimies.modifyHp(-entities.getDamage());
                     enimies.moveX((enimies.getHorizontalSpeed() / 8f) * -enimies.getFacingX());
                 }
@@ -225,15 +244,17 @@ public abstract class GameMap {
         }
     }
 
-    public void checkPlayerEnemyCollision(){
+    public void checkPlayerEnemyCollision() {
 
         float playerX = player.getX();
         float playerY = player.getY();
         float playerWidth = player.getWidth();
         float playerHeight = player.getHeight();
 
-        for(Entity enemies : enimies){
-            if(!player.isInvincible() && Intersector.overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()), new Rectangle(playerX, playerY, playerWidth, playerHeight))){
+        for (Entity enemies : enimies) {
+            if (!player.isInvincible() && Intersector
+                .overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()),
+                          new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
                 player.modifyHp(-enemies.getDamage());
             }
         }
@@ -255,11 +276,11 @@ public abstract class GameMap {
 
     public abstract float getHeight();
 
-    public Player getPlayer(){
+    public Player getPlayer() {
         return player;
     }
 
-    public void render(SpriteBatch batch){
+    public void render(SpriteBatch batch) {
 
     }
 }
