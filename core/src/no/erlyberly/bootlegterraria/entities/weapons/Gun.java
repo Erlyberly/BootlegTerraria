@@ -6,6 +6,8 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Gun extends Weapon{
 
+    private int staminaUsage = 500;
+
     public Gun(){
         setCooldown(5);
     }
@@ -27,9 +29,14 @@ public class Gun extends Weapon{
         if(getCooldownTimer() >= getCooldown()){
             map.addEntity(new Bullet(map.getPlayer().getX() + (map.getPlayer().getWidth()/3f * map.getPlayer().getFacingX()), map.getPlayer().getY() + 16f, map, map.getPlayer().getFacingX()));
             setCooldownTimer(0);
-            return -500;
+            return -staminaUsage;
         }else{
             return 0;
         }
+    }
+
+    @Override
+    public int getStaminaUsage() {
+        return staminaUsage;
     }
 }

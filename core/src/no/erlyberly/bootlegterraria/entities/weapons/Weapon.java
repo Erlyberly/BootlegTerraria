@@ -10,6 +10,7 @@ public abstract class Weapon {
     private Texture image;
     private int cooldown;
     private int cooldownTimer = 0;
+    private int staminaUsage;
 
     public Weapon(){}
 
@@ -52,6 +53,8 @@ public abstract class Weapon {
     public void setCooldownTimer(int cooldownTimer) {
         this.cooldownTimer = cooldownTimer;
     }
+
+    public abstract int getStaminaUsage();
 
     public void cooldown(){
         if(cooldownTimer < cooldown){

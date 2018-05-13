@@ -32,6 +32,9 @@ public abstract class GameMap {
     private boolean removeWaitingEntities = false;
 
     private Player player;
+    Texture hpBar = new Texture("hp_fill.png");
+    Texture barOutline = new Texture("bar_outline.png");
+    Texture staminaBar = new Texture("stamina_fill.png");
 
     GameMap() {
         enimies = new ArrayList<Entity>();
@@ -81,18 +84,12 @@ public abstract class GameMap {
         batch.begin();
 
         //hp bar
-        Texture hpBar = new Texture("hp_fill.png");
-        Texture barOutline = new Texture("bar_outline.png");
         batch.draw(hpBar, 6f, GameInfo.HEIGHT / 2.1f, (((float)player.getHp() / (float)player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.1f);
         font.draw(batch, player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.1f);
 
         //stamina bar
-        Texture staminaBar = new Texture("stamina_fill.png");
         float staminaPercent = (float) player.getStamina() / (float) player.getMaxStamina();
-        if (staminaPercent < 0) {
-            staminaPercent = 0;
-        }
         batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, staminaPercent * hpBar.getWidth(), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.2f);
         font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,

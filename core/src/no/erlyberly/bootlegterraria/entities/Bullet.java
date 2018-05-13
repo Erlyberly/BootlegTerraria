@@ -22,7 +22,7 @@ public class Bullet extends Entity {
         super(x, y, map);
         this.facingX = facingX;
         this.map = map;
-        this.image = new Texture("bulletR.png");
+        this.image = new Texture("bullet.png");
         this.region = new TextureRegion(image);
     }
 

@@ -5,6 +5,8 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Sword extends Weapon {
 
+    private int staminaUsage = 2000;
+
     public Sword(String name){
         super(name);
         setCooldown(30);
@@ -21,9 +23,13 @@ public class Sword extends Weapon {
                         map.getPlayer().getY() + 16f, map, map.getPlayer().getFacingX()));
             }
             setCooldownTimer(0);
-            return -2000;
+            return -staminaUsage;
         }else{
             return 0;
         }
+    }
+
+    public int getStaminaUsage() {
+        return staminaUsage;
     }
 }

@@ -87,7 +87,7 @@ public class Player extends Entity {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging){
-            if(stamina > 0) {
+            if(stamina - weapon.getStaminaUsage() >= 0) {
                 addStamina(weapon.use(map));
             }
         }
