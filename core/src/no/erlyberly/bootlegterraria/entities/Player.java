@@ -2,14 +2,12 @@ package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.Sword;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
-import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -19,7 +17,7 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 4;
     private GameMap map;
     private int facingX = 1;
-    private Weapon weapon = new Sword("Sword");
+    private Weapon weapon = new Gun("Gun");
     private int maxHp = 10000; //Should be able to increase
     private int hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
@@ -31,18 +29,13 @@ public class Player extends Entity {
     private boolean dodging = false;
     private int dodgeFrames = 0;
 
-    private Texture imageR;
-    private TextureRegion regionR;
-
-    private Texture imageL;
-    private TextureRegion regionL;
+    private Texture image;
+    private TextureRegion region;
 
     public Player(float x, float y, GameMap map) {
         super(x, y, map);
-        imageR = new Texture("wooferR.png");
-        regionR = new TextureRegion(imageR);
-        imageL = new Texture("wooferL.png");
-        regionL = new TextureRegion(imageL);
+        image = new Texture("woofer.png");
+        region = new TextureRegion(image);
         this.map = map;
     }
 
@@ -188,6 +181,10 @@ public class Player extends Entity {
         return invincible;
     }
 
+    public void setInvincible(boolean invincible) {
+        this.invincible = invincible;
+    }
+
     @Override
     public float getWeight() {
         return 70;
@@ -215,7 +212,8 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-            batch.draw(regionR.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1f, 1f, dodgeFrames * facingX * 360 / 14, 0, 0, 0, 0, facingX == 1, false);
+            batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+                    dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
     }
 
     @Override

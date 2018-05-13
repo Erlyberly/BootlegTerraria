@@ -2,6 +2,7 @@ package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -22,6 +23,7 @@ public class Zombie extends Entity {
     private boolean dodging = false;
     private int dodgeFrames = 0;
 
+    private TextureRegion region;
     private Texture image;
 
     public Zombie(float x, float y, GameMap map) {
@@ -34,7 +36,7 @@ public class Zombie extends Entity {
 
         super.update(deltaTime, gravity);//Apply gravity
 
-        if(pos.x - map.getPlayer().getPos().x > 0){
+        if(pos.x - map.getPlayer().getPos().x > map.getPlayer().getWidth()){
             moveX(-HORIZONTAL_SPEED * deltaTime);
             facingX = -1;
         }else{

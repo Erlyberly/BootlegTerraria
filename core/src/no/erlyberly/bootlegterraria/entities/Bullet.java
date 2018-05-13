@@ -15,17 +15,15 @@ public class Bullet extends Entity {
     private GameMap map;
     private int damage = 1000;
 
+    private TextureRegion region;
     private Texture image;
 
     public Bullet(float x, float y, GameMap map, int facingX) {
         super(x, y, map);
         this.facingX = facingX;
         this.map = map;
-        if(facingX == 1) {
-            image = new Texture("bulletR.png");
-        } else{
-            image = new Texture("bulletL.png");
-        }
+        this.image = new Texture("bulletR.png");
+        this.region = new TextureRegion(image);
     }
 
     public void update(float deltaTime, float gravity) {
@@ -81,7 +79,8 @@ public class Bullet extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+                0, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
     }
 
     @Override
