@@ -44,8 +44,8 @@ public class Player extends Entity {
 
     public void update(float deltaTime, float gravity) {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && !dodging) {
-            if(dodgeTimer >= 60 && stamina > 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
+            if(dodgeTimer >= 60 && stamina - 2000 >= 0) {
                 dodging = true;
                 dodgeFrames = 14;
                 dodgeTimer = 0;
@@ -69,11 +69,11 @@ public class Player extends Entity {
             dodgeTimer++;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && onGround && !dodging) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !onGround && this.velocityY > 0 && !dodging) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
             this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
