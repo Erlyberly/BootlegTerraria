@@ -200,7 +200,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 }
                 final TiledMapTile tile = cell.getTile();
 
-                if (tile != null) {
+                if (tile != null && brightness[col][row] != LVL_0) {
                     final boolean flipX = cell.getFlipHorizontally();
                     final boolean flipY = cell.getFlipVertically();
                     final int rotations = cell.getRotation();
