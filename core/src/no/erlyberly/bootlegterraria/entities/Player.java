@@ -215,11 +215,7 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        if(facingX == 1) {
-            batch.draw(regionR, pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, dodgeFrames * facingX * 360 / 14);
-        }else{
-            batch.draw(regionL, pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, dodgeFrames * facingX * 360 / 14);
-        }
+            batch.draw(regionR.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1f, 1f, dodgeFrames * facingX * 360 / 14, 0, 0, 0, 0, facingX == 1, false);
     }
 
     @Override
