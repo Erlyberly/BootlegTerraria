@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
+import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
@@ -27,9 +28,8 @@ public class ConsoleHandler {
             Player player = game.getPlayer();
             boolean in = !player.isInvincible();
             player.setInvincible(in);
-            console.log("You are now" + (in ? "" : " not") + " invincible");
+            console.log("You are now" + (in ? "" : " not") + " invincible", LogLevel.SUCCESS);
         }
-
     };
 
 
