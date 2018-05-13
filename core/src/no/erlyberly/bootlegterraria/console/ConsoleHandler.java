@@ -17,7 +17,7 @@ public class ConsoleHandler {
 
     public ConsoleHandler(GameMap game) {
         this.game = game;
-        console = new GUIConsole(new Skin(Gdx.files.classpath("default_skin/uiskin.json")), true, Input.Keys.DEL);
+        console = new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.DEL);
         console.setCommandExecutor(executor);
     }
 
