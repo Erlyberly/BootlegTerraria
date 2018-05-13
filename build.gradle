@@ -89,9 +89,10 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-
-        compile 'com.google.guava:guava:25.0-jre'
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        
+        compile 'com.google.guava:guava:25.0-jre'
         compile "org.junit.jupiter:junit-jupiter-api:5.0.0"
         compile "com.strongjoshua:libgdx-inGameConsole:0.7.1"
     }
