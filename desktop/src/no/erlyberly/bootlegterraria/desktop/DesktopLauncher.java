@@ -16,6 +16,7 @@ public class DesktopLauncher {
         config.foregroundFPS = 9999;
         config.backgroundFPS = 10;
         config.samples = 16;
+        config.resizable = false; //it's not you, it's the lines
 
         new LwjglApplication(new GameMain(), config);
     }
