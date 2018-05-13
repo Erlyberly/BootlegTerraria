@@ -18,11 +18,6 @@ public class ConsoleHandler {
     public ConsoleHandler(GameMap game) {
         this.game = game;
         console = new GUIConsole(new Skin(Gdx.files.classpath("default_skin/uiskin.json")), true, Input.Keys.DEL);
-        console.setDisabled(false);
-        console.setExecuteHiddenCommands(true);
-        console.setPosition(100, 100);
-        console.setVisible(true);
-        console.log("test123");
         console.setCommandExecutor(executor);
     }
 
