@@ -22,6 +22,7 @@ public class Zombie extends Entity {
     private boolean invincible = false;
     private boolean dodging = false;
     private int dodgeFrames = 0;
+    private boolean chasing = false;
 
     private TextureRegion region;
     private Texture image;
@@ -39,16 +40,20 @@ public class Zombie extends Entity {
 
         float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
 
-        if(distanceFromPLayer > map.getPlayer().getWidth()/2){
+        if(distanceFromPLayer > map.getPlayer().getWidth()/2 && distanceFromPLayer < map.getPlayer().getWidth() * 10){
             moveX(-HORIZONTAL_SPEED * deltaTime);
             facingX = -1;
-        }else if(distanceFromPLayer < -map.getPlayer().getWidth()/2){
+            chasing = true;
+        }else if(distanceFromPLayer < -map.getPlayer().getWidth()/2 && distanceFromPLayer > -map.getPlayer().getWidth() * 10){
             moveX(HORIZONTAL_SPEED * deltaTime);
             facingX = 1;
+        }else{
+            chasing = false;
         }
 
-        if(map.checkMapCollision(pos.x + getWidth() * facingX, pos.y, getWidth(), getHeight()) && onGround){
+        if(map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround && chasing){
             this.velocityY += JUMP_VELOCITY * getWeight();
+            chasing = true;
         }
     }
 
