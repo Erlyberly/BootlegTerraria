@@ -20,7 +20,13 @@ public class ConsoleHandler {
 
     public ConsoleHandler(GameMap game) {
         this.game = game;
-        console = new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.DEL);
+        console =
+            new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.APOSTROPHE);
+
+        console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
+        console.log("BOOTING SEQUENCE FINISHED IN " + RoundTo.RoundDownToNearest((float) (Math.random() * 4f), 0.001f),
+                    LogLevel.ERROR);
+
         console.setCommandExecutor(executor);
     }
 
