@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
@@ -19,11 +20,13 @@ public class GameMain extends Game {
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private GameMap gameMap;
+    ConsoleHandler consoleHandler;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         this.gameMap = new TiledGameMap();
+        consoleHandler = new ConsoleHandler(gameMap);
 
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -65,5 +68,6 @@ public class GameMain extends Game {
         camera.update();
         gameMap.update(Gdx.graphics.getDeltaTime());
         gameMap.render(camera, hudCamera, batch);
+        consoleHandler.draw();
     }
 }
