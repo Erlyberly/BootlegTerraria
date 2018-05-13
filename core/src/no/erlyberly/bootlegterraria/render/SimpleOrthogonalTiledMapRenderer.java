@@ -218,8 +218,10 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                     float u2 = region.getU2();
                     float v2 = region.getV();
 
+                    float darkness = brightness[col][row].getPercentage();
                     final float color = Color
-                        .toFloatBits(batchColor.r, batchColor.g, batchColor.b, brightness[col][row].getPercentage());
+                        .toFloatBits(batchColor.r * darkness, batchColor.g * darkness, batchColor.b * darkness,
+                                     batchColor.a * layer.getOpacity());
 
                     vertices[X1] = x1;
                     vertices[Y1] = y1;

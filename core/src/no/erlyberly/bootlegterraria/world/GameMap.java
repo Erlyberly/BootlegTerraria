@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import no.erlyberly.bootlegterraria.entities.Entity;
@@ -16,8 +17,6 @@ import java.util.ArrayList;
 
 @SuppressWarnings("ALL")
 public abstract class GameMap {
-
-    BitmapFont font = new BitmapFont();
 
     public final static float GRAVITY = -9.81f;
 
@@ -32,6 +31,10 @@ public abstract class GameMap {
     private boolean removeWaitingEntities = false;
 
     private Player player;
+
+
+    BitmapFont font;
+
     Texture hpBar = new Texture("hp_fill.png");
     Texture barOutline = new Texture("bar_outline.png");
     Texture staminaBar = new Texture("stamina_fill.png");
@@ -41,7 +44,13 @@ public abstract class GameMap {
         addEnimies = new ArrayList<Entity>();
         entities = new ArrayList<Entity>();
         addEntities = new ArrayList<Entity>();
-        player = new Player(600, 600, this);
+
+        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/UbuntuMono-R.ttf"));
+        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 20;
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        this.font = generator.generateFont(parameter);
+        generator.dispose();
     }
 
     public void addEnemy(Entity entity) {
@@ -83,23 +92,29 @@ public abstract class GameMap {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
 
+        float hpBarModifier = 1.03f;
+
         //hp bar
-        batch.draw(hpBar, 6f, GameInfo.HEIGHT / 2.1f,
+        batch.draw(hpBar, 6f, GameInfo.HEIGHT / hpBarModifier,
                    (((float) player.getHp() / (float) player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
-        batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.1f);
-        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f,
-                  12f + GameInfo.HEIGHT / 2.1f);
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / hpBarModifier);
+        font.draw(batch, (int) player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / hpBarModifier);
+
+        float staminaBarModifier = 1.055f;
 
         //stamina bar
         float staminaPercent = (float) player.getStamina() / (float) player.getMaxStamina();
-        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / 2.2f, staminaPercent * hpBar.getWidth(), hpBar.getHeight());
-        batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.2f);
-        font.draw(batch, player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
-                  12f + GameInfo.HEIGHT / 2.2f);
+
+        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * hpBar.getWidth(),
+                   hpBar.getHeight());
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / staminaBarModifier);
+        font.draw(batch, (int) player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / staminaBarModifier);
 
         //hud text
-        font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 2.28f);
-        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (2.38f));
+        font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
+        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
         batch.end();
     }
 
@@ -276,8 +291,16 @@ public abstract class GameMap {
 
     public abstract float getHeight();
 
+    public abstract int getSpawnX();
+
+    public abstract int getSpawnY();
+
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public void render(SpriteBatch batch) {

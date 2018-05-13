@@ -7,7 +7,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 
 public class TiledGameMap extends GameMap {
@@ -15,9 +17,25 @@ public class TiledGameMap extends GameMap {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
-    public TiledGameMap() {
-        this.tiledMap = new TmxMapLoader().load(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
+    private final int spawnX;
+    private final int spawnY;
+
+    public TiledGameMap(String map) {
+        try {
+            this.tiledMap = new TmxMapLoader().load(map);
+        } catch (Exception e) {
+            GameMain.getConsoleHandler().log("Failed to load map '%s'", LogLevel.ERROR, map);
+        }
+
+        spawnX = (int) (tiledMap.getProperties().get("spawnX", 0, Integer.class) * TileType.TILE_SIZE);
+        spawnY = (int) ((getHeight() - tiledMap.getProperties().get("spawnY", 0, Integer.class)) * TileType.TILE_SIZE);
+
+        System.out.println("spawnX = " + spawnX);
+        System.out.println("spawnY = " + spawnY);
+
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(tiledMap, GameMain.TEST);
+
+        setPlayer(new Player(getSpawnX(), getSpawnY(), this));
     }
 
     @Override
@@ -67,5 +85,15 @@ public class TiledGameMap extends GameMap {
     @Override
     public float getHeight() {
         return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getHeight();
+    }
+
+    @Override
+    public int getSpawnX() {
+        return spawnX;
+    }
+
+    @Override
+    public int getSpawnY() {
+        return spawnY;
     }
 }
