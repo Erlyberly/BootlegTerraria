@@ -97,6 +97,7 @@ public abstract class GameMap {
 
         //hud text
         font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 2.28f);
+        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (2.38f));
         batch.end();
     }
 
