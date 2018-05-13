@@ -14,7 +14,7 @@ public class Zombie extends Entity {
 
     private static java.util.Random rng = new java.util.Random();
     private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
-    private static final int JUMP_VELOCITY = 2;
+    private static final int JUMP_VELOCITY = 3;
     private GameMap map;
     private int facingX = 1;
     private int maxHp = 10000; //Should be able to increase
