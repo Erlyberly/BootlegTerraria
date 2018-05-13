@@ -3,7 +3,6 @@ package no.erlyberly.bootlegterraria.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import no.erlyberly.bootlegterraria.helpers.GameInfo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -34,51 +33,56 @@ public class Zombie extends Entity {
         this.map = map;
     }
 
-    public void update(float deltaTime, float gravity){
+    public void update(float deltaTime, float gravity) {
 
         super.update(deltaTime, gravity);//Apply gravity
 
         float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
 
-        if(distanceFromPLayer > map.getPlayer().getWidth()/2 && distanceFromPLayer < map.getPlayer().getWidth() * 10){
+        if (distanceFromPLayer > map.getPlayer().getWidth() / 2 &&
+            distanceFromPLayer < map.getPlayer().getWidth() * 10) {
             moveX(-HORIZONTAL_SPEED * deltaTime);
             facingX = -1;
             chasing = true;
-        }else if(distanceFromPLayer < -map.getPlayer().getWidth()/2 && distanceFromPLayer > -map.getPlayer().getWidth() * 10){
+        }
+        else if (distanceFromPLayer < -map.getPlayer().getWidth() / 2 &&
+                 distanceFromPLayer > -map.getPlayer().getWidth() * 10) {
             moveX(HORIZONTAL_SPEED * deltaTime);
             facingX = 1;
-        }else{
+        }
+        else {
             chasing = false;
         }
 
-        if(map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround && chasing){
+        if (map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround &&
+            chasing) {
             this.velocityY += JUMP_VELOCITY * getWeight();
             chasing = true;
         }
     }
 
     public void modifyHp(int amount) {
-        if(this.hp > 0) {
+        if (this.hp > 0) {
             this.hp += amount;
         }
 
-        if(this.hp <= 0){
+        if (this.hp <= 0) {
             this.hp = 0;
             this.destroyed = true;
             map.removeEnemy();
         }
 
-        if(this.hp > this.maxHp){
+        if (this.hp > this.maxHp) {
             this.hp = maxHp;
         }
     }
 
-    public int getHp() {
+    public float getHp() {
         return hp;
     }
 
     @Override
-    public int getHorizontalSpeed() {
+    public float getHorizontalSpeed() {
         return HORIZONTAL_SPEED;
     }
 
@@ -120,8 +124,9 @@ public class Zombie extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == 1, false);
-        batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float)hp / (float)maxHp) * getWidth() * 2f), 5f);
+                   dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                   region.getRegionHeight(), facingX == 1, false);
+        batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float) hp / (float) maxHp) * getWidth() * 2f), 5f);
         batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
     }
 

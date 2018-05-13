@@ -63,7 +63,7 @@ public abstract class GameMap {
     }
 
     public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
-        batch.setProjectionMatrix(camera.combined);
+        // batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         player.render(batch);
@@ -84,9 +84,11 @@ public abstract class GameMap {
         batch.begin();
 
         //hp bar
-        batch.draw(hpBar, 6f, GameInfo.HEIGHT / 2.1f, (((float)player.getHp() / (float)player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(hpBar, 6f, GameInfo.HEIGHT / 2.1f,
+                   (((float) player.getHp() / (float) player.getMaxHp()) * hpBar.getWidth()), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / 2.1f);
-        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / 2.1f);
+        font.draw(batch, player.getHp() + " / " + player.getMaxHp(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / 2.1f);
 
         //stamina bar
         float staminaPercent = (float) player.getStamina() / (float) player.getMaxStamina();

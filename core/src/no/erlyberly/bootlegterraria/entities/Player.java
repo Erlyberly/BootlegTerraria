@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.Gun;
-import no.erlyberly.bootlegterraria.entities.weapons.Sword;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -19,15 +18,15 @@ public class Player extends Entity {
     private int facingX = 1;
     private Weapon weapon = new Gun("Gun");
     private int maxHp = 10000; //Should be able to increase
-    private int hp = 10000;
+    private float hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
-    private int stamina = 10000;
+    private float stamina = 10000;
     private int staminaRegen = 30;
     private boolean invincible = false;
-    private int dodgeTimer = 60;
+    private float dodgeTimer = 60;
     private int dodgeSpeed = HORIZONTAL_SPEED * 3;
     private boolean dodging = false;
-    private int dodgeFrames = 0;
+    private float dodgeFrames = 0;
 
     private Texture image;
     private TextureRegion region;
@@ -45,7 +44,7 @@ public class Player extends Entity {
     public void update(float deltaTime, float gravity) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
-            if(dodgeTimer >= 60 && stamina - 2000 >= 0) {
+            if (dodgeTimer >= 60 && stamina - 2000 >= 0) {
                 dodging = true;
                 dodgeFrames = 14;
                 dodgeTimer = 0;
@@ -54,10 +53,10 @@ public class Player extends Entity {
             }
         }
 
-        if(dodging){
+        if (dodging) {
             moveX(dodgeSpeed * facingX * deltaTime);
-            dodgeFrames--;
-            if(dodgeFrames == 0){
+            dodgeFrames -= dodgeFrames * deltaTime;
+            if (dodgeFrames == 0) {
                 dodging = false;
                 invincible = false;
             }
@@ -65,12 +64,12 @@ public class Player extends Entity {
 
         weapon.cooldown();
         addStamina(staminaRegen);
-        if(dodgeTimer < 60){
+        if (dodgeTimer < 60) {
             dodgeTimer++;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
-            this.velocityY += JUMP_VELOCITY * getWeight();
+            this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
         }
 
         else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
@@ -89,14 +88,14 @@ public class Player extends Entity {
             facingX = 1;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging){
-            if(stamina - weapon.getStaminaUsage() >= 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging) {
+            if (stamina - weapon.getStaminaUsage() >= 0) {
                 addStamina(weapon.use(map));
             }
         }
 
         //For testing purposes only
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
             map.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, map));
         }
@@ -111,16 +110,16 @@ public class Player extends Entity {
         return maxHp;
     }
 
-    public void setMaxHp(int maxHp){
+    public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
     }
 
-    public int getHp() {
+    public float getHp() {
         return hp;
     }
 
     @Override
-    public int getHorizontalSpeed() {
+    public float getHorizontalSpeed() {
         return HORIZONTAL_SPEED;
     }
 
@@ -132,15 +131,15 @@ public class Player extends Entity {
         if (god) {
             return;
         }
-        if(this.hp > 0) {
+        if (this.hp > 0) {
             this.hp += amount;
         }
 
-        if(this.hp <= 0){
+        if (this.hp <= 0) {
             this.hp = 0;
         }
 
-        if(this.hp > this.maxHp){
+        if (this.hp > this.maxHp) {
             this.hp = maxHp;
         }
     }
@@ -153,7 +152,7 @@ public class Player extends Entity {
         this.maxStamina = maxStamina;
     }
 
-    public int getStamina() {
+    public float getStamina() {
         return stamina;
     }
 
@@ -165,15 +164,15 @@ public class Player extends Entity {
         if (god) {
             return;
         }
-        if(this.stamina >= -this.maxStamina) {
+        if (this.stamina >= -this.maxStamina) {
             this.stamina += amount;
         }
 
-        if(this.stamina < -this.maxStamina){
+        if (this.stamina < -this.maxStamina) {
             this.stamina = -this.maxStamina;
         }
 
-        if(this.stamina > this.maxStamina){
+        if (this.stamina > this.maxStamina) {
             this.stamina = maxStamina;
         }
     }
@@ -216,13 +215,14 @@ public class Player extends Entity {
 
     @Override
     public void setDestroyed(boolean destroyed) {
-        this.destroyed  = destroyed;
+        this.destroyed = destroyed;
     }
 
     @Override
     public void render(SpriteBatch batch) {
-            batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                    dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+                   dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                   region.getRegionHeight(), facingX == -1, false);
     }
 
     @Override

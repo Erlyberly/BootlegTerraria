@@ -23,7 +23,7 @@ public abstract class Entity {
         this.velocityY += gravity * deltaTime * getWeight();
         float deltaY = this.velocityY * deltaTime;
 
-        if(this instanceof Player){
+        if (this instanceof Player) {
             map.checkPlayerMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight());
         }
 
@@ -80,9 +80,9 @@ public abstract class Entity {
 
     public abstract int getDamage();
 
-    public abstract int getHp();
+    public abstract float getHp();
 
-    public abstract int getHorizontalSpeed();
+    public abstract float getHorizontalSpeed();
 
     public abstract int getFacingX();
 }

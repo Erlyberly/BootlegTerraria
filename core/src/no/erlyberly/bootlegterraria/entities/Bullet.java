@@ -1,7 +1,5 @@
 package no.erlyberly.bootlegterraria.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,7 +11,7 @@ public class Bullet extends Entity {
     private int facingX;
     private static final int HORIZONTAL_SPEED = 10;
     private GameMap map;
-    private int damage = 1000;
+    private static final int DAMAGE = 1000;
 
     private TextureRegion region;
     private Texture image;
@@ -29,7 +27,8 @@ public class Bullet extends Entity {
     public void update(float deltaTime, float gravity) {
         moveX(HORIZONTAL_SPEED * facingX);
         float newX = pos.x + HORIZONTAL_SPEED * facingX;
-        if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight()) || Math.abs(pos.x - map.getPlayer().getX()) > map.getPlayer().getWidth() * 15) {
+        if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight()) ||
+            Math.abs(pos.x - map.getPlayer().getX()) > map.getPlayer().getWidth() * 15) {
             this.destroyed = true;
             map.removeEntity();
         }
@@ -42,33 +41,33 @@ public class Bullet extends Entity {
 
     @Override
     public float getWidth() {
-        return Math.round((float)TileType.TILE_SIZE / 1.5f);
+        return Math.round(TileType.TILE_SIZE / 1.5f);
     }
 
     @Override
     public float getHeight() {
-        return Math.round((float)TileType.TILE_SIZE * 1.2f);
+        return Math.round(TileType.TILE_SIZE * 1.2f);
     }
 
-    public boolean isDestroyed(){
+    public boolean isDestroyed() {
         return destroyed;
     }
 
-    public void setDestroyed(boolean destroyed){
+    public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
     }
 
-    public int getDamage(){
-        return damage;
+    public int getDamage() {
+        return DAMAGE;
     }
 
     @Override
-    public int getHp() {
+    public float getHp() {
         return 0;
     }
 
     @Override
-    public int getHorizontalSpeed() {
+    public float getHorizontalSpeed() {
         return HORIZONTAL_SPEED;
     }
 
@@ -79,8 +78,9 @@ public class Bullet extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                0, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                   region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(),
+                   facingX == -1, false);
     }
 
     @Override

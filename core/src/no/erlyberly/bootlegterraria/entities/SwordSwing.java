@@ -3,7 +3,6 @@ package no.erlyberly.bootlegterraria.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -22,17 +21,18 @@ public class SwordSwing extends Entity {
         super(x, y, map);
         this.facingX = facingX;
         this.map = map;
-        if(facingX == 1) {
+        if (facingX == 1) {
             image = new Texture("sword.png");
-        } else{
+        }
+        else {
             image = new Texture("sword.png");
         }
     }
 
-    public void update(float deltaTime, float gravity){
+    public void update(float deltaTime, float gravity) {
         //System.out.println(frames);
         frames--;
-        if(frames <= 0){
+        if (frames <= 0) {
             //System.out.println("Destroy sword");
             this.destroyed = true;
             map.removeEntity();
@@ -66,11 +66,14 @@ public class SwordSwing extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        TextureRegion  region = new TextureRegion(image);
-        if(facingX == 1) {
-            batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0, getHeight() / 2, getWidth(), getHeight(), 1, 1, frames * 3f - 20);
-        }else{
-            batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0, getHeight() / 2, getWidth(), getHeight(), 1, 1, -frames * 3f + 200);
+        TextureRegion region = new TextureRegion(image);
+        if (facingX == 1) {
+            batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0,
+                       getHeight() / 2, getWidth(), getHeight(), 1, 1, frames * 3f - 20);
+        }
+        else {
+            batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0,
+                       getHeight() / 2, getWidth(), getHeight(), 1, 1, -frames * 3f + 200);
         }
     }
 
@@ -85,12 +88,12 @@ public class SwordSwing extends Entity {
     }
 
     @Override
-    public int getHp() {
+    public float getHp() {
         return 0;
     }
 
     @Override
-    public int getHorizontalSpeed() {
+    public float getHorizontalSpeed() {
         return 0;
     }
 
