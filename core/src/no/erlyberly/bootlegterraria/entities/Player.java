@@ -13,8 +13,8 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Player extends Entity {
 
     private static final int HORIZONTAL_SPEED = 120;
-    private static final int JUMP_VELOCITY = 4;
-    private static final float DODGE_TIME = 0.5f;
+    private static final int JUMP_VELOCITY = 500;
+    private static final float DODGE_TIME = 0.50f;
     private static final float DODGE_COOLDOWN = 1f;
     private GameMap game;
     private int facingX = 1;
@@ -25,7 +25,7 @@ public class Player extends Entity {
     private float stamina = 10000;
     private int staminaRegen = 30;
     private boolean invincible = false;
-    private int dodgeSpeed = HORIZONTAL_SPEED * 3;
+    private int dodgeSpeed = HORIZONTAL_SPEED * 5;
     private boolean dodging = false;
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
@@ -73,11 +73,14 @@ public class Player extends Entity {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
-            System.out.println(onGround);
-            this.velocityY += JUMP_VELOCITY;
-        }else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
-            this.velocityY += JUMP_VELOCITY * deltaTime;
+            this.velocityY = 2;
+            System.out.println(getVelocityY());
         }
+
+        /*
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
+            this.velocityY += gravity / 4;
+        }*/
 
         super.update(deltaTime, gravity);//Apply gravity
 
@@ -219,7 +222,7 @@ public class Player extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   dodgeTime * facingX * 360, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                   dodgeTime/DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                    region.getRegionHeight(), facingX == -1, false);
     }
 

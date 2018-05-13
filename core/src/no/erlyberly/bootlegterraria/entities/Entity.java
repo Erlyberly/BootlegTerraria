@@ -20,6 +20,7 @@ public abstract class Entity {
     }
 
     public void update(float deltaTime, float gravity) {
+
         this.velocityY += gravity * deltaTime;
         float deltaY = this.velocityY;
 
@@ -58,6 +59,10 @@ public abstract class Entity {
 
     public float getY() {
         return pos.y;
+    }
+
+    public float getVelocityY() {
+        return velocityY;
     }
 
     public boolean isOnGround() {

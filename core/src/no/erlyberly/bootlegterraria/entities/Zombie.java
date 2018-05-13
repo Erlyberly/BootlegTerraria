@@ -118,8 +118,7 @@ public class Zombie extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                    region.getRegionHeight(), facingX == 1, false);
         batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float) hp / (float) maxHp) * getWidth() * 2f), 5f);
         batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
