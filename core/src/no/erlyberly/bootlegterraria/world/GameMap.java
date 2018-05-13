@@ -41,7 +41,6 @@ public abstract class GameMap {
         addEnimies = new ArrayList<Entity>();
         entities = new ArrayList<Entity>();
         addEntities = new ArrayList<Entity>();
-        player = new Player(600, 600, this);
     }
 
     public void addEnemy(Entity entity) {
@@ -276,8 +275,16 @@ public abstract class GameMap {
 
     public abstract float getHeight();
 
+    public abstract int getSpawnX();
+
+    public abstract int getSpawnY();
+
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public void render(SpriteBatch batch) {

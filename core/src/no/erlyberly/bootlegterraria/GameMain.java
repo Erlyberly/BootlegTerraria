@@ -14,19 +14,19 @@ import no.erlyberly.bootlegterraria.world.TiledGameMap;
 public class GameMain extends Game {
 
     public static final boolean TEST = false;
-    public static final String TEST_MAP = "testmaps/testmap3.tmx";
+    private static final String TEST_MAP = "testmaps/testmap3.tmx";
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private GameMap gameMap;
-    ConsoleHandler consoleHandler;
+    private static ConsoleHandler consoleHandler;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        this.gameMap = new TiledGameMap();
-        consoleHandler = new ConsoleHandler(gameMap);
+
+        consoleHandler = new ConsoleHandler(this);
 
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -34,6 +34,12 @@ public class GameMain extends Game {
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         camera.update();
+
+        loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
+    }
+
+    public void loadMap(String map) {
+        this.gameMap = new TiledGameMap(map);
     }
 
     @Override
@@ -69,5 +75,26 @@ public class GameMain extends Game {
         gameMap.update(Gdx.graphics.getDeltaTime());
         gameMap.render(camera, hudCamera, batch);
         consoleHandler.draw();
+    }
+
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public OrthographicCamera getHudCamera() {
+        return hudCamera;
+    }
+
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    public static ConsoleHandler getConsoleHandler() {
+        return consoleHandler;
     }
 }
