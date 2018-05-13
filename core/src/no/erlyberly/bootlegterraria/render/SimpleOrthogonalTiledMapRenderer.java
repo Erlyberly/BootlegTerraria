@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.world;
+package no.erlyberly.bootlegterraria.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.helpers.LightLevel;
+import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
 import java.util.Map;

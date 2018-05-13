@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 
 public class TiledGameMap extends GameMap {
 
