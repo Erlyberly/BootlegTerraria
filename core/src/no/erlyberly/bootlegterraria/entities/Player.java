@@ -95,7 +95,7 @@ public class Player extends Entity {
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
             System.out.println("Zombie!");
-            map.addEnemy(new Zombie(pos.x + TileType.TILE_SIZE * 2, pos.y + TileType.TILE_SIZE * 2, map));
+            map.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, map));
         }
 
     }
