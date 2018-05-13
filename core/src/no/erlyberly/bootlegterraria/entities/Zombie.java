@@ -14,7 +14,7 @@ public class Zombie extends Entity {
 
     private static java.util.Random rng = new java.util.Random();
     private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
-    private static final int JUMP_VELOCITY = 4;
+    private static final int JUMP_VELOCITY = 2;
     private GameMap map;
     private int facingX = 1;
     private int maxHp = 10000; //Should be able to increase
@@ -29,6 +29,7 @@ public class Zombie extends Entity {
     public Zombie(float x, float y, GameMap map) {
         super(x, y, map);
         image = new Texture("zombie.png");
+        region = new TextureRegion(image);
         this.map = map;
     }
 
@@ -36,15 +37,17 @@ public class Zombie extends Entity {
 
         super.update(deltaTime, gravity);//Apply gravity
 
-        if(pos.x - map.getPlayer().getPos().x > map.getPlayer().getWidth()){
+        float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
+
+        if(distanceFromPLayer > map.getPlayer().getWidth()/2){
             moveX(-HORIZONTAL_SPEED * deltaTime);
             facingX = -1;
-        }else{
+        }else if(distanceFromPLayer < -map.getPlayer().getWidth()/2){
             moveX(HORIZONTAL_SPEED * deltaTime);
             facingX = 1;
         }
 
-        if(map.checkMapCollision(pos.x + HORIZONTAL_SPEED / 2 * facingX, pos.y, getWidth(), getHeight()) && onGround){
+        if(map.checkMapCollision(pos.x + getWidth() * facingX, pos.y, getWidth(), getHeight()) && onGround){
             this.velocityY += JUMP_VELOCITY * getWeight();
         }
     }
@@ -111,7 +114,8 @@ public class Zombie extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+                dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), facingX == 1, false);
         batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float)hp / (float)maxHp) * getWidth() * 2f), 5f);
         batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
     }

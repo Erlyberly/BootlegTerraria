@@ -29,7 +29,7 @@ public class GameMain extends Game {
         consoleHandler = new ConsoleHandler(gameMap);
 
         this.camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
@@ -65,7 +65,7 @@ public class GameMain extends Game {
 
         }
 
-        camera.update();
+        //camera.update();
         gameMap.update(Gdx.graphics.getDeltaTime());
         gameMap.render(camera, hudCamera, batch);
         consoleHandler.draw();
