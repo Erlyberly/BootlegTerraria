@@ -56,7 +56,7 @@ public class Zombie extends Entity {
 
         if (map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround &&
             chasing) {
-            this.velocityY += JUMP_VELOCITY * getWeight();
+            this.velocityY += JUMP_VELOCITY;
             chasing = true;
         }
     }
@@ -94,11 +94,6 @@ public class Zombie extends Entity {
     @Override
     public int getDamage() {
         return 5;
-    }
-
-    @Override
-    public float getWeight() {
-        return 70;
     }
 
     @Override

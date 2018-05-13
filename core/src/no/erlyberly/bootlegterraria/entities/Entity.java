@@ -20,8 +20,8 @@ public abstract class Entity {
     }
 
     public void update(float deltaTime, float gravity) {
-        this.velocityY += gravity * deltaTime * getWeight();
-        float deltaY = this.velocityY * deltaTime;
+        this.velocityY += gravity * deltaTime;
+        float deltaY = this.velocityY;
 
         if (this instanceof Player) {
             map.checkPlayerMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight());
@@ -63,8 +63,6 @@ public abstract class Entity {
     public boolean isOnGround() {
         return onGround;
     }
-
-    public abstract float getWeight();
 
     public abstract float getWidth();
 

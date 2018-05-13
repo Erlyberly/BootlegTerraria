@@ -40,11 +40,6 @@ public class SwordSwing extends Entity {
     }
 
     @Override
-    public float getWeight() {
-        return 20;
-    }
-
-    @Override
     public float getWidth() {
         return SWORD_LENGTH;
     }

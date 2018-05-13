@@ -35,11 +35,6 @@ public class Bullet extends Entity {
     }
 
     @Override
-    public float getWeight() {
-        return 0.5f;
-    }
-
-    @Override
     public float getWidth() {
         return Math.round(TileType.TILE_SIZE / 1.5f);
     }

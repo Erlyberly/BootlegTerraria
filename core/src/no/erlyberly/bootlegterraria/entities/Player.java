@@ -14,7 +14,9 @@ public class Player extends Entity {
 
     private static final int HORIZONTAL_SPEED = 120;
     private static final int JUMP_VELOCITY = 4;
-    private GameMap map;
+    private static final float DODGE_TIME = 0.5f;
+    private static final float DODGE_COOLDOWN = 1f;
+    private GameMap game;
     private int facingX = 1;
     private Weapon weapon = new Gun("Gun");
     private int maxHp = 10000; //Should be able to increase
@@ -23,10 +25,10 @@ public class Player extends Entity {
     private float stamina = 10000;
     private int staminaRegen = 30;
     private boolean invincible = false;
-    private float dodgeTimer = 1;
     private int dodgeSpeed = HORIZONTAL_SPEED * 3;
     private boolean dodging = false;
-    private float dodgeFrames = 0;
+    private float dodgeTime = 0;
+    private float dodgeCooldown = 0;
 
     private Texture image;
     private TextureRegion region;
@@ -34,46 +36,47 @@ public class Player extends Entity {
 
     public boolean god = false;
 
-    public Player(float x, float y, GameMap map) {
-        super(x, y, map);
+    public Player(float x, float y, GameMap game) {
+        super(x, y, game);
         image = new Texture("woofer.png");
         region = new TextureRegion(image);
-        this.map = map;
+        this.game = game;
     }
 
     public void update(float deltaTime, float gravity) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
-            if (dodgeTimer >= 1 && stamina - 2000 >= 0) {
+            if (dodgeCooldown == DODGE_COOLDOWN && stamina - 2000 >= 0) {
                 dodging = true;
-                dodgeFrames = 14;
-                dodgeTimer = 0;
+                dodgeCooldown = DODGE_COOLDOWN;
                 invincible = true;
-                addStamina(-2000);
+                modifyStamina(-2000);
             }
         }
 
         if (dodging) {
             moveX(dodgeSpeed * facingX * deltaTime);
-            dodgeFrames -= dodgeFrames * deltaTime;
-            if (dodgeFrames == 0) {
+            dodgeTime += deltaTime;
+            if (dodgeTime >= DODGE_TIME) {
+                dodgeTime = 0;
                 dodging = false;
                 invincible = false;
             }
         }
 
         weapon.cooldown();
-        addStamina(staminaRegen);
-        if (dodgeTimer < 1) {
-            dodgeTimer += deltaTime;
+        modifyStamina(staminaRegen);
+        if (dodgeCooldown < DODGE_COOLDOWN) {
+            dodgeCooldown += deltaTime;
+        }else{
+            dodgeCooldown = DODGE_COOLDOWN;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
-            this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
-        }
-
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
-            this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
+            System.out.println(onGround);
+            this.velocityY += JUMP_VELOCITY;
+        }else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
+            this.velocityY += JUMP_VELOCITY * deltaTime;
         }
 
         super.update(deltaTime, gravity);//Apply gravity
@@ -90,14 +93,14 @@ public class Player extends Entity {
 
         if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging) {
             if (stamina - weapon.getStaminaUsage() >= 0) {
-                addStamina(weapon.use(map));
+                modifyStamina(weapon.use(game));
             }
         }
 
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
-            map.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, map));
+            game.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, game));
         }
 
     }
@@ -160,7 +163,7 @@ public class Player extends Entity {
         this.stamina = stamina;
     }
 
-    public void addStamina(int amount) {
+    public void modifyStamina(int amount) {
         if (god) {
             return;
         }
@@ -194,11 +197,6 @@ public class Player extends Entity {
     }
 
     @Override
-    public float getWeight() {
-        return 70;
-    }
-
-    @Override
     public float getWidth() {
         return TileType.TILE_SIZE - 1;
     }
@@ -221,7 +219,7 @@ public class Player extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   dodgeFrames * facingX * 360 / 14, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                   dodgeTime * facingX * 360, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                    region.getRegionHeight(), facingX == -1, false);
     }
 
