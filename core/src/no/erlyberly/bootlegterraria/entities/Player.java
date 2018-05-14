@@ -18,6 +18,7 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 400;
     private static final float DODGE_TIME = 0.5f;
     private static final float DODGE_COOLDOWN = 1f;
+
     private GameMap gameMap;
     private int facingX = 1;
     private Weapon weapon = new Gun("Gun");
@@ -33,20 +34,20 @@ public class Player extends Entity {
     private float dodgeCooldown = 0;
     private float dodgeStaminaUsage = 3000;
 
-    private TextureRegion region;
-
+    private final TextureRegion playerTexture;
+    private final TextureRegion hurtTexture;
 
     public boolean god = false;
+    private boolean isHurt;
 
     public Player(float x, float y, GameMap gameMap) {
         super(x, y, gameMap);
-        region = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
+        playerTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
+        hurtTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
         this.gameMap = gameMap;
     }
 
     public void update() {
-
-        System.out.println(dodgeCooldown);
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
             if (dodgeCooldown == DODGE_COOLDOWN && stamina - dodgeStaminaUsage >= 0) {
@@ -140,8 +141,12 @@ public class Player extends Entity {
         if (god) {
             return;
         }
+
+        if (amount < 0) { isHurt = true; }
+
         if (this.hp > 0) {
             this.hp += amount;
+
         }
 
         if (this.hp <= 0) {
@@ -173,12 +178,9 @@ public class Player extends Entity {
         if (god) {
             return;
         }
+
         if (this.stamina >= -this.maxStamina) {
             this.stamina += amount;
-        }
-
-        if (this.stamina < -this.maxStamina) {
-            this.stamina = -this.maxStamina;
         }
 
         if (this.stamina > this.maxStamina) {
@@ -222,12 +224,35 @@ public class Player extends Entity {
         this.destroyed = destroyed;
     }
 
+    private static final float ANIMATION_DIRECTION_DURATION = 0.3f;
+    private float animationTime = 0;
+
     @Override
     public void render(SpriteBatch batch) {
         float plrX = RoundTo.RoundToNearest(pos.x, GameMain.getCameraPixel());
+
+        int direction = facingX;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            animationTime += Gdx.graphics.getRawDeltaTime();
+            if (ANIMATION_DIRECTION_DURATION >= animationTime) {
+                direction *= -1;
+            }
+            else if (ANIMATION_DIRECTION_DURATION * 2 < animationTime) {
+                animationTime = 0;
+            }
+        }
+
+        TextureRegion region = playerTexture;
+        if (isHurt) {
+            isHurt = false;
+            region = hurtTexture;
+        }
+
+
         batch.draw(region.getTexture(), plrX, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
                    dodgeTime / DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
-                   region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
+                   region.getRegionWidth(), region.getRegionHeight(), direction == -1, false);
+
     }
 
     @Override

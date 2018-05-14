@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import no.erlyberly.bootlegterraria.GameMain;
@@ -17,7 +18,8 @@ public class DesktopLauncher {
         config.backgroundFPS = 10;
         config.samples = 16;
         config.resizable = false; //it's not you, it's the lines
-
+        config.title = "Bootleg Terraria";
+        config.addIcon("ErlyBerly_TheGreat_icon.png", Files.FileType.Internal);
         new LwjglApplication(new GameMain(), config);
     }
 }
