@@ -36,7 +36,7 @@ public class ConsoleHandler {
         public void god() {
             Player player = game.getGameMap().getPlayer();
             player.god = !player.god;
-            heal((byte) 4);
+            heal((byte) 3);
             console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
         }
 
