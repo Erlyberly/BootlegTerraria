@@ -235,7 +235,7 @@ public abstract class GameMap {
                     new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
                     new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))) {
                     enimies.modifyHp(-entities.getDamage() * Gdx.graphics.getDeltaTime());
-                    enimies.moveX((enimies.getHorizontalSpeed() / 2f) * -enimies.getFacingX());
+                    enemies.moveX(enemies.getHorizontalSpeed() * -enemies.getFacingX());
                 }
             }
         }
