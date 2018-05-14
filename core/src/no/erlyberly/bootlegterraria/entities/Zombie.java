@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class Zombie extends Entity {
 
-    Texture hpBar = new Texture("hp_fill.png");
-    Texture barOutline = new Texture("bar_outline.png");
+    private Texture hpBar = new Texture("hp_fill.png");
+    private Texture barOutline = new Texture("bar_outline.png");
 
     private static Random rng = new Random();
     private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
@@ -19,18 +19,14 @@ public class Zombie extends Entity {
     private GameMap map;
     private int facingX = 1;
     private int maxHp = 10000; //Should be able to increase
-    private int hp = 10000;
-    private boolean invincible = false;
-    private boolean dodging = false;
-    private int dodgeFrames = 0;
+    private int hp = maxHp;
     private boolean chasing = false;
 
     private TextureRegion region;
-    private Texture image;
 
-    public Zombie(float x, float y, GameMap map) {
+    Zombie(float x, float y, GameMap map) {
         super(x, y, map);
-        image = new Texture("zombie.png");
+        Texture image = new Texture("zombie.png");
         region = new TextureRegion(image);
         this.map = map;
     }
@@ -39,16 +35,16 @@ public class Zombie extends Entity {
 
         super.update();//Apply gravity
 
-        float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
+        float horizontalDistanceFromPlayer = pos.x - map.getPlayer().getPos().x;
 
-        if (distanceFromPLayer > map.getPlayer().getWidth() / 2 &&
-            distanceFromPLayer < map.getPlayer().getWidth() * 10) {
+        if (horizontalDistanceFromPlayer > map.getPlayer().getWidth() / 2 &&
+            horizontalDistanceFromPlayer < map.getPlayer().getWidth() * 10) {
             moveX(-HORIZONTAL_SPEED);
             facingX = -1;
             chasing = true;
         }
-        else if (distanceFromPLayer < -map.getPlayer().getWidth() / 2 &&
-                 distanceFromPLayer > -map.getPlayer().getWidth() * 10) {
+        else if (horizontalDistanceFromPlayer < -map.getPlayer().getWidth() / 2 &&
+                 horizontalDistanceFromPlayer > -map.getPlayer().getWidth() * 10) {
             moveX(HORIZONTAL_SPEED);
             facingX = 1;
             chasing = true;
@@ -77,6 +73,10 @@ public class Zombie extends Entity {
         if (this.hp > this.maxHp) {
             this.hp = maxHp;
         }
+    }
+
+    public boolean isChasing() {
+        return chasing;
     }
 
     public float getHp() {

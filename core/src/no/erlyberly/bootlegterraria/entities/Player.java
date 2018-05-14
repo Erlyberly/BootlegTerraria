@@ -22,9 +22,9 @@ public class Player extends Entity {
     private int facingX = 1;
     private Weapon weapon = new Gun("Gun");
     private int maxHp = 10000; //Should be able to increase
-    private float hp = 10000;
+    private float hp = maxHp;
     private int maxStamina = 10000; //Should be able to increase
-    private float stamina = 10000;
+    private float stamina = maxStamina;
     private int staminaRegen = 2000;
     private boolean invincible = false;
     private int dodgeSpeed = HORIZONTAL_SPEED * 2;
