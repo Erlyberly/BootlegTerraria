@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.helpers.GameInfo;
@@ -84,7 +85,7 @@ public abstract class GameMap {
             entities.render(batch);
         }
 
-        camera.position.x = RoundTo.RoundToNearest(player.getX(), CameraPixel(camera));
+        camera.position.x = RoundTo.RoundToNearest(player.getX(), GameMain.getCameraPixel());
         camera.position.y = player.getY();
         batch.end();
 
@@ -117,19 +118,6 @@ public abstract class GameMap {
         batch.end();
     }
 
-    public static float CameraPixel(final OrthographicCamera pCamera) {
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-        float CameraPixel;
-
-        float targetRatio = (float) width / (float) height;
-        float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
-
-        if (targetRatio > sourceRatio) { CameraPixel = height / pCamera.viewportHeight; }
-        else { CameraPixel = width / pCamera.viewportWidth; }
-
-        return (int) CameraPixel;
-    }
 
     public void update() {
 

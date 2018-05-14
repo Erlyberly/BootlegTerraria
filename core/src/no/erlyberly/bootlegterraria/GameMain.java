@@ -22,6 +22,8 @@ public class GameMain extends Game {
     private GameMap gameMap;
     private static ConsoleHandler consoleHandler;
 
+    private static float cameraPixel;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -35,6 +37,7 @@ public class GameMain extends Game {
 
 //        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
         camera.update();
+        setCameraPixel(camera);
 
         loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
     }
@@ -76,6 +79,26 @@ public class GameMain extends Game {
         gameMap.update();
         gameMap.render(camera, hudCamera, batch);
         consoleHandler.draw();
+    }
+
+
+    public static float getCameraPixel() {
+        return cameraPixel;
+    }
+
+    public static void setCameraPixel(final OrthographicCamera pCamera) {
+
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+        float CameraPixel;
+
+        float targetRatio = (float) width / (float) height;
+        float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
+
+        if (targetRatio > sourceRatio) { CameraPixel = height / pCamera.viewportHeight; }
+        else { CameraPixel = width / pCamera.viewportWidth; }
+
+        cameraPixel = (int) CameraPixel;
     }
 
 
