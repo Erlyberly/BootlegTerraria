@@ -95,7 +95,7 @@ public class Zombie extends Entity {
 
     @Override
     public int getDamage() {
-        return 5;
+        return 300;
     }
 
     @Override
