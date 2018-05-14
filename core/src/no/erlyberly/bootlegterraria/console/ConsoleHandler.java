@@ -53,6 +53,9 @@ public class ConsoleHandler {
 
         @ConsoleDoc(description = "Load a map", paramDescriptions = "The map to load")
         public void load(String mapName) {
+            if (!mapName.endsWith(".tmx")) {
+                mapName += ".tmx";
+            }
             game.loadMap(mapName);
         }
     };
