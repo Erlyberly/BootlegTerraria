@@ -9,39 +9,45 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Bullet extends Entity {
 
     private int facingX;
-    private static final int HORIZONTAL_SPEED = 10;
+    private static final int HORIZONTAL_SPEED = 500;
     private GameMap map;
-    private static final int DAMAGE = 1000;
+    private static final int DAMAGE = HORIZONTAL_SPEED * 100;
+
+    private float spawnedX;
 
     private TextureRegion region;
-    private Texture image;
 
     public Bullet(float x, float y, GameMap map, int facingX) {
         super(x, y, map);
         this.facingX = facingX;
         this.map = map;
-        this.image = new Texture("bullet.png");
-        this.region = new TextureRegion(image);
+        this.region = new TextureRegion(new Texture("bullet.png"));
+        this.spawnedX = x;
     }
 
     public void update() {
-        moveX(HORIZONTAL_SPEED * facingX);
         float newX = pos.x + HORIZONTAL_SPEED * facingX;
-        if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight()) ||
-            Math.abs(pos.x - map.getPlayer().getX()) > map.getPlayer().getWidth() * 15) {
+        boolean colliding = map.checkMapCollision(newX, pos.y, getWidth(), getHeight());
+        boolean tooFarAway = Math.abs(pos.x - spawnedX) > map.getPlayer().getWidth() * 15;
+        if (colliding || tooFarAway) {
+
+            System.out.print("Bullet destroyed");
+            System.out.print(" colliding = " + colliding);
+            System.out.println(" tooFarAway = " + tooFarAway);
             this.destroyed = true;
             map.removeEntity();
         }
+        moveX(HORIZONTAL_SPEED * facingX);
     }
 
     @Override
     public float getWidth() {
-        return Math.round(TileType.TILE_SIZE / 1.5f);
+        return TileType.TILE_SIZE / 1.5f;
     }
 
     @Override
     public float getHeight() {
-        return Math.round(TileType.TILE_SIZE * 1.2f);
+        return TileType.TILE_SIZE * 1.2f;
     }
 
     public boolean isDestroyed() {
@@ -68,7 +74,7 @@ public class Bullet extends Entity {
 
     @Override
     public int getFacingX() {
-        return 0;
+        return facingX;
     }
 
     @Override
@@ -79,8 +85,5 @@ public class Bullet extends Entity {
     }
 
     @Override
-    public void modifyHp(float amount) {
-
-    }
-
+    public void modifyHp(float amount) {}
 }
