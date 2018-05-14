@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import no.erlyberly.bootlegterraria.world.GameMap;
@@ -19,11 +20,10 @@ public abstract class Entity {
         this.gameMap = gameMap;
     }
 
-    public void update(float deltaTime) {
+    public void update() {
+        velocityY += GameMap.GRAVITY * Gdx.graphics.getDeltaTime();
+        float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
 
-        System.out.println(deltaTime);
-        velocityY += GameMap.GRAVITY * deltaTime;
-        float newY = pos.y + velocityY;
 
         if (this instanceof Player) {
             gameMap.checkPlayerMapCollision(pos.x, newY, getWidth(), getHeight());
@@ -35,7 +35,8 @@ public abstract class Entity {
                 onGround = true;
             }
             this.velocityY = 0;
-        } else {
+        }
+        else {
             pos.y = newY;
             onGround = false;
         }
@@ -43,7 +44,7 @@ public abstract class Entity {
 
 
     public void moveX(float velocityX) {
-        float newX = pos.x + velocityX;
+        float newX = pos.x + velocityX * Gdx.graphics.getDeltaTime();
         if (!gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
             pos.x = newX;
         }
@@ -79,7 +80,7 @@ public abstract class Entity {
 
     public abstract void render(SpriteBatch batch);
 
-    public abstract void modifyHp(int amount);
+    public abstract void modifyHp(float amount);
 
     public abstract int getDamage();
 

@@ -72,7 +72,7 @@ public class GameMain extends Game {
         }
 
         camera.update();
-        gameMap.update(Gdx.graphics.getDeltaTime());
+        gameMap.update();
         gameMap.render(camera, hudCamera, batch);
         consoleHandler.draw();
     }

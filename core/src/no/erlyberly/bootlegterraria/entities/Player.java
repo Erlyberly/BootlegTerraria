@@ -13,7 +13,7 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Player extends Entity {
 
     private static final int HORIZONTAL_SPEED = 120;
-    private static final int JUMP_VELOCITY = 500;
+    private static final int JUMP_VELOCITY = 160;
     private static final float DODGE_TIME = 0.50f;
     private static final float DODGE_COOLDOWN = 1f;
     private GameMap gameMap;
@@ -23,14 +23,12 @@ public class Player extends Entity {
     private float hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
     private float stamina = 10000;
-    private int staminaRegen = 30;
+    private int staminaRegen = 1000;
     private boolean invincible = false;
     private int dodgeSpeed = HORIZONTAL_SPEED * 5;
     private boolean dodging = false;
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
-
-    private float clock;
 
     private Texture image;
     private TextureRegion region;
@@ -45,7 +43,7 @@ public class Player extends Entity {
         this.gameMap = gameMap;
     }
 
-    public void update(float deltaTime) {
+    public void update() {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
             if (dodgeCooldown == DODGE_COOLDOWN && stamina - 2000 >= 0) {
@@ -57,8 +55,8 @@ public class Player extends Entity {
         }
 
         if (dodging) {
-            moveX(dodgeSpeed * facingX * deltaTime);
-            dodgeTime += deltaTime;
+            moveX(dodgeSpeed * facingX * Gdx.graphics.getDeltaTime());
+            dodgeTime += Gdx.graphics.getDeltaTime();
             if (dodgeTime >= DODGE_TIME) {
                 dodgeTime = 0;
                 dodging = false;
@@ -67,16 +65,16 @@ public class Player extends Entity {
         }
 
         weapon.cooldown();
-        modifyStamina(staminaRegen);
+        modifyStamina(staminaRegen * Gdx.graphics.getDeltaTime());
         if (dodgeCooldown < DODGE_COOLDOWN) {
-            dodgeCooldown += deltaTime;
-        }else{
+            dodgeCooldown += Gdx.graphics.getDeltaTime();
+        }
+        else {
             dodgeCooldown = DODGE_COOLDOWN;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
-            this.velocityY = 2;
-            System.out.println(getVelocityY());
+            this.velocityY = JUMP_VELOCITY;
         }
 
         /*
@@ -85,12 +83,12 @@ public class Player extends Entity {
         }*/
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
-            moveX(-HORIZONTAL_SPEED * deltaTime);
+            moveX(-HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
             facingX = -1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !dodging) {
-            moveX(HORIZONTAL_SPEED * deltaTime);
+            moveX(HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
             facingX = 1;
         }
 
@@ -100,7 +98,7 @@ public class Player extends Entity {
             }
         }
 
-        super.update(deltaTime);//Apply gravity
+        super.update();//Apply gravity
 
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
@@ -135,7 +133,7 @@ public class Player extends Entity {
         this.hp = hp;
     }
 
-    public void modifyHp(int amount) {
+    public void modifyHp(float amount) {
         if (god) {
             return;
         }
@@ -168,7 +166,7 @@ public class Player extends Entity {
         this.stamina = stamina;
     }
 
-    public void modifyStamina(int amount) {
+    public void modifyStamina(float amount) {
         if (god) {
             return;
         }
@@ -223,9 +221,9 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   dodgeTime/DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                   region.getRegionHeight(), facingX == -1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 2, 2,
+                   dodgeTime / DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
+                   region.getRegionWidth(), region.getRegionHeight(), facingX == -1, false);
     }
 
     @Override

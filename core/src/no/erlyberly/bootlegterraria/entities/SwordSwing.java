@@ -29,7 +29,7 @@ public class SwordSwing extends Entity {
         }
     }
 
-    public void update(float deltaTime, float gravity) {
+    public void update() {
         //System.out.println(frames);
         frames--;
         if (frames <= 0) {
@@ -73,7 +73,7 @@ public class SwordSwing extends Entity {
     }
 
     @Override
-    public void modifyHp(int amount) {
+    public void modifyHp(float amount) {
 
     }
 

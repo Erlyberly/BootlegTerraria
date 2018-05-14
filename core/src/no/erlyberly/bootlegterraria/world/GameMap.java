@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @SuppressWarnings("ALL")
 public abstract class GameMap {
 
-    public final static float GRAVITY = -9.81f;
+    public final static float GRAVITY = -9.81f * TileType.TILE_SIZE;
 
     private ArrayList<Entity> enimies;
     private ArrayList<Entity> addEnimies;
@@ -132,20 +132,19 @@ public abstract class GameMap {
         return (int) CameraPixel;
     }
 
-    @SuppressWarnings("Duplicates")
-    public void update(float delta) {
+    public void update() {
 
         checkEntityEnemyCollision();
         checkPlayerEnemyCollision();
 
-        player.update(delta);
+        player.update();
 
         for (Entity entity : enimies) {
-            entity.update(delta);
+            entity.update();
         }
 
         for (Entity entity : entities) {
-            entity.update(delta);
+            entity.update();
         }
 
         if (addWaitingEnimies) {
@@ -231,7 +230,7 @@ public abstract class GameMap {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
                         if (type.getDamage() != 0 && !player.isInvincible()) {
-                            player.modifyHp(-type.getDamage());
+                            player.modifyHp(-type.getDamage() * Gdx.graphics.getDeltaTime());
                         }
                         return true;
                     }
@@ -248,7 +247,7 @@ public abstract class GameMap {
                 if (Intersector.overlaps(
                     new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
                     new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))) {
-                    enimies.modifyHp(-entities.getDamage());
+                    enimies.modifyHp(-entities.getDamage() * Gdx.graphics.getDeltaTime());
                     enimies.moveX((enimies.getHorizontalSpeed() / 8f) * -enimies.getFacingX());
                 }
             }
@@ -266,7 +265,7 @@ public abstract class GameMap {
             if (!player.isInvincible() && Intersector
                 .overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()),
                           new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
-                player.modifyHp(-enemies.getDamage());
+                player.modifyHp(-enemies.getDamage() * Gdx.graphics.getDeltaTime());
             }
         }
     }

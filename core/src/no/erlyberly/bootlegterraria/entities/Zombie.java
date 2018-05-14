@@ -1,17 +1,20 @@
 package no.erlyberly.bootlegterraria.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
+import java.util.Random;
+
 public class Zombie extends Entity {
 
     Texture hpBar = new Texture("hp_fill.png");
     Texture barOutline = new Texture("bar_outline.png");
 
-    private static java.util.Random rng = new java.util.Random();
+    private static Random rng = new Random();
     private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
     private static final int JUMP_VELOCITY = 3;
     private GameMap map;
@@ -33,21 +36,21 @@ public class Zombie extends Entity {
         this.map = map;
     }
 
-    public void update(float deltaTime) {
+    public void update() {
 
-        super.update(deltaTime);//Apply gravity
+        super.update();//Apply gravity
 
         float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
 
         if (distanceFromPLayer > map.getPlayer().getWidth() / 2 &&
             distanceFromPLayer < map.getPlayer().getWidth() * 10) {
-            moveX(-HORIZONTAL_SPEED * deltaTime);
+            moveX(-HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
             facingX = -1;
             chasing = true;
         }
         else if (distanceFromPLayer < -map.getPlayer().getWidth() / 2 &&
                  distanceFromPLayer > -map.getPlayer().getWidth() * 10) {
-            moveX(HORIZONTAL_SPEED * deltaTime);
+            moveX(HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
             facingX = 1;
         }
         else {
@@ -61,7 +64,7 @@ public class Zombie extends Entity {
         }
     }
 
-    public void modifyHp(int amount) {
+    public void modifyHp(float amount) {
         if (this.hp > 0) {
             this.hp += amount;
         }
@@ -118,8 +121,9 @@ public class Zombie extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                   region.getRegionHeight(), facingX == 1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                   region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(),
+                   facingX == 1, false);
         batch.draw(hpBar, pos.x - getWidth() / 2f, pos.y + 34f, (((float) hp / (float) maxHp) * getWidth() * 2f), 5f);
         batch.draw(barOutline, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
     }
