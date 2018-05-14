@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.world.TileType;
 
 public abstract class Entity {
 
@@ -21,7 +22,7 @@ public abstract class Entity {
     }
 
     public void update() {
-        velocityY += GameMap.GRAVITY * Gdx.graphics.getDeltaTime();
+        velocityY -= TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity * Gdx.graphics.getDeltaTime();
         float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
 
 

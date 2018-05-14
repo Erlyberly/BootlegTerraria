@@ -13,7 +13,7 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Player extends Entity {
 
     private static final int HORIZONTAL_SPEED = 120;
-    private static final int JUMP_VELOCITY = 160;
+    private static final int JUMP_VELOCITY = 250;
     private static final float DODGE_TIME = 0.50f;
     private static final float DODGE_COOLDOWN = 1f;
     private GameMap gameMap;
@@ -83,12 +83,12 @@ public class Player extends Entity {
         }*/
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
-            moveX(-HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
+            moveX(-HORIZONTAL_SPEED);
             facingX = -1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !dodging) {
-            moveX(HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
+            moveX(HORIZONTAL_SPEED);
             facingX = 1;
         }
 

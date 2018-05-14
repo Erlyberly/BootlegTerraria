@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @SuppressWarnings("ALL")
 public abstract class GameMap {
 
-    public final static float GRAVITY = -9.81f * TileType.TILE_SIZE;
+    public static float gravity = 9.81f;
 
     private ArrayList<Entity> enimies;
     private ArrayList<Entity> addEnimies;
@@ -248,7 +248,8 @@ public abstract class GameMap {
                     new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
                     new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))) {
                     enimies.modifyHp(-entities.getDamage() * Gdx.graphics.getDeltaTime());
-                    enimies.moveX((enimies.getHorizontalSpeed() / 8f) * -enimies.getFacingX());
+                    enimies.moveX(
+                        (enimies.getHorizontalSpeed() * Gdx.graphics.getDeltaTime() / 8f) * -enimies.getFacingX());
                 }
             }
         }
