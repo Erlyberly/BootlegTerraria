@@ -13,7 +13,7 @@ public class DesktopLauncher {
 
         config.width = GameInfo.WIDTH;
         config.height = GameInfo.HEIGHT;
-        config.vSyncEnabled = false;
+        config.vSyncEnabled = true;
         config.foregroundFPS = 9999;
         config.backgroundFPS = 10;
         config.samples = 16;
