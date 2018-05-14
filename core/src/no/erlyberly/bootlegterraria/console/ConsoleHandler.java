@@ -10,6 +10,9 @@ import com.strongjoshua.console.LogLevel;
 import com.strongjoshua.console.annotation.ConsoleDoc;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Player;
+import no.erlyberly.bootlegterraria.entities.weapons.Gun;
+import no.erlyberly.bootlegterraria.entities.weapons.Sword;
+import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.helpers.RoundTo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
@@ -31,7 +34,7 @@ public class ConsoleHandler {
         console.setCommandExecutor(executor);
     }
 
-    CommandExecutor executor = new CommandExecutor() {
+    private CommandExecutor executor = new CommandExecutor() {
 
         public void god() {
             Player player = game.getGameMap().getPlayer();
@@ -64,6 +67,26 @@ public class ConsoleHandler {
         public void gravity(float newGravity) {
             GameMap.gravity = newGravity;
             console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
+        }
+
+        public void wpn(String weaponType) {
+            Player player = game.getGameMap().getPlayer();
+
+            Weapon weapon;
+
+            switch (weaponType.toLowerCase()) {
+                case "gun":
+                    weapon = new Gun("Elge bøsji");
+                    break;
+                case "sword":
+                    weapon = new Sword("The Roll");
+                    break;
+                default:
+                    console.log("Could not find weaponType '" + weaponType + "'", LogLevel.ERROR);
+                    return;
+            }
+
+            player.setWeapon(weapon);
         }
     };
 
