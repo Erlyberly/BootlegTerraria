@@ -2,13 +2,14 @@ package no.erlyberly.bootlegterraria.entities.weapons;
 
 import com.badlogic.gdx.graphics.Texture;
 import no.erlyberly.bootlegterraria.entities.Bullet;
+import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Gun extends Weapon {
 
     private int staminaUsage = 1000;
 
-    private static final float DEFAULT_COOLDOWN_TIME = 0.2f;
+    private static final float DEFAULT_COOLDOWN_TIME = 0.1f;
 
     public Gun() {
         setCooldown(DEFAULT_COOLDOWN_TIME);
@@ -29,9 +30,10 @@ public class Gun extends Weapon {
 
     public int use(GameMap map) {
         if (getCooldownTimer() >= getCooldown()) {
+            Player player = map.getPlayer();
             map.addEntity(
-                new Bullet(map.getPlayer().getX() + (map.getPlayer().getWidth() / 3f * map.getPlayer().getFacingX()),
-                           map.getPlayer().getY() + 16f, map, map.getPlayer().getFacingX()));
+                new Bullet(player.getX() + (player.getWidth() / 3f * player.getFacingX()), player.getY() + 16f, map,
+                           player.getFacingX()));
             setCooldownTimer(0);
             return -staminaUsage;
         }
