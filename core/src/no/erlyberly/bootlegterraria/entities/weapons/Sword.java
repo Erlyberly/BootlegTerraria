@@ -7,9 +7,11 @@ public class Sword extends Weapon {
 
     private int staminaUsage = 2000;
 
+    private static final float DEFAULT_COOLDOWN_TIME = 0.6f;
+
     public Sword(String name) {
         super(name);
-        setCooldown(30);
+        setCooldown(DEFAULT_COOLDOWN_TIME);
     }
 
     @Override

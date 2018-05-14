@@ -8,13 +8,15 @@ public class Gun extends Weapon {
 
     private int staminaUsage = 500;
 
+    private static final float DEFAULT_COOLDOWN_TIME = 0.2f;
+
     public Gun() {
-        setCooldown(10);
+        setCooldown(DEFAULT_COOLDOWN_TIME);
     }
 
     public Gun(String name) {
         super(name);
-        setCooldown(10);
+        setCooldown(DEFAULT_COOLDOWN_TIME);
     }
 
     public Gun(int cooldown) {
