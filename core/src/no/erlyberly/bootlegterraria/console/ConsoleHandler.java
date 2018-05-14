@@ -11,6 +11,7 @@ import com.strongjoshua.console.annotation.ConsoleDoc;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Player;
 import no.erlyberly.bootlegterraria.helpers.RoundTo;
+import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class ConsoleHandler {
 
@@ -58,6 +59,11 @@ public class ConsoleHandler {
                 mapName += ".tmx";
             }
             game.loadMap(mapName);
+        }
+
+        public void gravity(float newGravity) {
+            GameMap.gravity = newGravity;
+            console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
         }
     };
 
