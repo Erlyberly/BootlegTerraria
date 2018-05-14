@@ -87,10 +87,8 @@ public abstract class GameMap {
 
         camera.position.x = RoundTo.RoundToNearest(player.getX(), GameMain.getCameraPixel());
         camera.position.y = player.getY();
-        batch.end();
 
         batch.setProjectionMatrix(hudCamera.combined);
-        batch.begin();
 
         float hpBarModifier = 1.03f;
 

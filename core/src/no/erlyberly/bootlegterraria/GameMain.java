@@ -72,7 +72,6 @@ public class GameMain extends Game {
             else {
                 consoleHandler.log("Not a tile");
             }
-
         }
 
         camera.update();
