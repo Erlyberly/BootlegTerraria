@@ -265,6 +265,14 @@ public abstract class GameMap {
         return this.getHeight() * TileType.TILE_SIZE;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public abstract int getLayers();
 
     public abstract float getWidth();
@@ -275,15 +283,5 @@ public abstract class GameMap {
 
     public abstract int getSpawnY();
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void render(SpriteBatch batch) {
-
-    }
+    public abstract void setBlockAt(int x, int y, TileType tt);
 }

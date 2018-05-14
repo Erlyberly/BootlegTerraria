@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
+import static no.erlyberly.bootlegterraria.GameMain.THREAD_SCHEDULER;
 import static no.erlyberly.bootlegterraria.helpers.LightLevel.LVL_0;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
@@ -29,7 +31,6 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private HashMap<Vector2, LightLevel> lightSources;
     private LightLevel[][] brightness;
 
-    public static final int LIGHT_CUTOFF = 1;
     public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
 
 
@@ -44,6 +45,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         skyLight = new int[mapWidth];
         lightSources = new HashMap<>();
         brightness = new LightLevel[mapWidth][mapHeight];
+
         for (int x = 0; x < brightness.length; x++) {
             for (int y = 0; y < brightness[x].length; y++) {
                 brightness[x][y] = LightLevel.LVL_0;
@@ -57,9 +59,13 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             test();
         }
         else {
-            updateLights();
+            asyncUpdateLights();
+            asyncCalculateLight();
         }
-        calculateLight();
+    }
+
+    public void asyncUpdateLights() {
+        THREAD_SCHEDULER.execute(this::updateLights);
     }
 
 
@@ -71,7 +77,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
      * Update the skylight between {@code min} and {@code max}
      *
      * @param min
-     *     The minimum
+     *     The minimum x value to check (inclusive)
+     * @param max
+     *     The maximum x value to check (exclusive)
      */
     public void updateLightBetween(int min, int max) {
         Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
@@ -79,11 +87,15 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             .checkArgument(max <= skyLight.length, "Maximum argument must be less than or equal to skyLight.length");
         Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
 
+        //remove all light sources between min and max
+        lightSources.entrySet().removeIf(entry -> entry.getKey().x >= min && entry.getKey().x < max);
+
         for (MapLayer layer : map.getLayers()) {
             if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
                 TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
                 int height = tiledLayer.getHeight();
                 for (int x = min; x < max; x++) {
+                    skyLight[x] = Integer.MIN_VALUE; //reset skylight if already set
                     boolean skyFound = false;
                     for (int y = height - 1; y >= 0; y--) {
                         //check if the current cell is collidable
@@ -106,7 +118,12 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 }
             }
         }
-        updateLightSources();
+        for (int x = 0; x < skyLight.length; x++) {
+            for (int y = mapHeight - 1; y > skyLight[x]; y--) {
+                Vector2 v = new Vector2(x, y);
+                lightSources.put(v, SKY_LIGHT_BRIGHTNESS);
+            }
+        }
     }
 
     public void updateLightAt(int x) {
@@ -124,35 +141,40 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         return cpy;
     }
 
-    public void updateLightSources() {
-        for (int x = 0; x < skyLight.length; x++) {
-            for (int y = mapHeight - 1; y > skyLight[x]; y--) {
-                Vector2 v = new Vector2(x, y);
-                lightSources.put(v, SKY_LIGHT_BRIGHTNESS);
-            }
-        }
+    public void asyncCalculateLight() {
+        THREAD_SCHEDULER.execute(this::calculateLight);
     }
 
     public void calculateLight() {
+
+        LightLevel[][] newBrightness = new LightLevel[mapWidth][mapHeight];
+
+        for (int x = 0; x < newBrightness.length; x++) {
+            for (int y = 0; y < newBrightness[x].length; y++) {
+                newBrightness[x][y] = LightLevel.LVL_0;
+            }
+        }
+
+
         //first pass, set all light sources to their own level
         for (Map.Entry<Vector2, LightLevel> entry : lightSources.entrySet()) {
             Vector2 coord = entry.getKey();
-            brightness[(int) coord.x][(int) coord.y] = entry.getValue();
+            newBrightness[(int) coord.x][(int) coord.y] = entry.getValue();
         }
 
         //do 7(LIGHT_LEVELS) passes to make sure the brightness is correct on all blocks
         for (int i = 0; i < LightLevel.LIGHT_LEVELS; i++) {
-            for (int x = 0; x < brightness.length; x++) {
-                for (int y = 0; y < brightness[x].length; y++) {
-                    LightLevel currBrightness = brightness[x][y];
+            for (int x = 0; x < newBrightness.length; x++) {
+                for (int y = 0; y < newBrightness[x].length; y++) {
+                    LightLevel currBrightness = newBrightness[x][y];
                     LightLevel dimmer = currBrightness.dimmer();
                     if (currBrightness == LVL_0) {
                         continue;
                     }
-                    for (int x1 = Math.max(x - 1, 0); x1 <= Math.min(x + 1, brightness.length - 1); x1++) {
-                        for (int y1 = Math.max(y - 1, 0); y1 <= Math.min(y + 1, brightness[x].length - 1); y1++) {
-                            if (brightness[x1][y1].getLvl() < currBrightness.getLvl()) {
-                                brightness[x1][y1] = dimmer;
+                    for (int x1 = Math.max(x - 1, 0); x1 <= Math.min(x + 1, newBrightness.length - 1); x1++) {
+                        for (int y1 = Math.max(y - 1, 0); y1 <= Math.min(y + 1, newBrightness[x].length - 1); y1++) {
+                            if (newBrightness[x1][y1].getLvl() < currBrightness.getLvl()) {
+                                newBrightness[x1][y1] = dimmer;
                             }
                         }
                     }
@@ -160,7 +182,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             }
         }
 
-//        System.out.println(Arrays.deepToString(brightness).replace("], ", "]\n"));
+        Gdx.app.postRunnable(() -> brightness = newBrightness);
     }
 
     @SuppressWarnings("Duplicates")
@@ -316,6 +338,16 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             }
             y -= layerTileHeight;
         }
+    }
+
+    @Override
+    public void render() {
+        beginRender();
+        MapLayers mls = map.getLayers();
+        for (int i = 0, size = mls.getCount(); i < size; i++) {
+            renderMapLayer(mls.get(i));
+        }
+        endRender();
     }
 
     private void test() {

@@ -34,7 +34,6 @@ public class SimpleOrthogonalTiledMapRendererTest {
     @Test
     void testLightSources(SimpleOrthogonalTiledMapRenderer renderer) {
         renderer.updateLights();
-        renderer.updateLightSources();
         System.out.println("SkyLights: " + Arrays.toString(renderer.getSkyLights()));
         HashMap<Vector2, LightLevel> expected = new HashMap<Vector2, LightLevel>() {{
             put(new Vector2(0, 0), SKY_LIGHT_BRIGHTNESS);

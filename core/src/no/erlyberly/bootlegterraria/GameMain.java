@@ -2,11 +2,13 @@ package no.erlyberly.bootlegterraria;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
+import no.erlyberly.bootlegterraria.helpers.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
@@ -23,6 +25,9 @@ public class GameMain extends Game {
     private static ConsoleHandler consoleHandler;
 
     private static float cameraPixel;
+
+    public static final CancellableThreadScheduler THREAD_SCHEDULER = new CancellableThreadScheduler();
+
 
     @Override
     public void create() {
@@ -61,16 +66,34 @@ public class GameMain extends Game {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.justTouched()) {
+
             Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
 
-            if (type != null) {
-                consoleHandler.log(
-                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
-                    " coord: " + (int) (pos.x / TileType.TILE_SIZE) + "," + (int) (pos.y / TileType.TILE_SIZE));
+            int blockX = (int) (pos.x / TileType.TILE_SIZE);
+            int blockY = (int) (pos.y / TileType.TILE_SIZE);
+
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                TileType tt;
+
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                    tt = null;
+                }
+                else {
+                    int id = (type != null ? type.getId() : 0) + 1;
+                    tt = TileType.getTileTypeById(id % TileType.values().length);
+                }
+                gameMap.setBlockAt(blockX, blockY, tt);
             }
             else {
-                consoleHandler.log("Not a tile");
+                if (type != null) {
+                    consoleHandler.log(
+                        "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
+                        " coord: (" + blockX + ", " + blockY + ")");
+                }
+                else {
+                    consoleHandler.log("Not a tile");
+                }
             }
         }
 

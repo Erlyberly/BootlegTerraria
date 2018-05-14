@@ -15,6 +15,7 @@ import no.erlyberly.bootlegterraria.entities.weapons.Sword;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.helpers.RoundTo;
 import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.world.TileType;
 
 public class ConsoleHandler {
 
@@ -87,6 +88,13 @@ public class ConsoleHandler {
             }
 
             player.setWeapon(weapon);
+        }
+
+        public void setBlock(int x, int y, int tileID) {
+
+            TileType tt = TileType.getTileTypeById(tileID);
+            System.out.println("tt = " + tt);
+            game.getGameMap().setBlockAt(x, y, tt);
         }
     };
 
