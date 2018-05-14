@@ -72,7 +72,6 @@ public abstract class GameMap {
     }
 
     public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
-        // batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         player.render(batch);
@@ -248,8 +247,7 @@ public abstract class GameMap {
                     new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
                     new Rectangle(enimies.getX(), enimies.getY(), enimies.getWidth(), enimies.getHeight()))) {
                     enimies.modifyHp(-entities.getDamage() * Gdx.graphics.getDeltaTime());
-                    enimies.moveX(
-                        (enimies.getHorizontalSpeed() * Gdx.graphics.getDeltaTime() / 8f) * -enimies.getFacingX());
+                    enimies.moveX((enimies.getHorizontalSpeed() / 2f) * -enimies.getFacingX());
                 }
             }
         }

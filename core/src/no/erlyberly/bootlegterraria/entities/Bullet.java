@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,14 +27,10 @@ public class Bullet extends Entity {
     }
 
     public void update() {
-        float newX = pos.x + HORIZONTAL_SPEED * facingX;
+        float newX = pos.x + HORIZONTAL_SPEED * facingX * Gdx.graphics.getDeltaTime();
         boolean colliding = map.checkMapCollision(newX, pos.y, getWidth(), getHeight());
         boolean tooFarAway = Math.abs(pos.x - spawnedX) > map.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
-
-            System.out.print("Bullet destroyed");
-            System.out.print(" colliding = " + colliding);
-            System.out.println(" tooFarAway = " + tooFarAway);
             this.destroyed = true;
             map.removeEntity();
         }

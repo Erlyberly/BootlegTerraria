@@ -33,6 +33,7 @@ public class GameMain extends Game {
         this.hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+//        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
         camera.update();
 
         loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");

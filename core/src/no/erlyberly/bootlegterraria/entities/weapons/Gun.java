@@ -6,7 +6,7 @@ import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Gun extends Weapon {
 
-    private int staminaUsage = 500;
+    private int staminaUsage = 1000;
 
     private static final float DEFAULT_COOLDOWN_TIME = 0.2f;
 

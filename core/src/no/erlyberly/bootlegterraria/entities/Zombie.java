@@ -1,6 +1,5 @@
 package no.erlyberly.bootlegterraria.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,7 +15,7 @@ public class Zombie extends Entity {
 
     private static Random rng = new Random();
     private int HORIZONTAL_SPEED = (40 + rng.nextInt(40));
-    private static final int JUMP_VELOCITY = 3;
+    private static final int JUMP_VELOCITY = 500;
     private GameMap map;
     private int facingX = 1;
     private int maxHp = 10000; //Should be able to increase
@@ -44,13 +43,13 @@ public class Zombie extends Entity {
 
         if (distanceFromPLayer > map.getPlayer().getWidth() / 2 &&
             distanceFromPLayer < map.getPlayer().getWidth() * 10) {
-            moveX(-HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
+            moveX(-HORIZONTAL_SPEED);
             facingX = -1;
             chasing = true;
         }
         else if (distanceFromPLayer < -map.getPlayer().getWidth() / 2 &&
                  distanceFromPLayer > -map.getPlayer().getWidth() * 10) {
-            moveX(HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
+            moveX(HORIZONTAL_SPEED);
             facingX = 1;
             chasing = true;
         }

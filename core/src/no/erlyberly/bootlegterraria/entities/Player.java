@@ -13,8 +13,8 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Player extends Entity {
 
     private static final int HORIZONTAL_SPEED = 120;
-    private static final int JUMP_VELOCITY = 250;
-    private static final float DODGE_TIME = 0.50f;
+    private static final int JUMP_VELOCITY = 500;
+    private static final float DODGE_TIME = 0.5f;
     private static final float DODGE_COOLDOWN = 1f;
     private GameMap gameMap;
     private int facingX = 1;
@@ -23,12 +23,13 @@ public class Player extends Entity {
     private float hp = 10000;
     private int maxStamina = 10000; //Should be able to increase
     private float stamina = 10000;
-    private int staminaRegen = 1000;
+    private int staminaRegen = 2000;
     private boolean invincible = false;
-    private int dodgeSpeed = HORIZONTAL_SPEED * 5;
+    private int dodgeSpeed = HORIZONTAL_SPEED * 2;
     private boolean dodging = false;
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
+    private float dodgeStaminaUsage = 3000;
 
     private TextureRegion region;
 
@@ -43,17 +44,19 @@ public class Player extends Entity {
 
     public void update() {
 
+        System.out.println(dodgeCooldown);
+
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
-            if (dodgeCooldown == DODGE_COOLDOWN && stamina - 2000 >= 0) {
+            if (dodgeCooldown == DODGE_COOLDOWN && stamina - dodgeStaminaUsage >= 0) {
                 dodging = true;
-                dodgeCooldown = DODGE_COOLDOWN;
+                dodgeCooldown = 0;
                 invincible = true;
-                modifyStamina(-2000);
+                modifyStamina(-dodgeStaminaUsage);
             }
         }
 
         if (dodging) {
-            moveX(dodgeSpeed * facingX * Gdx.graphics.getDeltaTime());
+            moveX(dodgeSpeed * facingX);
             dodgeTime += Gdx.graphics.getDeltaTime();
             if (dodgeTime >= DODGE_TIME) {
                 dodgeTime = 0;
