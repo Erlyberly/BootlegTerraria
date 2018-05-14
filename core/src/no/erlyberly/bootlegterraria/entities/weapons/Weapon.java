@@ -1,6 +1,6 @@
 package no.erlyberly.bootlegterraria.entities.weapons;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
@@ -8,21 +8,21 @@ public abstract class Weapon {
 
     private String name;
     private Texture image;
-    private int cooldown;
-    private int cooldownTimer = 0;
+    private float cooldown;
+    private float cooldownTimer = 0;
     private int staminaUsage;
 
-    public Weapon(){}
+    public Weapon() {}
 
-    public Weapon(String name){
+    public Weapon(String name) {
         this.name = name;
     }
 
-    public Weapon(int cooldown){
+    public Weapon(int cooldown) {
         this.cooldown = cooldown;
     }
 
-    public Weapon(String name, Texture image){
+    public Weapon(String name, Texture image) {
         this.name = name;
         this.image = image;
         this.cooldown = 0;
@@ -38,15 +38,15 @@ public abstract class Weapon {
         return image;
     }
 
-    public int getCooldown(){
+    public float getCooldown() {
         return cooldown;
     }
 
-    public void setCooldown(int cooldown){
+    public void setCooldown(float cooldown) {
         this.cooldown = cooldown;
     }
 
-    public int getCooldownTimer() {
+    public float getCooldownTimer() {
         return cooldownTimer;
     }
 
@@ -56,9 +56,9 @@ public abstract class Weapon {
 
     public abstract int getStaminaUsage();
 
-    public void cooldown(){
-        if(cooldownTimer < cooldown){
-            cooldownTimer++;
+    public void cooldown() {
+        if (cooldownTimer < cooldown) {
+            cooldownTimer += Gdx.graphics.getRawDeltaTime();
         }
     }
 }
