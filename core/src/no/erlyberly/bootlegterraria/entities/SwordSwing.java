@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,7 +14,7 @@ public class SwordSwing extends Entity {
     public static final float SWORD_LENGTH = TileType.TILE_SIZE * 5f;
     private GameMap map;
     private int damage = 3000;
-    private int frames = 30;
+    private float seconds = 0.5f;
 
     private Texture image;
 
@@ -31,8 +32,8 @@ public class SwordSwing extends Entity {
 
     public void update() {
         //System.out.println(frames);
-        frames--;
-        if (frames <= 0) {
+        seconds -= Gdx.graphics.getRawDeltaTime();
+        if (seconds <= 0) {
             //System.out.println("Destroy sword");
             this.destroyed = true;
             map.removeEntity();
@@ -64,11 +65,11 @@ public class SwordSwing extends Entity {
         TextureRegion region = new TextureRegion(image);
         if (facingX == 1) {
             batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0,
-                       getHeight() / 2, getWidth(), getHeight(), 1, 1, frames * 3f - 20);
+                       getHeight() / 2, getWidth(), getHeight(), 1, 1, seconds * 180f - 20);
         }
         else {
             batch.draw(region, map.getPlayer().getX() + map.getPlayer().getWidth() / 2, map.getPlayer().getY(), 0,
-                       getHeight() / 2, getWidth(), getHeight(), 1, 1, -frames * 3f + 200);
+                       getHeight() / 2, getWidth(), getHeight(), 1, 1, -seconds * 180f + 200);
         }
     }
 
