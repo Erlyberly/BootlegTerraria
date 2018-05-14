@@ -40,7 +40,7 @@ public class Player extends Entity {
 
     public Player(float x, float y, GameMap gameMap) {
         super(x, y, gameMap);
-        image = new Texture("woofer.png");
+        image = new Texture("ErlyBerly_TheGreat.png");
         region = new TextureRegion(image);
         this.gameMap = gameMap;
     }
