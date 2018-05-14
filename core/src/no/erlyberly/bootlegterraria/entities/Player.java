@@ -16,17 +16,17 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 400;
     private static final float DODGE_TIME = 0.5f;
     private static final float DODGE_COOLDOWN = 1f;
+    private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
 
     private GameMap gameMap;
     private int facingX = 1;
-    private Weapon weapon = new Gun("Gun");
+    private Weapon weapon = new Gun();
     private int maxHp = 10000; //Should be able to increase
     private float hp = maxHp;
     private int maxStamina = 10000; //Should be able to increase
     private float stamina = maxStamina;
     private int staminaRegen = 2000;
     private boolean invincible = false;
-    private int dodgeSpeed = HORIZONTAL_SPEED * 2;
     private boolean dodging = false;
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
@@ -56,7 +56,7 @@ public class Player extends Entity {
         }
 
         if (dodging) {
-            moveX(dodgeSpeed * facingX);
+            moveX(DODGE_SPEED * facingX);
             dodgeTime += Gdx.graphics.getDeltaTime();
             if (dodgeTime >= DODGE_TIME) {
                 dodgeTime = 0;
@@ -227,6 +227,9 @@ public class Player extends Entity {
     @Override
     public void render(SpriteBatch batch) {
         int direction = facingX;
+
+        //""animation"" of the player, flips the sprite back and forth on a time scale set by
+        // ANIMATION_DIRECTION_DURATION
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             animationTime += Gdx.graphics.getRawDeltaTime();
             if (ANIMATION_DIRECTION_DURATION >= animationTime) {
