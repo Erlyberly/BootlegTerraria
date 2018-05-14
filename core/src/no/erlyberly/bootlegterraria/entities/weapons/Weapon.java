@@ -31,6 +31,9 @@ public abstract class Weapon {
     public abstract int use(GameMap map);
 
     public String getName() {
+        if (name == null) {
+            return getClass().getSimpleName();
+        }
         return name;
     }
 
