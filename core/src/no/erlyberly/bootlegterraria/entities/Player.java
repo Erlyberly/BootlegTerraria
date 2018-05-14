@@ -30,7 +30,6 @@ public class Player extends Entity {
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
 
-    private Texture image;
     private TextureRegion region;
 
 
@@ -38,8 +37,7 @@ public class Player extends Entity {
 
     public Player(float x, float y, GameMap gameMap) {
         super(x, y, gameMap);
-        image = new Texture("ErlyBerly_TheGreat.png");
-        region = new TextureRegion(image);
+        region = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
         this.gameMap = gameMap;
     }
 

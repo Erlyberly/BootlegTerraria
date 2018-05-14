@@ -52,6 +52,7 @@ public class Zombie extends Entity {
                  distanceFromPLayer > -map.getPlayer().getWidth() * 10) {
             moveX(HORIZONTAL_SPEED * Gdx.graphics.getDeltaTime());
             facingX = 1;
+            chasing = true;
         }
         else {
             chasing = false;
@@ -60,7 +61,6 @@ public class Zombie extends Entity {
         if (map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround &&
             chasing) {
             this.velocityY += JUMP_VELOCITY;
-            chasing = true;
         }
     }
 
