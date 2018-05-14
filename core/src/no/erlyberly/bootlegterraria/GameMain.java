@@ -61,12 +61,12 @@ public class GameMain extends Game {
             TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
 
             if (type != null) {
-                System.out.println(
-                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDamage() +
+                consoleHandler.log(
+                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
                     " coord: " + (int) (pos.x / TileType.TILE_SIZE) + "," + (int) (pos.y / TileType.TILE_SIZE));
             }
             else {
-                System.out.println("Not a tile");
+                consoleHandler.log("Not a tile");
             }
 
         }
