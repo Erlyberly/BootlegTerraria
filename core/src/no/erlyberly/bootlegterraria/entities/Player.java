@@ -5,10 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
-import no.erlyberly.bootlegterraria.helpers.RoundTo;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -48,7 +46,6 @@ public class Player extends Entity {
     }
 
     public void update() {
-
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
             if (dodgeCooldown == DODGE_COOLDOWN && stamina - dodgeStaminaUsage >= 0) {
                 dodging = true;
@@ -229,8 +226,6 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        float plrX = RoundTo.RoundToNearest(pos.x, GameMain.getCameraPixel());
-
         int direction = facingX;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             animationTime += Gdx.graphics.getRawDeltaTime();
@@ -249,7 +244,7 @@ public class Player extends Entity {
         }
 
 
-        batch.draw(region.getTexture(), plrX, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
                    dodgeTime / DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
                    region.getRegionWidth(), region.getRegionHeight(), direction == -1, false);
 
