@@ -22,7 +22,8 @@ public abstract class Entity {
     }
 
     public void update() {
-        velocityY -= TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity * Gdx.graphics.getDeltaTime();
+        velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
+                     Gdx.graphics.getDeltaTime();
         float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
 
 
