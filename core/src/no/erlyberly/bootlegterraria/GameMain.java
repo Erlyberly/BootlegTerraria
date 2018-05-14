@@ -64,8 +64,8 @@ public class GameMain extends Game {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if (Gdx.input.justTouched()) {
+        Gdx.input.setOnscreenKeyboardVisible(true);
+        if (Gdx.input.isTouched()) {
 
             Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
@@ -74,18 +74,17 @@ public class GameMain extends Game {
             int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
-                TileType tt;
+                TileType tt = null;
 
-                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    tt = null;
-                }
-                else {
+                if (Gdx.input.justTouched()) {
                     int id = (type != null ? type.getId() : 0) + 1;
                     tt = TileType.getTileTypeById(id % TileType.values().length);
                 }
-                gameMap.setBlockAt(blockX, blockY, tt);
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || tt != null) {
+                    gameMap.setBlockAt(blockX, blockY, tt);
+                }
             }
-            else {
+            else if (Gdx.input.justTouched()) {
                 if (type != null) {
                     consoleHandler.log(
                         "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
