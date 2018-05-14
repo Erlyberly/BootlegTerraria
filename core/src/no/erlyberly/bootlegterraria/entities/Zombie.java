@@ -33,9 +33,9 @@ public class Zombie extends Entity {
         this.map = map;
     }
 
-    public void update(float deltaTime, float gravity) {
+    public void update(float deltaTime) {
 
-        super.update(deltaTime, gravity);//Apply gravity
+        super.update(deltaTime);//Apply gravity
 
         float distanceFromPLayer = pos.x - map.getPlayer().getPos().x;
 

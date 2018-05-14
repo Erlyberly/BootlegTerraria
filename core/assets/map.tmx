@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2018.04.18" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
  <properties>
   <property name="spawnX" type="int" value="50"/>
-  <property name="spawnY" type="int" value="69"/>
+  <property name="spawnY" type="int" value="66"/>
  </properties>
  <tileset firstgid="1" name="Tiles" tilewidth="16" tileheight="16" tilecount="6" columns="6">
   <image source="tiles.png" width="96" height="16"/>

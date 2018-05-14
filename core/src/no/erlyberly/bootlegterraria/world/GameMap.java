@@ -138,14 +138,14 @@ public abstract class GameMap {
         checkEntityEnemyCollision();
         checkPlayerEnemyCollision();
 
-        player.update(delta, GRAVITY);
+        player.update(delta);
 
         for (Entity entity : enimies) {
-            entity.update(delta, GRAVITY);
+            entity.update(delta);
         }
 
         for (Entity entity : entities) {
-            entity.update(delta, GRAVITY);
+            entity.update(delta);
         }
 
         if (addWaitingEnimies) {
@@ -167,10 +167,6 @@ public abstract class GameMap {
                 enimies.remove(remove);
             }
             removeWaitingEnimies = false;
-        }
-
-        for (Entity entity : entities) {
-            entity.update(delta, GRAVITY);
         }
 
         if (addWaitingEntities) {

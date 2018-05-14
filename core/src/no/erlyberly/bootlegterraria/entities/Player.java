@@ -16,7 +16,7 @@ public class Player extends Entity {
     private static final int JUMP_VELOCITY = 500;
     private static final float DODGE_TIME = 0.50f;
     private static final float DODGE_COOLDOWN = 1f;
-    private GameMap game;
+    private GameMap gameMap;
     private int facingX = 1;
     private Weapon weapon = new Gun("Gun");
     private int maxHp = 10000; //Should be able to increase
@@ -30,20 +30,22 @@ public class Player extends Entity {
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
 
+    private float clock;
+
     private Texture image;
     private TextureRegion region;
 
 
     public boolean god = false;
 
-    public Player(float x, float y, GameMap game) {
-        super(x, y, game);
+    public Player(float x, float y, GameMap gameMap) {
+        super(x, y, gameMap);
         image = new Texture("woofer.png");
         region = new TextureRegion(image);
-        this.game = game;
+        this.gameMap = gameMap;
     }
 
-    public void update(float deltaTime, float gravity) {
+    public void update(float deltaTime) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
             if (dodgeCooldown == DODGE_COOLDOWN && stamina - 2000 >= 0) {
@@ -82,8 +84,6 @@ public class Player extends Entity {
             this.velocityY += gravity / 4;
         }*/
 
-        super.update(deltaTime, gravity);//Apply gravity
-
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
             moveX(-HORIZONTAL_SPEED * deltaTime);
             facingX = -1;
@@ -96,14 +96,16 @@ public class Player extends Entity {
 
         if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging) {
             if (stamina - weapon.getStaminaUsage() >= 0) {
-                modifyStamina(weapon.use(game));
+                modifyStamina(weapon.use(gameMap));
             }
         }
+
+        super.update(deltaTime);//Apply gravity
 
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
-            game.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, game));
+            gameMap.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, gameMap));
         }
 
     }
@@ -211,7 +213,7 @@ public class Player extends Entity {
 
     @Override
     public boolean isDestroyed() {
-        return false;
+        return destroyed;
     }
 
     @Override

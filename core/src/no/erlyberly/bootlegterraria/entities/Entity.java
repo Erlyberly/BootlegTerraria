@@ -9,43 +9,43 @@ public abstract class Entity {
     Vector2 pos;
     float velocityY = 0;
     private static final int HORIZONTAL_SPEED = 0;
-    private GameMap map;
+    private GameMap gameMap;
     boolean onGround = false;
     boolean destroyed = false;
-    private int facingX = 1;
+    private int facingX;
 
-    Entity(float x, float y, GameMap map) {
+    Entity(float x, float y, GameMap gameMap) {
         this.pos = new Vector2(x, y);
-        this.map = map;
+        this.gameMap = gameMap;
     }
 
-    public void update(float deltaTime, float gravity) {
+    public void update(float deltaTime) {
 
-        this.velocityY += gravity * deltaTime;
-        float deltaY = this.velocityY;
+        System.out.println(deltaTime);
+        velocityY += GameMap.GRAVITY * deltaTime;
+        float newY = pos.y + velocityY;
 
         if (this instanceof Player) {
-            map.checkPlayerMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight());
+            gameMap.checkPlayerMapCollision(pos.x, newY, getWidth(), getHeight());
         }
 
-        if (map.checkMapCollision(pos.x, pos.y + deltaY, getWidth(), getHeight())) {
+        if (gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
             if (velocityY < 0) {
-                this.pos.y = (float) Math.floor(pos.y);
+                pos.y = (float) Math.floor(pos.y);
                 onGround = true;
             }
             this.velocityY = 0;
-        }
-        else {
-            this.pos.y += deltaY;
+        } else {
+            pos.y = newY;
             onGround = false;
         }
     }
 
 
-    public void moveX(float amount) {
-        float newX = pos.x + amount;
-        if (!map.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
-            this.pos.x = newX;
+    public void moveX(float velocityX) {
+        float newX = pos.x + velocityX;
+        if (!gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
+            pos.x = newX;
         }
     }
 

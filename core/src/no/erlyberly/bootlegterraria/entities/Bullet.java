@@ -24,7 +24,7 @@ public class Bullet extends Entity {
         this.region = new TextureRegion(image);
     }
 
-    public void update(float deltaTime, float gravity) {
+    public void update(float deltaTime) {
         moveX(HORIZONTAL_SPEED * facingX);
         float newX = pos.x + HORIZONTAL_SPEED * facingX;
         if (map.checkMapCollision(newX, pos.y, getWidth(), getHeight()) ||
