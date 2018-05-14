@@ -229,8 +229,8 @@ public abstract class GameMap {
                 for (int layer = 0; layer < getLayers(); layer++) {
                     TileType type = getTileTypeByCoordinate(layer, col, row);
                     if (type != null && type.isCollidable()) {
-                        if (type.getDamage() != 0 && !player.isInvincible()) {
-                            player.modifyHp(-type.getDamage() * Gdx.graphics.getDeltaTime());
+                        if (type.getDps() != 0 && !player.isInvincible()) {
+                            player.modifyHp(-type.getDps() * Gdx.graphics.getDeltaTime());
                         }
                         return true;
                     }

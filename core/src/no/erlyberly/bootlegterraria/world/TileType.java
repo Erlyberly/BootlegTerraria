@@ -9,7 +9,7 @@ public enum TileType {
     GRASS(1, true, "Grass"),
     DIRT(2, true, "Dirt"),
     SKY(3, false, "Sky"),
-    LAVA(4, true, "Lava", 10, LightLevel.LVL_7),
+    LAVA(4, true, "Lava", 2500, LightLevel.LVL_7),
     CLOUD(5, false, "Cloud"),
     STONE(6, true, "Stone");
 
@@ -26,18 +26,18 @@ public enum TileType {
     private int id;
     private boolean collidable;
     private String name;
-    private int damage;
+    private int dps;
     private LightLevel luminosity;
 
     TileType(int id, boolean collidable, String name) {
         this(id, collidable, name, 0, LightLevel.LVL_0);
     }
 
-    TileType(int id, boolean collidable, String name, int damage, LightLevel luminosity) {
+    TileType(int id, boolean collidable, String name, int dps, LightLevel luminosity) {
         this.id = id;
         this.collidable = collidable;
         this.name = name;
-        this.damage = damage;
+        this.dps = dps;
         this.luminosity = luminosity;
     }
 
@@ -58,8 +58,8 @@ public enum TileType {
         return name;
     }
 
-    public int getDamage() {
-        return damage;
+    public int getDps() {
+        return dps;
     }
 
     public LightLevel getLuminosity() {
