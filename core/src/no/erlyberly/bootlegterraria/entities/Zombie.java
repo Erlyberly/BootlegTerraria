@@ -57,8 +57,8 @@ public class Zombie extends Entity {
             chasing = false;
         }
 
-        if (map.checkMapCollision(pos.x + getWidth() * facingX / 2, pos.y, getWidth(), getHeight()) && onGround &&
-            chasing) {
+        if (map.checkMapCollision(pos.x + (getWidth() - TileType.TILE_SIZE / 2) * facingX / 2, pos.y, getWidth(),
+                                  getHeight()) && onGround && chasing) {
             this.velocityY += JUMP_VELOCITY;
         }
     }
