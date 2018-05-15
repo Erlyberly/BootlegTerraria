@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.helpers.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.helpers.LightLevel;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -29,6 +30,8 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private final int[] skyLight;
     private final HashMap<Vector2, LightLevel> lightSources;
     private LightLevel[][] brightness;
+
+    public static boolean logLightTime = false;
 
     public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
 
@@ -85,6 +88,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
 
         LIGHT_THREAD.execute(() -> {
+            final long startTime = System.currentTimeMillis();
             //remove all light sources between min and max
             this.lightSources.entrySet().removeIf(entry -> entry.getKey().x >= min && entry.getKey().x < max);
 
@@ -124,6 +128,10 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             }
             calculateLight(0, this.skyLight.length);
 //            calculateLight(min, max);
+            if (logLightTime) {
+                GameMain.getConsoleHandler()
+                        .log("Light update took " + (System.currentTimeMillis() - startTime) + " ms");
+            }
         });
     }
 

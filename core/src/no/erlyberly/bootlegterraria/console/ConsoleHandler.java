@@ -3,122 +3,50 @@ package no.erlyberly.bootlegterraria.console;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
-import com.strongjoshua.console.annotation.ConsoleDoc;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.entities.Player;
-import no.erlyberly.bootlegterraria.entities.weapons.Gun;
-import no.erlyberly.bootlegterraria.entities.weapons.Sword;
-import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.helpers.RoundTo;
-import no.erlyberly.bootlegterraria.world.GameMap;
-import no.erlyberly.bootlegterraria.world.TileType;
 
 public class ConsoleHandler {
 
-    private Console console;
-    private GameMain game;
+    private final Console console;
 
 
-    public ConsoleHandler(GameMain game) {
-        this.game = game;
-        console =
+    public ConsoleHandler(final GameMain game) {
+        this.console =
             new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.APOSTROPHE);
 
-        console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
-        console.log("BOOTING SEQUENCE FINISHED IN " + RoundTo.RoundDownToNearest((float) (Math.random() * 4f), 0.001f),
-                    LogLevel.ERROR);
+        this.console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
+        this.console
+            .log("BOOTING SEQUENCE FINISHED IN " + RoundTo.RoundDownToNearest((float) (Math.random() * 4f), 0.001f),
+                 LogLevel.ERROR);
 
-        console.setCommandExecutor(executor);
+        this.console.setCommandExecutor(new CommandHandler(game));
     }
 
-    private CommandExecutor executor = new CommandExecutor() {
-
-        public void god() {
-            Player player = game.getGameMap().getPlayer();
-            player.god = !player.god;
-            heal((byte) 3);
-            console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
-        }
-
-        @ConsoleDoc(description = "Heal player in different ways",
-                    paramDescriptions = {"\n0b01 - health\n0b10 - stamina"})
-        public void heal(byte type) {
-            Player player = game.getGameMap().getPlayer();
-
-            if ((type & 1) != 0) { player.setHp(player.getMaxHp()); }
-            if ((type & 2) != 0) { player.setStamina(player.getMaxStamina()); }
-        }
-
-        public void vSync(boolean vSync) {
-            Gdx.graphics.setVSync(vSync);
-        }
-
-        @ConsoleDoc(description = "Load a map", paramDescriptions = "The map to load")
-        public void load(String mapName) {
-            if (!mapName.endsWith(".tmx")) {
-                mapName += ".tmx";
-            }
-            game.loadMap(mapName);
-        }
-
-        public void gravity(float newGravity) {
-            GameMap.gravity = newGravity;
-            console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
-        }
-
-        public void wpn(String weaponType) {
-            Player player = game.getGameMap().getPlayer();
-
-            Weapon weapon;
-
-            switch (weaponType.toLowerCase()) {
-                case "gun":
-                    weapon = new Gun("Elge bøsji");
-                    break;
-                case "sword":
-                    weapon = new Sword("The Roll");
-                    break;
-                default:
-                    console.log("Could not find weaponType '" + weaponType + "'", LogLevel.ERROR);
-                    return;
-            }
-
-            player.setWeapon(weapon);
-        }
-
-        public void setBlock(int x, int y, int tileID) {
-
-            TileType tt = TileType.getTileTypeById(tileID);
-            System.out.println("tt = " + tt);
-            game.getGameMap().setBlockAt(x, y, tt);
-        }
-    };
-
     public void draw() {
-        console.draw();
+        this.console.draw();
     }
 
     public boolean isConsoleVisible() {
-        return console.isVisible();
+        return this.console.isVisible();
     }
 
-    public void log(String msg) {
-        console.log(msg);
+    public void log(final String msg) {
+        this.console.log(msg);
     }
 
-    public void log(String msg, Object... objs) {
-        console.log(String.format(msg, objs));
+    public void log(final String msg, final Object... objs) {
+        this.console.log(String.format(msg, objs));
     }
 
-    public void log(String msg, LogLevel level) {
-        console.log(msg, level);
+    public void log(final String msg, final LogLevel level) {
+        this.console.log(msg, level);
     }
 
-    public void log(String msg, LogLevel level, Object... objs) {
-        console.log(String.format(msg, objs), level);
+    public void log(final String msg, final LogLevel level, final Object... objs) {
+        this.console.log(String.format(msg, objs), level);
     }
 }
