@@ -14,14 +14,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.helpers.CancellableThreadScheduler;
-import no.erlyberly.bootlegterraria.helpers.LightLevel;
+import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
+import no.erlyberly.bootlegterraria.util.LightLevel;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
-import static no.erlyberly.bootlegterraria.helpers.LightLevel.*;
+import static no.erlyberly.bootlegterraria.util.LightLevel.*;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 

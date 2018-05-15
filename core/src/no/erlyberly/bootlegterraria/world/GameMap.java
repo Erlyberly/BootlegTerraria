@@ -14,8 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
-import no.erlyberly.bootlegterraria.helpers.GameInfo;
-import no.erlyberly.bootlegterraria.helpers.RoundTo;
+import no.erlyberly.bootlegterraria.util.GameInfo;
+import no.erlyberly.bootlegterraria.util.RoundTo;
 
 import java.util.ArrayList;
 

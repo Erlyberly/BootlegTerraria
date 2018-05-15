@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.helpers;
+package no.erlyberly.bootlegterraria.util;
 
 import java.util.Collections;
 import java.util.Set;
@@ -15,19 +15,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class CancellableThreadScheduler {
 
-    private ScheduledExecutorService executorService;
-    private Set<ScheduledFuture> tasks;
+    private final ScheduledExecutorService executorService;
+    private final Set<ScheduledFuture> tasks;
 
     public CancellableThreadScheduler() {
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        tasks = Collections.newSetFromMap(new WeakHashMap<>());
+        this.executorService = Executors.newSingleThreadScheduledExecutor();
+        this.tasks = Collections.newSetFromMap(new WeakHashMap<>());
     }
 
     /**
      * Cancel all future and running tasks
      */
     public void cancelTasks() {
-        for (ScheduledFuture sf : tasks) {
+        for (ScheduledFuture sf : this.tasks) {
             sf.cancel(true);
         }
     }
@@ -39,7 +39,7 @@ public class CancellableThreadScheduler {
      *     What to do
      */
     public void execute(Runnable runnable) {
-        tasks.add(executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
+        this.tasks.add(this.executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -51,13 +51,13 @@ public class CancellableThreadScheduler {
      *     How many milliseconds to wait before running the task
      */
     public void schedule(Runnable runnable, long ms) {
-        tasks.add(executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
+        this.tasks.add(this.executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
     }
 
     /**
      * Shut down the thread
      */
     public void shutdown() {
-        executorService.shutdown();
+        this.executorService.shutdown();
     }
 }

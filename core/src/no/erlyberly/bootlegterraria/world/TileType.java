@@ -1,6 +1,6 @@
 package no.erlyberly.bootlegterraria.world;
 
-import no.erlyberly.bootlegterraria.helpers.LightLevel;
+import no.erlyberly.bootlegterraria.util.LightLevel;
 
 import java.util.HashMap;
 
@@ -14,7 +14,7 @@ public enum TileType {
     STONE(6, true, "Stone");
 
     public static final float TILE_SIZE = 16;
-    private static HashMap<Integer, TileType> tileMap;
+    private static final HashMap<Integer, TileType> tileMap;
 
     static {
         tileMap = new HashMap<>();
@@ -23,11 +23,11 @@ public enum TileType {
         }
     }
 
-    private int id;
-    private boolean collidable;
-    private String name;
-    private int dps;
-    private LightLevel luminosity;
+    private final int id;
+    private final boolean collidable;
+    private final String name;
+    private final int dps;
+    private final LightLevel luminosity;
 
     TileType(int id, boolean collidable, String name) {
         this(id, collidable, name, 0, LightLevel.LVL_0);
@@ -47,22 +47,22 @@ public enum TileType {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public boolean isCollidable() {
-        return collidable;
+        return this.collidable;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getDps() {
-        return dps;
+        return this.dps;
     }
 
     public LightLevel getLuminosity() {
-        return luminosity;
+        return this.luminosity;
     }
 }
