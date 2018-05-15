@@ -6,9 +6,9 @@ import com.strongjoshua.console.LogLevel;
 import com.strongjoshua.console.annotation.ConsoleDoc;
 import com.strongjoshua.console.annotation.HiddenCommand;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.entities.Player;
-import no.erlyberly.bootlegterraria.entities.weapons.Gun;
-import no.erlyberly.bootlegterraria.entities.weapons.Sword;
+import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
+import no.erlyberly.bootlegterraria.entities.weapons.weapons.Sword;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -38,7 +38,7 @@ public class CommandHandler extends CommandExecutor {
     public void heal(final byte type) {
         final Player player = this.game.getGameMap().getPlayer();
 
-        if ((type & 1) != 0) { player.setHp(player.getMaxHp()); }
+        if ((type & 1) != 0) { player.modifyHp(player.getMaxHealth()); }
         if ((type & 2) != 0) { player.setStamina(player.getMaxStamina()); }
     }
 

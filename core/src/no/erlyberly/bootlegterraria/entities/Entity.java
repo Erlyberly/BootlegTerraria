@@ -3,92 +3,158 @@ package no.erlyberly.bootlegterraria.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public abstract class Entity {
 
-    Vector2 pos;
-    float velocityY = 0;
-    private static final int HORIZONTAL_SPEED = 0;
-    private GameMap gameMap;
-    boolean onGround = false;
-    boolean destroyed = false;
-    private int facingX;
+    protected final GameMap gameMap;
+    protected Vector2 pos;
+    protected float velocityY;
+    protected boolean onGround;
+    protected boolean destroyed;
+    protected float health;
+    protected int facing;
 
-    Entity(float x, float y, GameMap gameMap) {
+    /**
+     * Spawn an entity at ({@code x}, {@code y})
+     *
+     * @param x
+     *     X coordinate to spawn the entity on
+     * @param y
+     *     Y coordinate to spawn the entity on
+     * @param gameMap
+     *     The map that owns this entity
+     */
+    protected Entity(float x, float y, GameMap gameMap) {
         this.pos = new Vector2(x, y);
+        this.health = getMaxHealth();
+
         this.gameMap = gameMap;
+        this.velocityY = 0;
+        this.onGround = false;
+        this.destroyed = false;
+        this.facing = 1;
+
     }
 
     public void update() {
-        velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
-                     Gdx.graphics.getDeltaTime();
-        float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
-
+        this.velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
+                          Gdx.graphics.getDeltaTime();
+        float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
         if (this instanceof Player) {
-            gameMap.checkPlayerMapCollision(pos.x, newY, getWidth(), getHeight());
+            this.gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
         }
 
-        if (gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
-            if (velocityY < 0) {
-                pos.y = (float) Math.floor(pos.y);
-                onGround = true;
+        if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
+            if (this.velocityY < 0) {
+                this.pos.y = (float) Math.floor(this.pos.y);
+                this.onGround = true;
             }
             this.velocityY = 0;
         }
         else {
-            pos.y = newY;
-            onGround = false;
+            this.pos.y = newY;
+            this.onGround = false;
         }
     }
 
 
     public void moveX(float velocityX) {
-        float newX = pos.x + velocityX * Gdx.graphics.getDeltaTime();
-        if (!gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
-            pos.x = newX;
+        float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
+        if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
+            this.pos.x = newX;
         }
     }
 
+    /**
+     * Destroy this entity
+     */
+    public void destroy() {
+        this.destroyed = true;
+        destroyed();
+    }
+
+    public float getHealth() {
+        return this.health;
+    }
+
+
+    public boolean isDestroyed() {
+        return this.destroyed;
+    }
+
     public Vector2 getPos() {
-        return pos;
+        return this.pos;
     }
 
     public float getX() {
-        return pos.x;
+        return this.pos.x;
     }
 
     public float getY() {
-        return pos.y;
+        return this.pos.y;
     }
 
     public float getVelocityY() {
-        return velocityY;
+        return this.velocityY;
     }
 
     public boolean isOnGround() {
-        return onGround;
+        return this.onGround;
     }
 
-    public abstract float getWidth();
+    public int getFacing() {
+        return this.facing;
+    }
 
-    public abstract float getHeight();
+    public GameMap getGameMap() {
+        return this.gameMap;
+    }
 
-    public abstract boolean isDestroyed();
-
-    public abstract void setDestroyed(boolean destroyed);
-
+    /**
+     * How to render the entity
+     *
+     * @param batch
+     *     The batch that this entity is rendered in
+     */
     public abstract void render(SpriteBatch batch);
 
+    /**
+     * @param amount
+     *     How much to heal the entity
+     */
     public abstract void modifyHp(float amount);
 
-    public abstract int getDamage();
+    /**
+     * Handle what's happening when the entity is destroyed
+     */
+    protected void destroyed() {}
 
-    public abstract float getHp();
+    /**
+     * @return How wide the entity is
+     */
+    public abstract float getWidth();
 
+    /**
+     * @return How high the entity is
+     */
+    public abstract float getHeight();
+
+    /**
+     * @return How fast the entity moves
+     */
     public abstract float getHorizontalSpeed();
 
-    public abstract int getFacingX();
+    /**
+     * @return The maximum health the entity can have
+     */
+    public abstract float getMaxHealth();
+
+    /**
+     * @return How hard the entity hits
+     */
+    public abstract float getDamage();
 }

@@ -62,12 +62,12 @@ public class GameMain extends Game {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.input.setOnscreenKeyboardVisible(true);
         if (Gdx.input.isTouched()) {
-
             final Vector3 pos = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            final TileType type = this.gameMap.getTileTypeByLocation(1, pos.x, pos.y);
+            final TileType type = this.gameMap.getTileTypeByLocation(gameMap.getBlockLayer(), pos.x, pos.y);
 
             final int blockX = (int) (pos.x / TileType.TILE_SIZE);
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
+
 
             if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
                 TileType tt = null;

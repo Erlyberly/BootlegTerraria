@@ -2,14 +2,18 @@ package no.erlyberly.bootlegterraria.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Vector2;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.entities.Player;
+import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 
 public class TiledGameMap extends GameMap {
@@ -18,8 +22,13 @@ public class TiledGameMap extends GameMap {
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
     private final TiledMapTileLayer blockLayer;
 
-    private final int spawnX;
-    private final int spawnY;
+    private final Vector2 spawn;
+
+    private final int mapWidth;
+    private final int mapHeight;
+
+    private final int tileWidth;
+    private final int tileHeight;
 
     public TiledGameMap(final String map) {
         try {
@@ -28,18 +37,23 @@ public class TiledGameMap extends GameMap {
             GameMain.getConsoleHandler().log("Failed to load map '%s'", LogLevel.ERROR, map);
         }
 
-        this.spawnX = (int) (this.tiledMap.getProperties().get("spawnX", 0, Integer.class) * TileType.TILE_SIZE);
-        this.spawnY =
-            (int) ((getHeight() - this.tiledMap.getProperties().get("spawnY", 0, Integer.class)) * TileType.TILE_SIZE);
+        MapProperties mapProperties = this.tiledMap.getProperties();
+
+        this.tileWidth = mapProperties.get("tilewidth", int.class);
+        this.tileHeight = mapProperties.get("tileheight", int.class);
+
+        this.mapWidth = mapProperties.get("width", int.class);
+        this.mapHeight = mapProperties.get("height", int.class);
+
+        int spawnX = (int) (mapProperties.get("spawnX", 0, int.class) * TileType.TILE_SIZE);
+        int spawnY = (int) ((getHeight() - mapProperties.get("spawnY", 0, int.class)) * TileType.TILE_SIZE);
+        this.spawn = new Vector2(spawnX, spawnY);
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
-        System.out.println("spawnX = " + this.spawnX);
-        System.out.println("spawnY = " + this.spawnY);
-
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, GameMain.TEST);
 
-        setPlayer(new Player(getSpawnX(), getSpawnY(), this));
+        setPlayer(new Player(this.spawn.x, this.spawn.y, this));
     }
 
     @Override
@@ -58,8 +72,8 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public TileType getTileTypeByCoordinate(final int layer, final int col, final int row) {
-        final Cell cell = ((TiledMapTileLayer) this.tiledMap.getLayers().get(layer)).getCell(col, row);
+    public TileType getTileTypeByCoordinate(final MapLayer layer, final int col, final int row) {
+        final Cell cell = ((TiledMapTileLayer) layer).getCell(col, row);
 
         if (cell != null) {
             final TiledMapTile tile = cell.getTile();
@@ -73,28 +87,8 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public int getLayers() {
-        return this.tiledMap.getLayers().getCount();
-    }
-
-    @Override
-    public float getWidth() {
-        return ((TiledMapTileLayer) this.tiledMap.getLayers().get(0)).getWidth();
-    }
-
-    @Override
-    public float getHeight() {
-        return ((TiledMapTileLayer) this.tiledMap.getLayers().get(0)).getHeight();
-    }
-
-    @Override
-    public int getSpawnX() {
-        return this.spawnX;
-    }
-
-    @Override
-    public int getSpawnY() {
-        return this.spawnY;
+    public Vector2 getSpawn() {
+        return this.spawn;
     }
 
     @Override
@@ -110,5 +104,36 @@ public class TiledGameMap extends GameMap {
         }
         this.blockLayer.setCell(x, y, cell);
         this.tiledMapRenderer.asyncUpdateLightAt(x);
+    }
+
+    @Override
+    public float getWidth() {
+        return this.mapWidth;
+    }
+
+    @Override
+    public float getHeight() {
+        return this.mapHeight;
+    }
+
+    @Override
+    public float getTileWidth() {
+        return this.tileWidth;
+    }
+
+    @Override
+    public float getTileHeight() {
+        return this.tileHeight;
+    }
+
+
+    @Override
+    public TiledMapTileLayer getBlockLayer() {
+        return this.blockLayer;
+    }
+
+    @Override
+    public Map getMap() {
+        return this.tiledMap;
     }
 }

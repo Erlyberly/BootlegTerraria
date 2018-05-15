@@ -1,67 +1,74 @@
 package no.erlyberly.bootlegterraria.entities.weapons;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.entities.Entity;
 
 public abstract class Weapon {
 
     private String name;
-    private Texture image;
     private float cooldown;
-    private float cooldownTimer = 0;
-    private int staminaUsage;
 
     public Weapon() {}
+
 
     public Weapon(String name) {
         this.name = name;
     }
 
-    public Weapon(int cooldown) {
-        this.cooldown = cooldown;
-    }
-
-    public Weapon(String name, Texture image) {
-        this.name = name;
-        this.image = image;
-        this.cooldown = 0;
-    }
-
-    public abstract int use(GameMap map);
-
+    /**
+     * @return The display name of this weapon
+     */
     public String getName() {
-        if (name == null) {
+        if (this.name == null) {
             return getClass().getSimpleName();
         }
-        return name;
+        return this.name;
     }
 
-    public Texture getImage() {
-        return image;
+    /**
+     * Attack with a the weapon and reset the cooldown time
+     */
+    public void attack(Entity attacker) {
+        attack0(attacker);
+        resetCooldown();
+    }
+
+    /**
+     * @return If this weapon is ready to attack
+     */
+    public boolean isCooledDown() {
+        return getCooldownTime() <= getCooldown();
     }
 
     public float getCooldown() {
-        return cooldown;
+        return this.cooldown;
     }
 
-    public void setCooldown(float cooldown) {
-        this.cooldown = cooldown;
+    public void resetCooldown() {
+        this.cooldown = 0;
     }
 
-    public float getCooldownTimer() {
-        return cooldownTimer;
-    }
-
-    public void setCooldownTimer(int cooldownTimer) {
-        this.cooldownTimer = cooldownTimer;
-    }
-
-    public abstract int getStaminaUsage();
-
+    /**
+     * Cool the weapon, should be called once every frame
+     */
     public void cooldown() {
-        if (cooldownTimer < cooldown) {
-            cooldownTimer += Gdx.graphics.getRawDeltaTime();
+        if (!isCooledDown()) {
+            this.cooldown += Gdx.graphics.getRawDeltaTime();
         }
     }
+
+    /**
+     * @return How long, in seconds, the delay between shots should be
+     */
+    public abstract float getCooldownTime();
+
+    /**
+     * @return How much stamina should an attack with this weapon cost
+     */
+    public abstract int getStaminaUsage();
+
+    /**
+     * What to do when the weapon is used
+     */
+    protected abstract void attack0(Entity attacker);
 }

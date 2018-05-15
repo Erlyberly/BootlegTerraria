@@ -1,11 +1,12 @@
-package no.erlyberly.bootlegterraria.entities;
+package no.erlyberly.bootlegterraria.entities.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import no.erlyberly.bootlegterraria.entities.weapons.Gun;
+import no.erlyberly.bootlegterraria.entities.Entity;
+import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -17,20 +18,19 @@ public class Player extends Entity {
     private static final float DODGE_TIME = 0.5f;
     private static final float DODGE_COOLDOWN = 1f;
     private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
+    private static final int DEFAULT_MAX_HEALTH = 10000;
 
-    private GameMap gameMap;
-    private int facingX = 1;
     private Weapon weapon = new Gun();
-    private int maxHp = 10000; //Should be able to increase
-    private float hp = maxHp;
     private int maxStamina = 10000; //Should be able to increase
-    private float stamina = maxStamina;
-    private int staminaRegen = 2000;
+    private float stamina = this.maxStamina;
+    private final int staminaRegen = 2000;
+
     private boolean invincible = false;
+
     private boolean dodging = false;
     private float dodgeTime = 0;
     private float dodgeCooldown = 0;
-    private float dodgeStaminaUsage = 3000;
+    private final float dodgeStaminaUsage = 3000;
 
     private final TextureRegion playerTexture;
     private final TextureRegion hurtTexture;
@@ -40,41 +40,41 @@ public class Player extends Entity {
 
     public Player(float x, float y, GameMap gameMap) {
         super(x, y, gameMap);
-        playerTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
-        hurtTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
-        this.gameMap = gameMap;
+        this.playerTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
+        this.hurtTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
     }
 
+    @Override
     public void update() {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !dodging) {
-            if (dodgeCooldown == DODGE_COOLDOWN && stamina - dodgeStaminaUsage >= 0) {
-                dodging = true;
-                dodgeCooldown = 0;
-                invincible = true;
-                modifyStamina(-dodgeStaminaUsage);
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !this.dodging) {
+            if (this.dodgeCooldown == DODGE_COOLDOWN && this.stamina - this.dodgeStaminaUsage >= 0) {
+                this.dodging = true;
+                this.dodgeCooldown = 0;
+                this.invincible = true;
+                modifyStamina(-this.dodgeStaminaUsage);
             }
         }
 
-        if (dodging) {
-            moveX(DODGE_SPEED * facingX);
-            dodgeTime += Gdx.graphics.getDeltaTime();
-            if (dodgeTime >= DODGE_TIME) {
-                dodgeTime = 0;
-                dodging = false;
-                invincible = false;
+        if (this.dodging) {
+            moveX(DODGE_SPEED * this.facing);
+            this.dodgeTime += Gdx.graphics.getDeltaTime();
+            if (this.dodgeTime >= DODGE_TIME) {
+                this.dodgeTime = 0;
+                this.dodging = false;
+                this.invincible = false;
             }
         }
 
-        weapon.cooldown();
-        modifyStamina(staminaRegen * Gdx.graphics.getDeltaTime());
-        if (dodgeCooldown < DODGE_COOLDOWN) {
-            dodgeCooldown += Gdx.graphics.getDeltaTime();
+        this.weapon.cooldown();
+        modifyStamina(this.staminaRegen * Gdx.graphics.getDeltaTime());
+        if (this.dodgeCooldown < DODGE_COOLDOWN) {
+            this.dodgeCooldown += Gdx.graphics.getDeltaTime();
         }
         else {
-            dodgeCooldown = DODGE_COOLDOWN;
+            this.dodgeCooldown = DODGE_COOLDOWN;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && onGround && !dodging) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
             this.velocityY = JUMP_VELOCITY;
         }
 
@@ -83,20 +83,21 @@ public class Player extends Entity {
             this.velocityY += gravity / 4;
         }*/
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !dodging) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
             moveX(-HORIZONTAL_SPEED);
-            facingX = -1;
+            this.facing = -1;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !dodging) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
             moveX(HORIZONTAL_SPEED);
-            facingX = 1;
+            this.facing = 1;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.E) && !dodging) {
-            if (stamina - weapon.getStaminaUsage() >= 0) {
-                modifyStamina(weapon.use(gameMap));
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.E) && !this.dodging &&
+            this.stamina - this.weapon.getStaminaUsage() >= 0 && this.weapon.isCooledDown()) {
+
+            this.weapon.attack(this);
+            modifyStamina(-this.weapon.getStaminaUsage());
         }
 
         super.update();//Apply gravity
@@ -104,25 +105,8 @@ public class Player extends Entity {
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
-            gameMap.addEnemy(new Zombie(pos.x, pos.y + getHeight() * 2, gameMap));
+            this.gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2, this.gameMap));
         }
-
-    }
-
-    public int getFacingX() {
-        return facingX;
-    }
-
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
-    }
-
-    public float getHp() {
-        return hp;
     }
 
     @Override
@@ -130,33 +114,34 @@ public class Player extends Entity {
         return HORIZONTAL_SPEED;
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
+    @Override
+    public float getMaxHealth() {
+        return DEFAULT_MAX_HEALTH;
     }
 
+    @Override
     public void modifyHp(float amount) {
-        if (god) {
+        if (this.god) {
             return;
         }
 
-        if (amount < 0) { isHurt = true; }
+        if (amount < 0) { this.isHurt = true; }
 
-        if (this.hp > 0) {
-            this.hp += amount;
-
+        if (this.health > 0) {
+            this.health += amount;
         }
 
-        if (this.hp <= 0) {
-            this.hp = 0;
+        if (this.health <= 0) {
+            this.health = 0;
         }
 
-        if (this.hp > this.maxHp) {
-            this.hp = maxHp;
+        if (this.health > this.getMaxHealth()) {
+            this.health = this.getMaxHealth();
         }
     }
 
     public int getMaxStamina() {
-        return maxStamina;
+        return this.maxStamina;
     }
 
     public void setMaxStamina(int maxStamina) {
@@ -164,7 +149,7 @@ public class Player extends Entity {
     }
 
     public float getStamina() {
-        return stamina;
+        return this.stamina;
     }
 
     public void setStamina(int stamina) {
@@ -172,7 +157,7 @@ public class Player extends Entity {
     }
 
     public void modifyStamina(float amount) {
-        if (god) {
+        if (this.god) {
             return;
         }
 
@@ -181,12 +166,12 @@ public class Player extends Entity {
         }
 
         if (this.stamina > this.maxStamina) {
-            this.stamina = maxStamina;
+            this.stamina = this.maxStamina;
         }
     }
 
     public Weapon getWeapon() {
-        return weapon;
+        return this.weapon;
     }
 
     public void setWeapon(Weapon weapon) {
@@ -194,7 +179,7 @@ public class Player extends Entity {
     }
 
     public boolean isInvincible() {
-        return invincible;
+        return this.invincible;
     }
 
     public void setInvincible(boolean invincible) {
@@ -211,51 +196,41 @@ public class Player extends Entity {
         return 2 * TileType.TILE_SIZE;
     }
 
-    @Override
-    public boolean isDestroyed() {
-        return destroyed;
-    }
-
-    @Override
-    public void setDestroyed(boolean destroyed) {
-        this.destroyed = destroyed;
-    }
-
     private static final float ANIMATION_DIRECTION_DURATION = 0.3f;
     private float animationTime = 0;
 
     @Override
     public void render(SpriteBatch batch) {
-        int direction = facingX;
+        int direction = this.facing;
 
         //""animation"" of the player, flips the sprite back and forth on a time scale set by
         // ANIMATION_DIRECTION_DURATION
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            animationTime += Gdx.graphics.getRawDeltaTime();
-            if (ANIMATION_DIRECTION_DURATION >= animationTime) {
+            this.animationTime += Gdx.graphics.getRawDeltaTime();
+            if (ANIMATION_DIRECTION_DURATION >= this.animationTime) {
                 direction *= -1;
             }
-            else if (ANIMATION_DIRECTION_DURATION * 2 < animationTime) {
-                animationTime = 0;
+            else if (ANIMATION_DIRECTION_DURATION * 2 < this.animationTime) {
+                this.animationTime = 0;
             }
         }
 
-        TextureRegion region = playerTexture;
-        if (isHurt) {
-            isHurt = false;
-            region = hurtTexture;
+        TextureRegion region = this.playerTexture;
+        if (this.isHurt) {
+            this.isHurt = false;
+            region = this.hurtTexture;
         }
 
 
         batch
             .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
-                  1, 1, this.dodgeTime / DODGE_TIME * -this.facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
+                  1, 1, this.dodgeTime / DODGE_TIME * -this.facing * 360 * 2, region.getRegionX(), region.getRegionY(),
                   region.getRegionWidth(), region.getRegionHeight(), direction != -1, false);
 
     }
 
     @Override
-    public int getDamage() {
+    public float getDamage() {
         return 0;
     }
 }
