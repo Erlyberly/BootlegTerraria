@@ -11,11 +11,9 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.util.GameInfo;
-import no.erlyberly.bootlegterraria.util.RoundTo;
 
 import java.util.ArrayList;
 
@@ -89,7 +87,7 @@ public abstract class GameMap {
             entities.render(batch);
         }
 
-        camera.position.x = RoundTo.RoundToNearest(player.getX(), GameMain.getCameraPixel());
+        camera.position.x = player.getX();
         camera.position.y = player.getY();
 
         batch.setProjectionMatrix(hudCamera.combined);

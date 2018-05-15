@@ -4,10 +4,8 @@
   <property name="spawnX" type="int" value="7"/>
   <property name="spawnY" type="int" value="2"/>
  </properties>
- <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="6" columns="6">
-  <image source="tiles.png" width="96" height="16"/>
- </tileset>
- <layer name="sky" width="16" height="10">
+ <tileset firstgid="1" source="tiles_padded.tsx"/>
+ <layer name="sky" width="16" height="10" locked="1">
   <data encoding="csv">
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
@@ -31,7 +29,7 @@
 0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 2,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,
-4,2,2,1,1,1,0,0,0,1,1,1,2,2,1,0,
+4,2,2,1,1,1,0,7,0,1,1,1,2,2,1,0,
 4,4,2,2,2,2,1,1,1,2,2,2,2,2,2,1
 </data>
  </layer>

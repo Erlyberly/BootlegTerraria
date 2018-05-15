@@ -11,7 +11,8 @@ public enum TileType {
     SKY(3, false, "Sky"),
     LAVA(4, true, "Lava", 2500, LightLevel.LVL_6),
     CLOUD(5, false, "Cloud"),
-    STONE(6, true, "Stone");
+    STONE(6, true, "Stone"),
+    TORCH(7, false, "Torch", LightLevel.LVL_6);
 
     public static final float TILE_SIZE = 16;
     private static final HashMap<Integer, TileType> tileMap;
@@ -30,7 +31,11 @@ public enum TileType {
     private final LightLevel luminosity;
 
     TileType(int id, boolean collidable, String name) {
-        this(id, collidable, name, 0, LightLevel.LVL_0);
+        this(id, collidable, name, LightLevel.LVL_0);
+    }
+
+    TileType(int id, boolean collidable, String name, LightLevel lightLevel) {
+        this(id, collidable, name, 0, lightLevel);
     }
 
     TileType(int id, boolean collidable, String name, int dps, LightLevel luminosity) {
