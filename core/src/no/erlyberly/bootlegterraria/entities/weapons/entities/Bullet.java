@@ -11,15 +11,14 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class Bullet extends WeaponEntity {
 
     private static final int HORIZONTAL_SPEED = 500;
+    private static final TextureRegion TEXTURE = new TextureRegion(new Texture("bullet.png"));
 
     private final float spawnX;
 
-    private final TextureRegion region;
 
     public Bullet(float x, float y, GameMap map, int facingX) {
         super(x, y, map);
         this.facing = facingX;
-        this.region = new TextureRegion(new Texture("bullet.png"));
         this.spawnX = x;
     }
 
@@ -57,8 +56,8 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(this.region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
-                   getHeight(), 1, 1, 0, this.region.getRegionX(), this.region.getRegionY(),
-                   this.region.getRegionWidth(), this.region.getRegionHeight(), this.facing == -1, false);
+        batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
+                   getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
+                   TEXTURE.getRegionHeight(), !isFacingRight(), false);
     }
 }

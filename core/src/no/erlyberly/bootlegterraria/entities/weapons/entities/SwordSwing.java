@@ -11,14 +11,14 @@ import no.erlyberly.bootlegterraria.world.TileType;
 public class SwordSwing extends WeaponEntity {
 
     public static final float SWORD_LENGTH = TileType.TILE_SIZE * 5f;
+    private static final TextureRegion TEXTURE = new TextureRegion(new Texture("sword.png"));
+
     private float attackTime = 0.5f;
 
-    private final TextureRegion region;
 
     public SwordSwing(float x, float y, GameMap map, int facingX) {
         super(x, y, map);
         this.facing = facingX;
-        this.region = new TextureRegion(new Texture("sword.png"));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SwordSwing extends WeaponEntity {
         if (this.facing == 1) { rotation = this.attackTime * 180f - 20; }
         else { rotation = -this.attackTime * 180f + 200; }
 
-        batch.draw(this.region, this.gameMap.getPlayer().getX() + this.gameMap.getPlayer().getWidth() / 2,
+        batch.draw(TEXTURE, this.gameMap.getPlayer().getX() + this.gameMap.getPlayer().getWidth() / 2,
                    this.gameMap.getPlayer().getY(), 0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
     }
 

@@ -32,16 +32,14 @@ public class Player extends Entity {
     private float dodgeCooldown = 0;
     private final float dodgeStaminaUsage = 3000;
 
-    private final TextureRegion playerTexture;
-    private final TextureRegion hurtTexture;
+    private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
+    private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
 
     public boolean god = false;
     private boolean isHurt;
 
     public Player(float x, float y, GameMap gameMap) {
         super(x, y, gameMap);
-        this.playerTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
-        this.hurtTexture = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
     }
 
     @Override
@@ -215,16 +213,16 @@ public class Player extends Entity {
             }
         }
 
-        TextureRegion region = this.playerTexture;
+        TextureRegion region = PLAYER_TEXTURE;
         if (this.isHurt) {
             this.isHurt = false;
-            region = this.hurtTexture;
+            region = HURT_TEXTURE;
         }
 
 
         batch
             .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
-                  1, 1, this.dodgeTime / DODGE_TIME * -this.facing * 360 * 2, region.getRegionX(), region.getRegionY(),
+                  1, 1, this.dodgeTime / DODGE_TIME * -getFacing() * 360 * 2, region.getRegionX(), region.getRegionY(),
                   region.getRegionWidth(), region.getRegionHeight(), direction != -1, false);
 
     }
