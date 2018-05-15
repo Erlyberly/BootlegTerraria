@@ -247,9 +247,10 @@ public class Player extends Entity {
         }
 
 
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   dodgeTime / DODGE_TIME * -facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
-                   region.getRegionWidth(), region.getRegionHeight(), direction == -1, false);
+        batch
+            .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
+                  1, 1, this.dodgeTime / DODGE_TIME * -this.facingX * 360 * 2, region.getRegionX(), region.getRegionY(),
+                  region.getRegionWidth(), region.getRegionHeight(), direction != -1, false);
 
     }
 
