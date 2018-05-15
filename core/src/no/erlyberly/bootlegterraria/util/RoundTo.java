@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.helpers;
+package no.erlyberly.bootlegterraria.util;
 
 /****************************************************************************
  * Copyright (c) 2012 - 2012, Ebrahim Behbahani (ebrahim@ilmfinity.com), All rights reserved.

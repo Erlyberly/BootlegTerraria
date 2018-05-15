@@ -4,7 +4,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.helpers.GameInfo;
+import no.erlyberly.bootlegterraria.util.GameInfo;
 
 public class DesktopLauncher {
 

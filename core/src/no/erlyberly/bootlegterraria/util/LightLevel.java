@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.helpers;
+package no.erlyberly.bootlegterraria.util;
 
 public enum LightLevel {
     LVL_7(7),
@@ -21,11 +21,11 @@ public enum LightLevel {
     }
 
     public int getLvl() {
-        return lvl;
+        return this.lvl;
     }
 
     public float getPercentage() {
-        return percentage;
+        return this.percentage;
     }
 
     /**
@@ -39,15 +39,15 @@ public enum LightLevel {
     }
 
     public LightLevel dimmer() {
-        return fromLevel(lvl - 1);
+        return fromLevel(this.lvl - 1);
     }
 
     public LightLevel brighter() {
-        return fromLevel(lvl + 1);
+        return fromLevel(this.lvl + 1);
     }
 
     @Override
     public String toString() {
-        return name() + "(" + percentage + ")";
+        return name() + "(" + this.percentage + ")";
     }
 }

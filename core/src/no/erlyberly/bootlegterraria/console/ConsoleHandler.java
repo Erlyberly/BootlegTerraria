@@ -7,7 +7,7 @@ import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.helpers.RoundTo;
+import no.erlyberly.bootlegterraria.util.RoundTo;
 
 public class ConsoleHandler {
 

@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.helpers;
+package no.erlyberly.bootlegterraria.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

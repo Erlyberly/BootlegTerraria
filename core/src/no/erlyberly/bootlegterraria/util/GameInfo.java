@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.helpers;
+package no.erlyberly.bootlegterraria.util;
 
 public class GameInfo {
 
