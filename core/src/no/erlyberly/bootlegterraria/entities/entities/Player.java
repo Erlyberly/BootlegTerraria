@@ -54,7 +54,7 @@ public class Player extends Entity {
         }
 
         if (this.dodging) {
-            moveX(DODGE_SPEED * this.facing);
+            moveX(DODGE_SPEED * getFacing());
             this.dodgeTime += Gdx.graphics.getDeltaTime();
             if (this.dodgeTime >= DODGE_TIME) {
                 this.dodgeTime = 0;
@@ -83,12 +83,12 @@ public class Player extends Entity {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
             moveX(-HORIZONTAL_SPEED);
-            this.facing = -1;
+            setFacing(-1);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
             moveX(HORIZONTAL_SPEED);
-            this.facing = 1;
+            setFacing(1);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.E) && !this.dodging &&
@@ -199,7 +199,7 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        int direction = this.facing;
+        int direction = getFacing();
 
         //""animation"" of the player, flips the sprite back and forth on a time scale set by
         // ANIMATION_DIRECTION_DURATION

@@ -39,13 +39,13 @@ public class Zombie extends Entity {
         if (horizontalDistanceFromPlayer > this.gameMap.getPlayer().getWidth() / 2 &&
             horizontalDistanceFromPlayer < this.gameMap.getPlayer().getWidth() * 10) {
             moveX(-this.horizontalSpeed);
-            this.facing = -1;
+            setFacing(-1);
             this.chasing = true;
         }
         else if (horizontalDistanceFromPlayer < -this.gameMap.getPlayer().getWidth() / 2 &&
                  horizontalDistanceFromPlayer > -this.gameMap.getPlayer().getWidth() * 10) {
             moveX(this.horizontalSpeed);
-            this.facing = 1;
+            setFacing(1);
             this.chasing = true;
         }
         else {
@@ -53,7 +53,7 @@ public class Zombie extends Entity {
         }
 
         if (this.gameMap
-                .checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * this.facing / 2, this.pos.y,
+                .checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
                                    getWidth(), getHeight()) && this.onGround && this.chasing) {
             this.velocityY += JUMP_VELOCITY;
         }
@@ -87,7 +87,7 @@ public class Zombie extends Entity {
 
     @Override
     public float getDamage() {
-        return 300;
+        return 500;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class Zombie extends Entity {
     public void render(SpriteBatch batch) {
         batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
                    getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
-                   TEXTURE.getRegionHeight(), this.facing == 1, false);
+                   TEXTURE.getRegionHeight(), isFacingRight(), false);
         batch.draw(HEALTH_BAR, this.pos.x - getWidth() / 2f, this.pos.y + 34f,
                    (this.health / this.getMaxHealth() * getWidth() * 2f), 5f);
         batch.draw(BAR_OUTLINE, this.pos.x - getWidth() / 2f, this.pos.y + 34f, getWidth() * 2f, 5f);

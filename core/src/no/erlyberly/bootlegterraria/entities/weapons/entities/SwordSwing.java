@@ -16,9 +16,9 @@ public class SwordSwing extends WeaponEntity {
     private float attackTime = 0.5f;
 
 
-    public SwordSwing(float x, float y, GameMap map, int facingX) {
+    public SwordSwing(float x, float y, GameMap map, int facing) {
         super(x, y, map);
-        this.facing = facingX;
+        setFacing(facing);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SwordSwing extends WeaponEntity {
     public void render(SpriteBatch batch) {
 
         float rotation;
-        if (this.facing == 1) { rotation = this.attackTime * 180f - 20; }
+        if (isFacingRight()) { rotation = this.attackTime * 180f - 20; }
         else { rotation = -this.attackTime * 180f + 200; }
 
         batch.draw(TEXTURE, this.gameMap.getPlayer().getX() + this.gameMap.getPlayer().getWidth() / 2,

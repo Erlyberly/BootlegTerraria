@@ -10,28 +10,27 @@ import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Bullet extends WeaponEntity {
 
-    private static final int HORIZONTAL_SPEED = 500;
     private static final TextureRegion TEXTURE = new TextureRegion(new Texture("bullet.png"));
 
     private final float spawnX;
 
 
-    public Bullet(float x, float y, GameMap map, int facingX) {
+    public Bullet(float x, float y, GameMap map, int facing) {
         super(x, y, map);
-        this.facing = facingX;
+        setFacing(facing);
         this.spawnX = x;
     }
 
     @Override
     public void update() {
-        float newX = getPos().x + HORIZONTAL_SPEED * this.facing * Gdx.graphics.getDeltaTime();
+        float newX = getPos().x + getHorizontalSpeed() * getFacing() * Gdx.graphics.getDeltaTime();
         boolean colliding = this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
         boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > this.gameMap.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
             this.destroyed = true;
             this.gameMap.removeEntity();
         }
-        moveX(HORIZONTAL_SPEED * this.facing);
+        moveX(getHorizontalSpeed() * getFacing());
     }
 
     @Override
@@ -46,12 +45,12 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public float getHorizontalSpeed() {
-        return HORIZONTAL_SPEED;
+        return 500;
     }
 
     @Override
     public float getDamage() {
-        return HORIZONTAL_SPEED * 100;
+        return getHorizontalSpeed() * 100;
     }
 
     @Override

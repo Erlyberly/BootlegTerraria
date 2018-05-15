@@ -3,6 +3,7 @@ package no.erlyberly.bootlegterraria.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -15,7 +16,7 @@ public abstract class Entity {
     protected boolean onGround;
     protected boolean destroyed;
     protected float health;
-    protected int facing;
+    private int facing;
 
     /**
      * Spawn an entity at ({@code x}, {@code y})
@@ -106,12 +107,30 @@ public abstract class Entity {
         return this.onGround;
     }
 
+    public GameMap getGameMap() {
+        return this.gameMap;
+    }
+
     public int getFacing() {
         return this.facing;
     }
 
-    public GameMap getGameMap() {
-        return this.gameMap;
+    public boolean isFacingRight() {
+        return this.facing == 1;
+    }
+
+    /**
+     * Set the facing of the entity, 1 for
+     *
+     * @param facing
+     *     Either 1, for looking right, or -1, for looking left
+     *
+     * @throws IllegalArgumentException
+     *     If {@code facing} is not {@code 1} or {@code -1}
+     */
+    protected void setFacing(int facing) {
+        Preconditions.checkArgument(facing == 1 || facing == -1, "Facing must be either -1 or 1");
+        this.facing = facing;
     }
 
     /**
