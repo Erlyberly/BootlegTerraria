@@ -99,11 +99,15 @@ public class TiledGameMap extends GameMap {
 
     @Override
     public void setBlockAt(final int x, final int y, final TileType tt) {
+        final int newID = tt != null ? tt.getId() : 0;
+        final int oldID = this.blockLayer.getCell(x, y) != null ? this.blockLayer.getCell(x, y).getTile().getId() : 0;
+        if (oldID == newID) {
+            return;
+        }
         Cell cell = null;
         if (tt != null) {
             cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
         }
-
         this.blockLayer.setCell(x, y, cell);
         this.tiledMapRenderer.asyncUpdateLightAt(x);
     }
