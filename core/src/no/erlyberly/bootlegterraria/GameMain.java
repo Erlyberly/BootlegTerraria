@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
-import no.erlyberly.bootlegterraria.helpers.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
@@ -26,62 +25,59 @@ public class GameMain extends Game {
 
     private static float cameraPixel;
 
-    public static final CancellableThreadScheduler THREAD_SCHEDULER = new CancellableThreadScheduler();
-
-
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        this.batch = new SpriteBatch();
 
         consoleHandler = new ConsoleHandler(this);
 
         this.camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         this.hudCamera = new OrthographicCamera();
-        hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 //        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
-        camera.update();
-        setCameraPixel(camera);
+        this.camera.update();
+        setCameraPixel(this.camera);
 
         loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
     }
 
-    public void loadMap(String map) {
+    public void loadMap(final String map) {
         this.gameMap = new TiledGameMap(map);
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        gameMap.dispose();
+        this.batch.dispose();
+        this.gameMap.dispose();
     }
 
     @Override
     public void render() {
 
-        batch.setProjectionMatrix(camera.combined);
+        this.batch.setProjectionMatrix(this.camera.combined);
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.input.setOnscreenKeyboardVisible(true);
         if (Gdx.input.isTouched()) {
 
-            Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            TileType type = gameMap.getTileTypeByLocation(1, pos.x, pos.y);
+            final Vector3 pos = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            final TileType type = this.gameMap.getTileTypeByLocation(1, pos.x, pos.y);
 
-            int blockX = (int) (pos.x / TileType.TILE_SIZE);
-            int blockY = (int) (pos.y / TileType.TILE_SIZE);
+            final int blockX = (int) (pos.x / TileType.TILE_SIZE);
+            final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
                 TileType tt = null;
 
                 if (Gdx.input.justTouched()) {
-                    int id = (type != null ? type.getId() : 0) + 1;
-                    tt = TileType.getTileTypeById(id % TileType.values().length);
+                    final int id = (type != null ? type.getId() : 0) + 1;
+                    tt = TileType.getTileTypeById(id);
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || tt != null) {
-                    gameMap.setBlockAt(blockX, blockY, tt);
+                    this.gameMap.setBlockAt(blockX, blockY, tt);
                 }
             }
             else if (Gdx.input.justTouched()) {
@@ -96,9 +92,9 @@ public class GameMain extends Game {
             }
         }
 
-        camera.update();
-        gameMap.update();
-        gameMap.render(camera, hudCamera, batch);
+        this.camera.update();
+        this.gameMap.update();
+        this.gameMap.render(this.camera, this.hudCamera, this.batch);
         consoleHandler.draw();
     }
 
@@ -109,12 +105,12 @@ public class GameMain extends Game {
 
     public static void setCameraPixel(final OrthographicCamera pCamera) {
 
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-        float CameraPixel;
+        final int width = Gdx.graphics.getWidth();
+        final int height = Gdx.graphics.getHeight();
+        final float CameraPixel;
 
-        float targetRatio = (float) width / (float) height;
-        float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
+        final float targetRatio = (float) width / (float) height;
+        final float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
 
         if (targetRatio > sourceRatio) { CameraPixel = height / pCamera.viewportHeight; }
         else { CameraPixel = width / pCamera.viewportWidth; }
@@ -124,19 +120,19 @@ public class GameMain extends Game {
 
 
     public GameMap getGameMap() {
-        return gameMap;
+        return this.gameMap;
     }
 
     public OrthographicCamera getCamera() {
-        return camera;
+        return this.camera;
     }
 
     public OrthographicCamera getHudCamera() {
-        return hudCamera;
+        return this.hudCamera;
     }
 
     public SpriteBatch getBatch() {
-        return batch;
+        return this.batch;
     }
 
     public static ConsoleHandler getConsoleHandler() {

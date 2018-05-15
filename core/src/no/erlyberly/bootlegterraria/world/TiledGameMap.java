@@ -21,50 +21,51 @@ public class TiledGameMap extends GameMap {
     private final int spawnX;
     private final int spawnY;
 
-    public TiledGameMap(String map) {
+    public TiledGameMap(final String map) {
         try {
             this.tiledMap = new TmxMapLoader().load(map);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             GameMain.getConsoleHandler().log("Failed to load map '%s'", LogLevel.ERROR, map);
         }
 
-        spawnX = (int) (tiledMap.getProperties().get("spawnX", 0, Integer.class) * TileType.TILE_SIZE);
-        spawnY = (int) ((getHeight() - tiledMap.getProperties().get("spawnY", 0, Integer.class)) * TileType.TILE_SIZE);
+        this.spawnX = (int) (this.tiledMap.getProperties().get("spawnX", 0, Integer.class) * TileType.TILE_SIZE);
+        this.spawnY =
+            (int) ((getHeight() - this.tiledMap.getProperties().get("spawnY", 0, Integer.class)) * TileType.TILE_SIZE);
 
-        blockLayer = (TiledMapTileLayer) tiledMap.getLayers().get("blocks");
+        this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
-        System.out.println("spawnX = " + spawnX);
-        System.out.println("spawnY = " + spawnY);
+        System.out.println("spawnX = " + this.spawnX);
+        System.out.println("spawnY = " + this.spawnY);
 
-        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(tiledMap, GameMain.TEST);
+        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, GameMain.TEST);
 
         setPlayer(new Player(getSpawnX(), getSpawnY(), this));
     }
 
     @Override
-    public void render(OrthographicCamera camera, OrthographicCamera hudCamera, SpriteBatch batch) {
+    public void render(final OrthographicCamera camera, final OrthographicCamera hudCamera, final SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined);
-        tiledMapRenderer.setView(camera);
+        this.tiledMapRenderer.setView(camera);
 
-        tiledMapRenderer.render();
+        this.tiledMapRenderer.render();
 
         super.render(camera, hudCamera, batch);
     }
 
     @Override
     public void dispose() {
-        tiledMap.dispose();
+        this.tiledMap.dispose();
     }
 
     @Override
-    public TileType getTileTypeByCoordinate(int layer, int col, int row) {
-        Cell cell = ((TiledMapTileLayer) tiledMap.getLayers().get(layer)).getCell(col, row);
+    public TileType getTileTypeByCoordinate(final int layer, final int col, final int row) {
+        final Cell cell = ((TiledMapTileLayer) this.tiledMap.getLayers().get(layer)).getCell(col, row);
 
         if (cell != null) {
-            TiledMapTile tile = cell.getTile();
+            final TiledMapTile tile = cell.getTile();
 
             if (tile != null) {
-                int id = tile.getId();
+                final int id = tile.getId();
                 return TileType.getTileTypeById(id);
             }
         }
@@ -73,41 +74,37 @@ public class TiledGameMap extends GameMap {
 
     @Override
     public int getLayers() {
-        return tiledMap.getLayers().getCount();
+        return this.tiledMap.getLayers().getCount();
     }
 
     @Override
     public float getWidth() {
-        return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getWidth();
+        return ((TiledMapTileLayer) this.tiledMap.getLayers().get(0)).getWidth();
     }
 
     @Override
     public float getHeight() {
-        return ((TiledMapTileLayer) tiledMap.getLayers().get(0)).getHeight();
+        return ((TiledMapTileLayer) this.tiledMap.getLayers().get(0)).getHeight();
     }
 
     @Override
     public int getSpawnX() {
-        return spawnX;
+        return this.spawnX;
     }
 
     @Override
     public int getSpawnY() {
-        return spawnY;
+        return this.spawnY;
     }
 
     @Override
-    public void setBlockAt(int x, int y, TileType tt) {
+    public void setBlockAt(final int x, final int y, final TileType tt) {
         Cell cell = null;
         if (tt != null) {
-            cell = new Cell().setTile(tiledMap.getTileSets().getTile(tt.getId()));
+            cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
         }
 
-        blockLayer.setCell(x, y, cell);
-
-        GameMain.THREAD_SCHEDULER.execute(() -> {
-            tiledMapRenderer.updateLightAt(x);
-            tiledMapRenderer.calculateLight();
-        });
+        this.blockLayer.setCell(x, y, cell);
+        this.tiledMapRenderer.asyncUpdateLightAt(x);
     }
 }
