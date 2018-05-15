@@ -99,7 +99,7 @@ public abstract class GameMap {
                    (((float) player.getHealth() / (float) player.getMaxHealth()) * hpBar.getWidth()),
                    hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / hpBarModifier);
-        font.draw(batch, (int) player.getHealth() + " / " + player.getMaxHealth(), barOutline.getWidth() + 10f,
+        font.draw(batch, (int) player.getHealth() + " / " + (int) player.getMaxHealth(), barOutline.getWidth() + 10f,
                   12f + GameInfo.HEIGHT / hpBarModifier);
 
         float staminaBarModifier = 1.055f;
@@ -110,7 +110,7 @@ public abstract class GameMap {
         batch.draw(staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * hpBar.getWidth(),
                    hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / staminaBarModifier);
-        font.draw(batch, (int) player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
+        font.draw(batch, (int) player.getStamina() + " / " + (int) player.getMaxStamina(), barOutline.getWidth() + 10f,
                   12f + GameInfo.HEIGHT / staminaBarModifier);
 
         //hud text
