@@ -136,16 +136,26 @@ public abstract class Entity {
      * moved to the closest point within the map
      */
     public void teleport(int blockX, int blockY) {
-        float newX = Math.max(0, Math.min(gameMap.getPixelWidth() - 1, blockX * gameMap.getTileWidth()));
-        float newY = Math.max(0, Math.min(gameMap.getPixelHeight() - 1, blockY * gameMap.getTileHeight()));
+//        System.out.println("blockX = [" + blockX + "], blockY = [" + blockY + "]");
+        int spawnX = (int) (blockX * gameMap.getTileWidth());
+        int spawnY = (int) ((getHeight() - blockY) * gameMap.getTileHeight());
 
+//        System.out.printf("intial coords looks to be (%d,%d)%n", spawnX, spawnY);
 
-        if (gameMap.checkPlayerMapCollision(newX, newY, getWidth(), getHeight())) {
-            newY = (gameMap.getHeight() - gameMap.getSkylightAt((int) (newX / gameMap.getTileWidth())) + getHeight()) *
-                   gameMap.getTileWidth();
+        spawnX = (int) Math.max(0, Math.min(spawnX, gameMap.getPixelWidth() - 1));
+        spawnY = (int) Math.max(0, Math.min(spawnY, gameMap.getPixelHeight() - 1));
+
+//        System.out.printf("After normalization (%d,%d)%n", spawnX, spawnY);
+
+        if (gameMap.checkPlayerMapCollision(spawnX, spawnY, getWidth(), getHeight())) {
+            spawnY = (int) ((gameMap.getSkylightAt(blockX) + (this.getHeight() / gameMap.getTileHeight())) *
+                            gameMap.getTileWidth());
         }
-        this.pos.x = newX;
-        this.pos.y = newY;
+
+//        System.out.printf("Teleporting player to (%d,%d)%n", spawnX, spawnY);
+
+        this.pos.x = spawnX;
+        this.pos.y = spawnY;
     }
 
     /**
