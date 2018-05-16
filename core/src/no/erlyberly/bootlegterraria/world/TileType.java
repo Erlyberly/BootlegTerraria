@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import no.erlyberly.bootlegterraria.util.LightLevel;
 
 import java.util.HashMap;
@@ -51,6 +52,13 @@ public enum TileType {
         return tileMap.getOrDefault(id, null);
     }
 
+    public static TileType getTileTypeByCell(TiledMapTileLayer.Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        return getTileTypeById(cell.getTile().getId());
+    }
+
     public int getId() {
         return this.id;
     }
@@ -69,5 +77,12 @@ public enum TileType {
 
     public LightLevel getLuminosity() {
         return this.luminosity;
+    }
+
+    /**
+     * @return Wherever this tile emits lights onto other blocks
+     */
+    public boolean isEmittingLight() {
+        return this.luminosity != LightLevel.LVL_0 && this.luminosity != LightLevel.LVL_1;
     }
 }

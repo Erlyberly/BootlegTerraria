@@ -92,10 +92,10 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
+    @Override
     public void setBlockAt(final int x, final int y, final TileType tt) {
-        final int newID = tt != null ? tt.getId() : 0;
-        final int oldID = this.blockLayer.getCell(x, y) != null ? this.blockLayer.getCell(x, y).getTile().getId() : 0;
-        if (oldID == newID) {
+        final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(x, y));
+        if (oldID == tt) {
             return;
         }
         Cell cell = null;
@@ -103,7 +103,12 @@ public class TiledGameMap extends GameMap {
             cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
         }
         this.blockLayer.setCell(x, y, cell);
+
+        //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
+        if (getSkylightAt(x) + 1 == y || (tt != null && tt.isEmittingLight()) ||
+            (oldID != null && oldID.isEmittingLight())) {
         this.tiledMapRenderer.asyncUpdateLightAt(x);
+    }
     }
 
     @Override
@@ -135,5 +140,13 @@ public class TiledGameMap extends GameMap {
     @Override
     public Map getMap() {
         return this.tiledMap;
+    }
+
+    @Override
+    public int getSkylightAt(int x) {
+        if (x < 0 || x >= getWidth()) {
+            throw new IllegalArgumentException("No info about the outside of the map, x = " + x);
+        }
+        return this.tiledMapRenderer.getSkyLights()[x];
     }
 }

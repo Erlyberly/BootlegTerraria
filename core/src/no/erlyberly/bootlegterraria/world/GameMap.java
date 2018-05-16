@@ -1,6 +1,7 @@
 package no.erlyberly.bootlegterraria.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,8 +12,11 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 
 import java.util.ArrayList;
@@ -329,4 +333,11 @@ public abstract class GameMap {
      * @return Instance of the map object
      */
     public abstract Map getMap();
+
+    /**
+     * Spawn the player at {@link #getSpawn()}
+     */
+    public abstract void spawnPlayer();
+
+    public abstract int getSkylightAt(int x);
 }
