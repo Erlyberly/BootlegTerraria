@@ -18,17 +18,11 @@ import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRender
 /**
  * @author kheba
  */
+@SuppressWarnings("unused")
 public class CommandHandler extends CommandExecutor {
 
-    private final GameMain game;
-
-    CommandHandler(final GameMain game) {
-
-        this.game = game;
-    }
-
     public void god() {
-        final Player player = this.game.getGameMap().getPlayer();
+        final Player player = GameMain.inst().getGameMap().getPlayer();
         player.god = !player.god;
         heal((byte) 3);
         this.console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
@@ -36,7 +30,7 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Heal player in different ways", paramDescriptions = {"\n0b01 - health\n0b10 - stamina"})
     public void heal(final byte type) {
-        final Player player = this.game.getGameMap().getPlayer();
+        final Player player = GameMain.inst().getGameMap().getPlayer();
 
         if ((type & 1) != 0) { player.modifyHp(player.getMaxHealth()); }
         if ((type & 2) != 0) { player.setStamina(player.getMaxStamina()); }
@@ -51,7 +45,7 @@ public class CommandHandler extends CommandExecutor {
         if (!mapName.endsWith(".tmx")) {
             mapName += ".tmx";
         }
-        this.game.loadMap(mapName);
+        GameMain.inst().loadMap(mapName);
     }
 
     public void gravity(final float newGravity) {
@@ -60,7 +54,7 @@ public class CommandHandler extends CommandExecutor {
     }
 
     public void wpn(final String weaponType) {
-        final Player player = this.game.getGameMap().getPlayer();
+        final Player player = GameMain.inst().getGameMap().getPlayer();
 
         final Weapon weapon;
 
@@ -83,7 +77,7 @@ public class CommandHandler extends CommandExecutor {
 
         final TileType tt = TileType.getTileTypeById(tileID);
         System.out.println("tt = " + tt);
-        this.game.getGameMap().setBlockAt(x, y, tt);
+        GameMain.inst().getGameMap().setBlockAt(x, y, tt);
     }
 
     @HiddenCommand

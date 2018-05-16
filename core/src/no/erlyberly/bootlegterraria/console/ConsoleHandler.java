@@ -17,7 +17,7 @@ public class ConsoleHandler {
 
     private static final DecimalFormat df = new DecimalFormat("#.###", DecimalFormatSymbols.getInstance(Locale.US));
 
-    public ConsoleHandler(final GameMain game) {
+    public ConsoleHandler() {
         this.console =
             new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.APOSTROPHE);
         this.console.setCommandExecutor(new CommandHandler());
