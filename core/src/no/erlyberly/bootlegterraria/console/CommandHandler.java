@@ -91,4 +91,10 @@ public class CommandHandler extends CommandExecutor {
         logLightTime = !logLightTime;
         this.console.log("Logging light is now " + logLightTime);
     }
+
+    public void tp(int x, int y) {
+        GameMap gameMap = GameMain.inst().getGameMap();
+
+        gameMap.getPlayer().teleport(x, y);
+    }
 }
