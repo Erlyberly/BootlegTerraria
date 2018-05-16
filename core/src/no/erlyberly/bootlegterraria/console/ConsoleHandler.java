@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
-import no.erlyberly.bootlegterraria.GameMain;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -21,11 +20,11 @@ public class ConsoleHandler {
     public ConsoleHandler(final GameMain game) {
         this.console =
             new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.APOSTROPHE);
+        this.console.setCommandExecutor(new CommandHandler());
 
         this.console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
         this.console.log("BOOTING SEQUENCE FINISHED IN " + df.format(Math.random() * 4f), LogLevel.ERROR);
 
-        this.console.setCommandExecutor(new CommandHandler(game));
     }
 
     public void draw() {

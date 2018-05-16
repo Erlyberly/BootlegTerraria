@@ -24,10 +24,9 @@ public class GameMain extends Game {
 
     @Override
     public void create() {
-        gameMainInstance = this;
+        gameMainInstance = this; //must be first
         this.batch = new SpriteBatch();
 
-        consoleHandler = new ConsoleHandler(this);
 
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -39,6 +38,7 @@ public class GameMain extends Game {
 
         loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
 
+        consoleHandler = new ConsoleHandler(); //must be last
     }
 
     public void loadMap(final String map) {
