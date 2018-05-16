@@ -34,6 +34,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     public static boolean logLightTime = false;
 
     public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
+    private static final int MIN_LIGHT_DEPTH = -1;
 
 
     private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
@@ -58,7 +59,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         }
 
         for (int i = 0; i < this.mapWidth; i++) {
-            this.skyLight[i] = Integer.MIN_VALUE;
+            this.skyLight[i] = MIN_LIGHT_DEPTH;
         }
         if (test) {
             test();
@@ -97,7 +98,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                     final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
                     final int height = tiledLayer.getHeight();
                     for (int x = min; x < max; x++) {
-                        this.skyLight[x] = Integer.MIN_VALUE; //reset skylight if already set
+                        this.skyLight[x] = MIN_LIGHT_DEPTH; //reset skylight if already set
                         boolean skyFound = false;
                         for (int y = height - 1; y >= 0; y--) {
                             //check if the current cell is collidable
@@ -121,7 +122,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 }
             }
             for (int x = 0; x < this.skyLight.length; x++) {
-                for (int y = this.mapHeight - 1; y > this.skyLight[x]; y--) {
+                for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
                     final Vector2 v = new Vector2(x, y);
                     this.lightSources.put(v, SKY_LIGHT_BRIGHTNESS);
                 }
@@ -179,17 +180,16 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
         //do a pass for right-to-left light then a pass for left-to-right light
         for (int x = calculatedMin; x < calculatedMax; x++) {
-            calculateLight(x, newBrightness);
+            calculateLightColumn(x, newBrightness);
         }
         for (int x = calculatedMax - 1; x >= calculatedMin; x--) {
-            calculateLight(x, newBrightness);
+            calculateLightColumn(x, newBrightness);
         }
 
         Gdx.app.postRunnable(() -> this.brightness = newBrightness);
     }
 
-    private void calculateLight(final int x, final LightLevel[][] newBrightness) {
-
+    private void calculateLightColumn(final int x, final LightLevel[][] newBrightness) {
         for (int y = 0, length = newBrightness[x].length; y < length; y++) {
             final LightLevel currBrightness = newBrightness[x][y];
             final LightLevel dimmer = currBrightness.dimmer();
