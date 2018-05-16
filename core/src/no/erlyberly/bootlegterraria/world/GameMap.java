@@ -42,9 +42,11 @@ public abstract class GameMap {
 
     BitmapFont font;
 
-    Texture hpBar = new Texture("hp_fill.png");
-    Texture barOutline = new Texture("bar_outline.png");
-    Texture staminaBar = new Texture("stamina_fill.png");
+    private static Texture hpBar = new Texture("hp_fill.png");
+    private static Texture barOutline = new Texture("bar_outline.png");
+    private static Texture staminaBar = new Texture("stamina_fill.png");
+
+    private final CreativeInventory inv;
 
     GameMap() {
         enemies = new ArrayList<Entity>();
@@ -58,6 +60,8 @@ public abstract class GameMap {
         parameter.minFilter = Texture.TextureFilter.Linear;
         this.font = generator.generateFont(parameter);
         generator.dispose();
+
+        inv = new CreativeInventory();
     }
 
     public void addEnemy(Entity entity) {
@@ -120,6 +124,7 @@ public abstract class GameMap {
         //hud text
         font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
         font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
+        font.draw(batch, "block  : " + inv.getSelectedTileType(), 7f, GameInfo.HEIGHT / (1.120f));
         batch.end();
     }
 
@@ -179,6 +184,32 @@ public abstract class GameMap {
                 entities.remove(remove);
             }
             removeWaitingEntities = false;
+        }
+
+        if (Gdx.input.isTouched()) {
+            final Vector3 pos =
+                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            final TileType type = getTileTypeByLocation(getBlockLayer(), pos.x, pos.y);
+
+            final int blockX = (int) (pos.x / TileType.TILE_SIZE);
+            final int blockY = (int) (pos.y / TileType.TILE_SIZE);
+
+
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                if (Gdx.input.justTouched()) {
+                    if (type != null) {
+                        GameMain.getConsoleHandler().log(
+                            "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
+                            " coord: (" + blockX + ", " + blockY + ")");
+                    }
+                    else {
+                        GameMain.getConsoleHandler().log("Not a tile");
+                    }
+                }
+            }
+            else {
+                setBlockAt(blockX, blockY, inv.getSelectedTileType());
+            }
         }
     }
 
