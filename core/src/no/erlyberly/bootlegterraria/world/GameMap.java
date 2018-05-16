@@ -122,8 +122,8 @@ public abstract class GameMap {
                   12f + GameInfo.HEIGHT / staminaBarModifier);
 
         //hud text
-        font.draw(batch, "Weapon: " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
-        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
+        font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
+        font.draw(batch, "fps    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
         font.draw(batch, "block  : " + inv.getSelectedTileType(), 7f, GameInfo.HEIGHT / (1.120f));
         batch.end();
     }
@@ -243,8 +243,10 @@ public abstract class GameMap {
         return false;
     }
 
+    /**
+     * @return {@code true} if there is collision
+     */
     public boolean checkPlayerMapCollision(float x, float y, float width, float height) {
-
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
         }

@@ -83,6 +83,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
      *     The maximum x value to check (exclusive)
      */
     public void asyncUpdateLightBetween(final int min, final int max) {
+
         Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
         Preconditions.checkArgument(max <= this.skyLight.length,
                                     "Maximum argument must be less than or equal to skyLight.length");
@@ -139,6 +140,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     public void asyncUpdateLightAt(final int x) {
         Preconditions.checkArgument(x >= 0, "x must be greater than 0");
         Preconditions.checkArgument(x < this.skyLight.length, "x must be less than the width of the world");
+
         asyncUpdateLightBetween(x, x + 1);
     }
 
@@ -186,6 +188,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             calculateLightColumn(x, newBrightness);
         }
 
+        //make sure we get no concurrency errors
         Gdx.app.postRunnable(() -> this.brightness = newBrightness);
     }
 
@@ -196,6 +199,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             if (currBrightness == LVL_0 || currBrightness == LVL_1) {
                 continue;
             }
+
             for (int x1 = Math.max(x - 1, 0), maxX = Math.min(x + 1, newBrightness.length - 1); x1 <= maxX; x1++) {
                 for (int y1 = Math.max(y - 1, 0), maxY = Math.min(y + 1, newBrightness[x].length - 1);
                      y1 <= maxY; y1++) {
