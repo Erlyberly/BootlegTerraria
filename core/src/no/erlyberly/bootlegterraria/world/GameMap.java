@@ -304,6 +304,15 @@ public abstract class GameMap {
         }
     }
 
+    public Vector2 blockToPixel(int blockX, int BlockY) {
+        int spawnX = (int) (blockX * getTileWidth());
+        int spawnY = (int) ((getHeight() - BlockY) * getTileHeight());
+
+        spawnX = (int) Math.max(0, Math.min(spawnX, getPixelWidth() - 1));
+        spawnY = (int) Math.max(0, Math.min(spawnY, getPixelHeight() - 1));
+        return new Vector2(spawnX, spawnY);
+    }
+
     public float getPixelWidth() {
         return getWidth() * getTileWidth();
     }

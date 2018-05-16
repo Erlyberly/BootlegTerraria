@@ -46,9 +46,9 @@ public class TiledGameMap extends GameMap {
         this.mapWidth = mapProperties.get("width", int.class);
         this.mapHeight = mapProperties.get("height", int.class);
 
-        int spawnX = (int) (mapProperties.get("spawnX", 0, int.class) * TileType.TILE_SIZE);
-        int spawnY = (int) ((getHeight() - mapProperties.get("spawnY", 0, int.class)) * TileType.TILE_SIZE);
-        this.spawn = new Vector2(spawnX, spawnY);
+        int spawnX = mapProperties.get("spawnX", 0, int.class);
+        int spawnY = mapProperties.get("spawnY", 0, int.class);
+        spawn = blockToPixel(spawnX, spawnY);
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
