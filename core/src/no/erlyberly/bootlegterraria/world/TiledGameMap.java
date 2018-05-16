@@ -30,6 +30,7 @@ public class TiledGameMap extends GameMap {
     private final int tileWidth;
     private final int tileHeight;
 
+
     public TiledGameMap(final String map) {
         try {
             this.tiledMap = new TmxMapLoader().load(map);
@@ -52,8 +53,6 @@ public class TiledGameMap extends GameMap {
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, GameMain.TEST);
-
-        setPlayer(new Player(this.spawn.x, this.spawn.y, this));
     }
 
     @Override
@@ -92,6 +91,10 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
+    public void spawnPlayer() {
+        setPlayer(new Player(this.spawn.x, this.spawn.y));
+    }
+
     @Override
     public void setBlockAt(final int x, final int y, final TileType tt) {
         final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(x, y));
@@ -107,8 +110,8 @@ public class TiledGameMap extends GameMap {
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
         if (getSkylightAt(x) + 1 == y || (tt != null && tt.isEmittingLight()) ||
             (oldID != null && oldID.isEmittingLight())) {
-        this.tiledMapRenderer.asyncUpdateLightAt(x);
-    }
+            this.tiledMapRenderer.asyncUpdateLightAt(x);
+        }
     }
 
     @Override

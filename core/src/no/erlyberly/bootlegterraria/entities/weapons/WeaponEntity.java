@@ -1,7 +1,6 @@
 package no.erlyberly.bootlegterraria.entities.weapons;
 
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.world.GameMap;
 
 /**
  * An abstract wrapper intended to be used by weapons' bullet/sword to reduce boilerplate code. This class can also be
@@ -9,8 +8,9 @@ import no.erlyberly.bootlegterraria.world.GameMap;
  */
 public abstract class WeaponEntity extends Entity {
 
-    protected WeaponEntity(final float x, final float y, final GameMap gameMap) {
-        super(x, y, gameMap);
+    protected WeaponEntity(final float x, final float y, int facing) {
+        super(x, y);
+        setFacing(facing);
     }
 
     @Override

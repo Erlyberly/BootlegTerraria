@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.WeaponEntity;
-import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public class SwordSwing extends WeaponEntity {
@@ -16,9 +15,8 @@ public class SwordSwing extends WeaponEntity {
     private float attackTime = 0.5f;
 
 
-    public SwordSwing(float x, float y, GameMap map, int facing) {
-        super(x, y, map);
-        setFacing(facing);
+    public SwordSwing(float x, float y, int facing) {
+        super(x, y, facing);
     }
 
     @Override
@@ -26,7 +24,7 @@ public class SwordSwing extends WeaponEntity {
         this.attackTime -= Gdx.graphics.getRawDeltaTime();
         if (this.attackTime <= 0) {
             this.destroyed = true;
-            this.gameMap.removeEntity();
+            gameMap.removeEntity();
         }
     }
 
@@ -47,8 +45,8 @@ public class SwordSwing extends WeaponEntity {
         if (isFacingRight()) { rotation = this.attackTime * 180f - 20; }
         else { rotation = -this.attackTime * 180f + 200; }
 
-        batch.draw(TEXTURE, this.gameMap.getPlayer().getX() + this.gameMap.getPlayer().getWidth() / 2,
-                   this.gameMap.getPlayer().getY(), 0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
+        batch.draw(TEXTURE, gameMap.getPlayer().getX() + gameMap.getPlayer().getWidth() / 2, gameMap.getPlayer().getY(),
+                   0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
     }
 
     @Override

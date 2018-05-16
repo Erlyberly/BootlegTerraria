@@ -13,8 +13,8 @@ public class Sword extends Weapon {
     @Override
     public void attack0(Entity attacker) {
         float dir = attacker.getFacing() == 1 ? attacker.getWidth() : -SwordSwing.SWORD_LENGTH;
-        attacker.getGameMap().addEntity(
-            new SwordSwing(attacker.getX() + dir, attacker.getY() + 16f, attacker.getGameMap(), attacker.getFacing()));
+        attacker.getGameMap()
+                .addEntity(new SwordSwing(attacker.getX() + dir, attacker.getY() + 16f, attacker.getFacing()));
     }
 
     @Override

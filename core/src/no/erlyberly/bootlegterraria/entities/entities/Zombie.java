@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.Random;
@@ -23,8 +22,8 @@ public class Zombie extends Entity {
     private boolean chasing;
 
 
-    Zombie(float x, float y, GameMap map) {
-        super(x, y, map);
+    Zombie(float x, float y) {
+        super(x, y);
         this.horizontalSpeed = 40 + RNG.nextInt(40);
         this.chasing = false;
     }
@@ -34,16 +33,16 @@ public class Zombie extends Entity {
 
         super.update(); //Apply gravity
 
-        float horizontalDistanceFromPlayer = this.pos.x - this.gameMap.getPlayer().getPos().x;
+        float horizontalDistanceFromPlayer = this.pos.x - gameMap.getPlayer().getPos().x;
 
-        if (horizontalDistanceFromPlayer > this.gameMap.getPlayer().getWidth() / 2 &&
-            horizontalDistanceFromPlayer < this.gameMap.getPlayer().getWidth() * 10) {
+        if (horizontalDistanceFromPlayer > gameMap.getPlayer().getWidth() / 2 &&
+            horizontalDistanceFromPlayer < gameMap.getPlayer().getWidth() * 10) {
             moveX(-this.horizontalSpeed);
             setFacing(-1);
             this.chasing = true;
         }
-        else if (horizontalDistanceFromPlayer < -this.gameMap.getPlayer().getWidth() / 2 &&
-                 horizontalDistanceFromPlayer > -this.gameMap.getPlayer().getWidth() * 10) {
+        else if (horizontalDistanceFromPlayer < -gameMap.getPlayer().getWidth() / 2 &&
+                 horizontalDistanceFromPlayer > -gameMap.getPlayer().getWidth() * 10) {
             moveX(this.horizontalSpeed);
             setFacing(1);
             this.chasing = true;
@@ -52,9 +51,8 @@ public class Zombie extends Entity {
             this.chasing = false;
         }
 
-        if (this.gameMap
-                .checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
-                                   getWidth(), getHeight()) && this.onGround && this.chasing) {
+        if (gameMap.checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
+                                      getWidth(), getHeight()) && this.onGround && this.chasing) {
             this.velocityY += JUMP_VELOCITY;
         }
     }
@@ -68,7 +66,7 @@ public class Zombie extends Entity {
         if (this.health <= 0) {
             this.health = 0;
             this.destroyed = true;
-            this.gameMap.removeEnemy();
+            gameMap.removeEnemy();
         }
 
         if (this.health > this.getMaxHealth()) {

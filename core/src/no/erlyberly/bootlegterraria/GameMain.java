@@ -2,14 +2,11 @@ package no.erlyberly.bootlegterraria;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.world.GameMap;
-import no.erlyberly.bootlegterraria.world.TileType;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
 public class GameMain extends Game {
@@ -23,10 +20,11 @@ public class GameMain extends Game {
     private GameMap gameMap;
     private static ConsoleHandler consoleHandler;
 
-    private static float cameraPixel;
+    private static GameMain gameMainInstance;
 
     @Override
     public void create() {
+        gameMainInstance = this;
         this.batch = new SpriteBatch();
 
         consoleHandler = new ConsoleHandler(this);
@@ -38,13 +36,14 @@ public class GameMain extends Game {
 
 //        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
         this.camera.update();
-        setCameraPixel(this.camera);
 
         loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
+
     }
 
     public void loadMap(final String map) {
         this.gameMap = new TiledGameMap(map);
+        this.gameMap.spawnPlayer();
     }
 
     @Override
@@ -99,25 +98,9 @@ public class GameMain extends Game {
     }
 
 
-    public static float getCameraPixel() {
-        return cameraPixel;
+    public static GameMain inst() {
+        return gameMainInstance;
     }
-
-    public static void setCameraPixel(final OrthographicCamera pCamera) {
-
-        final int width = Gdx.graphics.getWidth();
-        final int height = Gdx.graphics.getHeight();
-        final float CameraPixel;
-
-        final float targetRatio = (float) width / (float) height;
-        final float sourceRatio = pCamera.viewportWidth / pCamera.viewportHeight;
-
-        if (targetRatio > sourceRatio) { CameraPixel = height / pCamera.viewportHeight; }
-        else { CameraPixel = width / pCamera.viewportWidth; }
-
-        cameraPixel = (int) CameraPixel;
-    }
-
 
     public GameMap getGameMap() {
         return this.gameMap;

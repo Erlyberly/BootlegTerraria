@@ -16,6 +16,8 @@ public enum TileType {
     TORCH(7, false, "Torch", LightLevel.LVL_6);
 
     public static final float TILE_SIZE = 16;
+    public static final int TILE_TYPES = TileType.values().length;
+
     private static final HashMap<Integer, TileType> tileMap;
 
     static {

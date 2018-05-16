@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.WeaponEntity;
-import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Bullet extends WeaponEntity {
@@ -15,20 +14,19 @@ public class Bullet extends WeaponEntity {
     private final float spawnX;
 
 
-    public Bullet(float x, float y, GameMap map, int facing) {
-        super(x, y, map);
-        setFacing(facing);
+    public Bullet(float x, float y, int facing) {
+        super(x, y, facing);
         this.spawnX = x;
     }
 
     @Override
     public void update() {
         float newX = getPos().x + getHorizontalSpeed() * getFacing() * Gdx.graphics.getDeltaTime();
-        boolean colliding = this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
-        boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > this.gameMap.getPlayer().getWidth() * 15;
+        boolean colliding = gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
+        boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > gameMap.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
             this.destroyed = true;
-            this.gameMap.removeEntity();
+            gameMap.removeEntity();
         }
         moveX(getHorizontalSpeed() * getFacing());
     }

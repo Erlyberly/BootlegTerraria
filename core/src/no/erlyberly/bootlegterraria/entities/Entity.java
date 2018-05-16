@@ -4,13 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public abstract class Entity {
 
-    protected final GameMap gameMap;
+    protected GameMap gameMap = GameMain.inst().getGameMap();
+
     protected Vector2 pos;
     protected float velocityY;
     protected boolean onGround;
@@ -25,19 +27,15 @@ public abstract class Entity {
      *     X coordinate to spawn the entity on
      * @param y
      *     Y coordinate to spawn the entity on
-     * @param gameMap
-     *     The map that owns this entity
      */
-    protected Entity(float x, float y, GameMap gameMap) {
+    protected Entity(float x, float y) {
         this.pos = new Vector2(x, y);
         this.health = getMaxHealth();
 
-        this.gameMap = gameMap;
         this.velocityY = 0;
         this.onGround = false;
         this.destroyed = false;
         this.facing = 1;
-
     }
 
     public void update() {
@@ -46,10 +44,10 @@ public abstract class Entity {
         float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
         if (this instanceof Player) {
-            this.gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
+            gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
         }
 
-        if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
+        if (gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             if (this.velocityY < 0) {
                 this.pos.y = (float) Math.floor(this.pos.y);
                 this.onGround = true;
@@ -65,7 +63,7 @@ public abstract class Entity {
 
     public void moveX(float velocityX) {
         float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
-        if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
+        if (!gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
             this.pos.x = newX;
         }
     }
@@ -108,7 +106,7 @@ public abstract class Entity {
     }
 
     public GameMap getGameMap() {
-        return this.gameMap;
+        return gameMap;
     }
 
     public int getFacing() {
@@ -131,6 +129,23 @@ public abstract class Entity {
     protected void setFacing(int facing) {
         Preconditions.checkArgument(facing == 1 || facing == -1, "Facing must be either -1 or 1");
         this.facing = facing;
+    }
+
+    /**
+     * Teleport the entity to a given location. If the destination of the teleportation is out of bounds the entity is
+     * moved to the closest point within the map
+     */
+    public void teleport(int blockX, int blockY) {
+        float newX = Math.max(0, Math.min(gameMap.getPixelWidth() - 1, blockX * gameMap.getTileWidth()));
+        float newY = Math.max(0, Math.min(gameMap.getPixelHeight() - 1, blockY * gameMap.getTileHeight()));
+
+
+        if (gameMap.checkPlayerMapCollision(newX, newY, getWidth(), getHeight())) {
+            newY = (gameMap.getHeight() - gameMap.getSkylightAt((int) (newX / gameMap.getTileWidth())) + getHeight()) *
+                   gameMap.getTileWidth();
+        }
+        this.pos.x = newX;
+        this.pos.y = newY;
     }
 
     /**

@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
-import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Player extends Entity {
@@ -38,8 +37,8 @@ public class Player extends Entity {
     public boolean god = false;
     private boolean isHurt;
 
-    public Player(float x, float y, GameMap gameMap) {
-        super(x, y, gameMap);
+    public Player(float x, float y) {
+        super(x, y);
     }
 
     @Override
@@ -103,7 +102,7 @@ public class Player extends Entity {
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
-            this.gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2, this.gameMap));
+            gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2));
         }
     }
 
