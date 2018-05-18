@@ -41,12 +41,29 @@ public enum TileType {
         this(id, name, LightLevel.LVL_0, viscosity);
     }
 
-    TileType(int id, boolean collidable, String name, int dps, LightLevel luminosity) {
+    TileType(int id, String name, LightLevel lightLevel, float viscosity) {
+        this(id, name, 0, lightLevel, viscosity);
+    }
+
+    /**
+     * @param id
+     *     Tiled tile ID of this tile
+     * @param name
+     *     Display name
+     * @param dps
+     *     Damage per second
+     * @param luminosity
+     *     How bright this tile shines
+     * @param viscosity
+     *     How easily entities move through the tile, 0 is no resistance, 1 is solid
+     */
+    TileType(int id, String name, int dps, LightLevel luminosity, float viscosity) {
+        Preconditions.checkArgument(viscosity >= 0 && viscosity <= 1, "viscosity must be between 0 and 1");
         this.id = id;
-        this.collidable = collidable;
         this.name = name;
         this.dps = dps;
         this.luminosity = luminosity;
+        this.viscosity = viscosity;
     }
 
 
@@ -66,7 +83,7 @@ public enum TileType {
     }
 
     public boolean isCollidable() {
-        return this.collidable;
+        return this.viscosity > 0;
     }
 
     public String getName() {
