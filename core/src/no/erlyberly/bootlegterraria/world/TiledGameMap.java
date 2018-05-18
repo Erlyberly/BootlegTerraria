@@ -98,7 +98,7 @@ public class TiledGameMap extends GameMap {
     @Override
     public void setBlockAt(final int x, final int y, final TileType tt) {
         final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(x, y));
-        if (oldID == tt) {
+        if (oldID == tt || isOutsideMap(x, y)) {
             return;
         }
         Cell cell = null;
