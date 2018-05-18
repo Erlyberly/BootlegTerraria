@@ -12,7 +12,11 @@ public class CreativeInventory {
         InputAdapter inputAdapter = new InputAdapter() {
             @Override
             public boolean scrolled(int amount) {
-                curr = (curr + 1) % (TileType.TILE_TYPES + 1);
+                int next = curr + amount;
+                if (curr == 0 && amount == -1) {
+                    next = TileType.TILE_TYPES;
+                }
+                curr = next % (TileType.TILE_TYPES + 1);
                 return true;
             }
         };
