@@ -16,6 +16,7 @@ import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.LightLevel;
+import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         this.mapWidth = prop.get("width", Integer.class);
         this.mapHeight = prop.get("height", Integer.class);
 
+        GameMain.backgroundColor = Util.convert(prop.get("backgroundcolor", "#FFFF0000", String.class));
         this.skyLight = new int[this.mapWidth];
         this.lightSources = new HashMap<>();
         this.brightness = new LightLevel[this.mapWidth][this.mapHeight];
@@ -252,7 +254,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 }
                 final TiledMapTile tile = cell.getTile();
 
-                if (tile != null && this.brightness[col][row] != LVL_0) {
+                if (tile != null) {
                     final boolean flipX = cell.getFlipHorizontally();
                     final boolean flipY = cell.getFlipVertically();
                     final int rotations = cell.getRotation();

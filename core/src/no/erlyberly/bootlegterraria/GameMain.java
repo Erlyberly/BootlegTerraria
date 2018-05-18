@@ -2,6 +2,7 @@ package no.erlyberly.bootlegterraria;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +22,8 @@ public class GameMain extends Game {
     private static ConsoleHandler consoleHandler;
 
     private static GameMain gameMainInstance;
+
+    public static Color backgroundColor = Color.BLACK;
 
     @Override
     public void create() {
@@ -56,7 +59,7 @@ public class GameMain extends Game {
     public void render() {
         this.batch.setProjectionMatrix(this.camera.combined);
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.input.setOnscreenKeyboardVisible(true);
 

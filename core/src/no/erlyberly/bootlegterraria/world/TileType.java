@@ -1,19 +1,19 @@
 package no.erlyberly.bootlegterraria.world;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.util.LightLevel;
 
 import java.util.HashMap;
 
 public enum TileType {
 
-    GRASS(1, true, "Grass"),
-    DIRT(2, true, "Dirt"),
-    SKY(3, false, "Sky"),
-    LAVA(4, true, "Lava", 2500, LightLevel.LVL_6),
-    CLOUD(5, false, "Cloud"),
-    STONE(6, true, "Stone"),
-    TORCH(7, false, "Torch", LightLevel.LVL_6);
+    GRASS(1, "Grass"),
+    DIRT(2, "Dirt"),
+    LAVA(3, "Lava", 2500, LightLevel.LVL_6, 0.5f),
+    CLOUD(4, "Cloud", 0),
+    STONE(5, "Stone"),
+    TORCH(6, "Torch", LightLevel.LVL_6, 0);
 
     public static final float TILE_SIZE = 16;
     public static final int TILE_TYPES = TileType.values().length;
@@ -28,17 +28,17 @@ public enum TileType {
     }
 
     private final int id;
-    private final boolean collidable;
     private final String name;
     private final int dps;
     private final LightLevel luminosity;
+    private final float viscosity;
 
-    TileType(int id, boolean collidable, String name) {
-        this(id, collidable, name, LightLevel.LVL_0);
+    TileType(int id, String name) {
+        this(id, name, 1);
     }
 
-    TileType(int id, boolean collidable, String name, LightLevel lightLevel) {
-        this(id, collidable, name, 0, lightLevel);
+    TileType(int id, String name, float viscosity) {
+        this(id, name, LightLevel.LVL_0, viscosity);
     }
 
     TileType(int id, boolean collidable, String name, int dps, LightLevel luminosity) {
@@ -86,5 +86,10 @@ public enum TileType {
      */
     public boolean isEmittingLight() {
         return this.luminosity != LightLevel.LVL_0 && this.luminosity != LightLevel.LVL_1;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
