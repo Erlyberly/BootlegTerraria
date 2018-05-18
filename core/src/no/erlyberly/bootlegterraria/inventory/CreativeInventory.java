@@ -24,5 +24,9 @@ public class CreativeInventory {
         return TileType.getTileTypeById(curr);
     }
 
+    public String getSelectedTileTypeAsString() {
+        TileType tt = getSelectedTileType();
+        return tt == null ? "Air" : tt.toString();
+    }
 
 }

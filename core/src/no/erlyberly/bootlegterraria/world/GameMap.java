@@ -124,7 +124,7 @@ public abstract class GameMap {
         //hud text
         font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
         font.draw(batch, "fps    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
-        font.draw(batch, "block  : " + inv.getSelectedTileType(), 7f, GameInfo.HEIGHT / (1.120f));
+        font.draw(batch, "block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
         batch.end();
     }
 
