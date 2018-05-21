@@ -32,18 +32,18 @@ public enum LightLevel {
      * Safely get the light level from an integer, if the {@code lvl} is less than 0, {@code LVL_0} is returned. If
      * {@code lvl} is greater than or equal to {@link #LIGHT_LEVELS} {@code LVL_7} is returned
      */
-    public static LightLevel fromLevel(int lvl) {
+    public static LightLevel valueOf(int lvl) {
         if (lvl < 0) { return LVL_0; }
         else if (lvl >= LIGHT_LEVELS) { return LVL_7; }
         return values()[7 - lvl];
     }
 
     public LightLevel dimmer() {
-        return fromLevel(this.lvl - 1);
+        return valueOf(this.lvl - 1);
     }
 
     public LightLevel brighter() {
-        return fromLevel(this.lvl + 1);
+        return valueOf(this.lvl + 1);
     }
 
     @Override
