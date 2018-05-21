@@ -2,6 +2,8 @@ package no.erlyberly.bootlegterraria.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
@@ -39,6 +41,15 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
 
     private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
+
+    private static final Texture BLACK_TEXTURE;
+
+    static {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+        pixmap.setColor(Color.BLACK);
+        pixmap.fill();
+        BLACK_TEXTURE = new Texture(pixmap);
+    }
 
 
     public SimpleOrthogonalTiledMapRenderer(final TiledMap map, final boolean test) {
@@ -244,6 +255,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         final float xStart = col1 * layerTileWidth + layerOffsetX;
         final float[] vertices = this.vertices;
 
+
+        Texture texture = null;
+
         for (int row = row2; row >= row1; row--) {
             float x = xStart;
             for (int col = col1; col < col2; col++) {
@@ -255,6 +269,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 final TiledMapTile tile = cell.getTile();
 
                 if (tile != null) {
+
                     final boolean flipX = cell.getFlipHorizontally();
                     final boolean flipY = cell.getFlipVertically();
                     final int rotations = cell.getRotation();
@@ -363,7 +378,13 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                             }
                         }
                     }
-                    this.batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+                    if (this.brightness[col][row] == LVL_0) {
+                        texture = BLACK_TEXTURE;
+                    }
+                    else {
+                        texture = region.getTexture();
+                    }
+                    this.batch.draw(texture, vertices, 0, NUM_VERTICES);
                 }
                 x += layerTileWidth;
             }
