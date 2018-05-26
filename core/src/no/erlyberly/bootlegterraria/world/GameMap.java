@@ -208,7 +208,17 @@ public abstract class GameMap {
                 }
             }
             else {
-                setBlockAt(blockX, blockY, inv.getSelectedTileType());
+                TileType tt = null;
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                    tt = inv.getSelectedTileType();
+                }
+                else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+                    tt = null;
+                }
+                else {
+                    return;
+                }
+                setBlockAt(blockX, blockY, tt);
             }
         }
     }
