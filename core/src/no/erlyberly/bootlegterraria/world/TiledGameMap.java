@@ -108,7 +108,7 @@ public class TiledGameMap extends GameMap {
         this.blockLayer.setCell(x, y, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
-        if (getSkylightAt(x) + 1 == y || (tt != null && tt.isEmittingLight()) ||
+        if (getSkylightAt(x) + 1 <= y || (tt != null && tt.isEmittingLight()) ||
             (oldID != null && oldID.isEmittingLight())) {
             this.tiledMapRenderer.asyncUpdateLightAt(x);
         }
