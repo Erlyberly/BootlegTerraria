@@ -135,27 +135,22 @@ public abstract class Entity {
      * Teleport the entity to a given location. If the destination of the teleportation is out of bounds the entity is
      * moved to the closest point within the map
      */
-    public void teleport(int blockX, int blockY) {
-//        System.out.println("blockX = [" + blockX + "], blockY = [" + blockY + "]");
-        int spawnX = (int) (blockX * gameMap.getTileWidth());
-        int spawnY = (int) ((getHeight() - blockY) * gameMap.getTileHeight());
+    public Vector2 teleport(int blockX, int blockY) {
+        //TODO just ignore calls to tp out of bounds
+        int tpX = (int) (blockX * this.gameMap.getTileWidth());
+        int tpY = (int) ((getHeight() - blockY) * this.gameMap.getTileHeight());
 
-//        System.out.printf("intial coords looks to be (%d,%d)%n", spawnX, spawnY);
+        tpX = (int) Math.max(0, Math.min(tpX, this.gameMap.getPixelWidth() - 1));
+        tpY = (int) Math.max(0, Math.min(tpY, this.gameMap.getPixelHeight() - 1));
 
-        spawnX = (int) Math.max(0, Math.min(spawnX, gameMap.getPixelWidth() - 1));
-        spawnY = (int) Math.max(0, Math.min(spawnY, gameMap.getPixelHeight() - 1));
-
-//        System.out.printf("After normalization (%d,%d)%n", spawnX, spawnY);
-
-        if (gameMap.checkPlayerMapCollision(spawnX, spawnY, getWidth(), getHeight())) {
-            spawnY = (int) ((gameMap.getSkylightAt(blockX) + (this.getHeight() / gameMap.getTileHeight())) *
-                            gameMap.getTileWidth());
+        if (this.gameMap.checkPlayerMapCollision(tpX, tpY, getWidth(), getHeight())) {
+            tpY = (int) ((this.gameMap.getSkylightAt(blockX) + (this.getHeight() / this.gameMap.getTileHeight())) *
+                         this.gameMap.getTileWidth());
         }
 
-//        System.out.printf("Teleporting player to (%d,%d)%n", spawnX, spawnY);
-
-        this.pos.x = spawnX;
-        this.pos.y = spawnY;
+        this.pos.x = tpX;
+        this.pos.y = tpY;
+        return new Vector2(tpX / this.gameMap.getTileWidth(), tpY / this.gameMap.getTileHeight());
     }
 
     /**

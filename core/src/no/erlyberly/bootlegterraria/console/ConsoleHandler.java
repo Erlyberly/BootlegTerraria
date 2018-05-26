@@ -20,10 +20,11 @@ public class ConsoleHandler {
     public ConsoleHandler() {
         this.console =
             new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), true, Input.Keys.APOSTROPHE);
-        this.console.setCommandExecutor(new CommandHandler());
+        this.console.setCommandExecutor(new CommandHandler(this));
 
         this.console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
-        this.console.log("BOOTING SEQUENCE FINISHED IN " + df.format(Math.random() * 4f), LogLevel.ERROR);
+        this.console
+            .log("BOOTING SEQUENCE FINISHED IN " + ConsoleHandler.df.format(Math.random() * 4f), LogLevel.ERROR);
 
     }
 
@@ -39,15 +40,15 @@ public class ConsoleHandler {
         this.console.log(msg);
     }
 
-    public void log(final String msg, final Object... objs) {
-        this.console.log(String.format(msg, objs));
-    }
-
     public void log(final String msg, final LogLevel level) {
         this.console.log(msg, level);
     }
 
-    public void log(final String msg, final LogLevel level, final Object... objs) {
+    public void logf(final String msg, final Object... objs) {
+        this.console.log(String.format(msg, objs));
+    }
+
+    public void logf(final String msg, final LogLevel level, final Object... objs) {
         this.console.log(String.format(msg, objs), level);
     }
 }
