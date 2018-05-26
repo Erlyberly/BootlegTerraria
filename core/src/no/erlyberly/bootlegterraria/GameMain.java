@@ -39,14 +39,16 @@ public class GameMain extends Game {
 //        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
         this.camera.update();
 
-        loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
 
         consoleHandler = new ConsoleHandler(); //must be last
+
+        loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
     }
 
     public void loadMap(final String map) {
         this.gameMap = new TiledGameMap(map);
         this.gameMap.spawnPlayer();
+        consoleHandler.resetInputProcessing();
     }
 
     @Override

@@ -51,4 +51,8 @@ public class ConsoleHandler {
     public void logf(final String msg, final LogLevel level, final Object... objs) {
         this.console.log(String.format(msg, objs), level);
     }
+
+    public void resetInputProcessing() {
+        this.console.resetInputProcessing();
+    }
 }
