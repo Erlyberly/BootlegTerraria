@@ -3,6 +3,8 @@ package no.erlyberly.bootlegterraria.util.aabb;
 import com.badlogic.gdx.math.Vector2;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AABB2DTest {
@@ -35,5 +37,23 @@ class AABB2DTest {
         assertTrue(tst1.hasPoint(new Vector2(5, 5)));
 
         assertFalse(tst1.hasPoint(new Vector2(10, 10)));
+    }
+
+
+    @Test
+    void iterator() {
+        AABB2D tst1 = new AABB2D(0, 2, 0, 2);
+
+        ArrayList<Vector2> act = new ArrayList<>();
+
+        for (Vector2 v : tst1) {
+            act.add(v);
+        }
+        Vector2[] actv = new Vector2[act.size()];
+        actv = act.toArray(actv);
+        Vector2[] exp = {new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1)};
+        
+        assertArrayEquals(exp, actv);
+
     }
 }

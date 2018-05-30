@@ -3,10 +3,13 @@ package no.erlyberly.bootlegterraria.util.aabb;
 import com.badlogic.gdx.math.Vector2;
 import no.erlyberly.bootlegterraria.util.Util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
+/**
+ * AABB2D is the implementation that should be used in a two dimensional space. This implementation can check if a
+ * vector is within the AABB (with {@link #hasPoint(Vector2)} and loop trough all points within the AABB (with the
+ * iterator)
+ */
 public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2> {
 
 
@@ -28,39 +31,51 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2> {
     }
 
     @Override
-    public Iterator<Vector2> iterator() {
-        return new AABB2DIterator(this);
-    }
-
-    @Override
     public String toString() {
         return "AABB2D{" + "x=" + this.x + ", y=" + this.y + '}';
     }
 
+    @Override
+    public Iterator<Vector2> iterator() {
+        return new AABB2DIterator(this);
+    }
+
     private class AABB2DIterator implements Iterator<Vector2> {
 
-        private final List<Vector2> points;
-        int i = 0;
+        private final int minX;
+        private final int maxX;
 
-        AABB2DIterator(AABB2D aabb2D) {
-            this.points = new ArrayList<>();
+        private final int minY;
+        private final int maxY;
 
-            for (int x = aabb2D.x.min; x < aabb2D.x.max; x++) {
-                for (int y = aabb2D.y.min; y < aabb2D.y.max; y++) {
-                    this.points.add(new Vector2(x, y));
-                }
-            }
+        int cX;
+        int cY;
+
+        AABB2DIterator(AABB2D aabb) {
+            this.minX = aabb.x.min;
+            this.maxX = aabb.x.max;
+
+            this.minY = aabb.y.min;
+            this.maxY = aabb.y.max;
+
+            this.cX = this.minX;
+            this.cY = this.minY;
         }
 
 
         @Override
         public boolean hasNext() {
-            return this.i < this.points.size();
+            return this.cY < this.maxY;
         }
 
         @Override
         public Vector2 next() {
-            return this.points.get(this.i++);
+            Vector2 v = new Vector2(this.cX++, this.cY);
+            if (this.cX >= this.maxX) {
+                this.cY++;
+                this.cX = this.minX;
+            }
+            return v;
         }
     }
 }
