@@ -15,6 +15,25 @@ public enum LightLevel {
     final int lvl;
     final float percentage;
 
+
+    private static final LightLevel[] values;
+
+    static {
+        values = new LightLevel[values().length];
+        for (LightLevel ll : values()) {
+            if (values[ll.getLvl()] != null) {
+                throw new ExceptionInInitializerError(
+                    "There are more than one LightLevel declared as the level '" + ll.getLvl() + "': " + ll + " and " +
+                    values[ll.getLvl()]);
+            }
+            values[ll.getLvl()] = ll;
+        }
+        if (LIGHT_LEVELS != values.length) {
+            throw new ExceptionInInitializerError(
+                "Mismatch between LIGHT_LEVELS (" + LIGHT_LEVELS + ") and values.length (" + values.length + ")");
+        }
+    }
+
     LightLevel(int lvl) {
         this.lvl = lvl;
         this.percentage = (lvl / ((float) LIGHT_LEVELS - 1));
@@ -28,14 +47,15 @@ public enum LightLevel {
         return this.percentage;
     }
 
+
     /**
      * Safely get the light level from an integer, if the {@code lvl} is less than 0, {@code LVL_0} is returned. If
      * {@code lvl} is greater than or equal to {@link #LIGHT_LEVELS} {@code LVL_7} is returned
      */
     public static LightLevel valueOf(int lvl) {
-        if (lvl < 0) { return LVL_0; }
-        else if (lvl >= LIGHT_LEVELS) { return LVL_7; }
-        return values()[7 - lvl];
+        if (lvl <= 0) { return LVL_0; }
+        if (lvl >= LIGHT_LEVELS) { return LVL_7; }
+        return values[lvl];
     }
 
     public LightLevel dimmer() {
