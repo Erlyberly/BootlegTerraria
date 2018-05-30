@@ -1,5 +1,9 @@
 package no.erlyberly.bootlegterraria.util.aabb;
 
+/**
+ * An implementation of AABB which only is checking for overlapping in a single dimension. This can be visualized by
+ * drawing two lines above each other and looking
+ */
 public class AABB1D extends AABB<AABB1D> {
 
     final int min;

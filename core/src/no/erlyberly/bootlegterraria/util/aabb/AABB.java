@@ -1,5 +1,9 @@
 package no.erlyberly.bootlegterraria.util.aabb;
 
+/**
+ * <a href="https://en.wikipedia.org/wiki/Minimum_bounding_box">AABB (Axis Aligned Bounding Box)</a> is here used to
+ * check if two boxes overlap each other.
+ */
 public abstract class AABB<T extends AABB> {
 
     /**
