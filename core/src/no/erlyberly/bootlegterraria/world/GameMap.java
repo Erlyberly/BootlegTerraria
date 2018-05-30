@@ -18,6 +18,7 @@ import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.util.GameInfo;
+import no.erlyberly.bootlegterraria.util.LightLevel;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public abstract class GameMap {
 
     private Player player;
 
-    BitmapFont font;
+    private BitmapFont font;
 
     private static Texture hpBar = new Texture("hp_fill.png");
     private static Texture barOutline = new Texture("bar_outline.png");
@@ -121,10 +122,18 @@ public abstract class GameMap {
         font.draw(batch, (int) player.getStamina() + " / " + (int) player.getMaxStamina(), barOutline.getWidth() + 10f,
                   12f + GameInfo.HEIGHT / staminaBarModifier);
 
+        final Vector3 mousePos =
+            GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+        final int blockX = (int) (mousePos.x / TileType.TILE_SIZE);
+        final int blockY = (int) (mousePos.y / TileType.TILE_SIZE);
+
         //hud text
         font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
-        font.draw(batch, "fps    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
-        font.draw(batch, "block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
+        font.draw(batch, "FPS    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
+        font.draw(batch, "Block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
+        font.draw(batch, "Mouse  : (" + blockX + ", " + blockY + ") LL: " + lightAt(blockX, blockY), 7f,
+                  GameInfo.HEIGHT / (1.145f));
         batch.end();
     }
 
@@ -292,10 +301,7 @@ public abstract class GameMap {
     }
 
     public boolean isOutsideMap(int x, int y) {
-        if (x < 0 || y < 0 || x >= getPixelWidth() || y > getPixelHeight()) {
-            return true;
-        }
-        return false;
+        return x < 0 || y < 0 || x >= getPixelWidth() || y > getPixelHeight();
     }
 
     public void checkPlayerEnemyCollision() {
