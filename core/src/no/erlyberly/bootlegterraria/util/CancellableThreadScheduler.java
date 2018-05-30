@@ -32,6 +32,10 @@ public class CancellableThreadScheduler {
         }
     }
 
+    public int size() {
+        return this.tasks.size();
+    }
+
     /**
      * Execute a task as soon as possible
      *
