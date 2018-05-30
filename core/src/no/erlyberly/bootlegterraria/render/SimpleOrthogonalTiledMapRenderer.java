@@ -166,6 +166,12 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         return cpy;
     }
 
+    private LightLevel[][] cpyBrightness() {
+        final LightLevel[][] newBrightness = new LightLevel[this.mapWidth][this.mapHeight];
+        System.arraycopy(this.brightness, 0, newBrightness, 0, this.skyLight.length);
+        return newBrightness;
+    }
+
     private void calculateLight(final int rawMin, final int rawMax) {
         Preconditions.checkArgument(rawMin >= 0, "Minimum argument must be greater than or equal to 0");
         Preconditions.checkArgument(rawMax <= this.skyLight.length,
@@ -176,8 +182,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         final int calculatedMax = Math.min(this.skyLight.length, rawMax + LIGHT_LEVELS);
 
         //copy the current brightness
-        final LightLevel[][] newBrightness = new LightLevel[this.mapWidth][this.mapHeight];
-        System.arraycopy(this.brightness, 0, newBrightness, 0, this.skyLight.length);
+        final LightLevel[][] newBrightness = cpyBrightness();
 
         //reset the lights between min and max
         for (int x = calculatedMin; x < calculatedMax; x++) {
@@ -222,8 +227,6 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 }
             }
         }
-
-
     }
 
     @SuppressWarnings("Duplicates")
@@ -416,5 +419,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
     HashMap<Vector2, LightLevel> getLightSources() {
         return this.lightSources;
+    }
+
+    public LightLevel lightAt(int x, int y) {
+        return this.brightness[x][y];
     }
 }
