@@ -112,4 +112,12 @@ public class CommandHandler extends CommandExecutor {
             this.cmdH.log("Successfully teleported player", LogLevel.SUCCESS);
         }
     }
+
+    public void calcLight(int blockX, int blockY) {
+        GameMain.inst().getGameMap().calculateLightAt(blockX, blockY);
+    }
+
+    public void reCalcLight() {
+        GameMain.inst().getGameMap().recalculateLight();
+    }
 }

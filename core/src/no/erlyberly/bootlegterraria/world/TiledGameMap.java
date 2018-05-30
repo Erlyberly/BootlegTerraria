@@ -15,10 +15,12 @@ import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
+import no.erlyberly.bootlegterraria.util.LightLevel;
+import no.erlyberly.bootlegterraria.util.Util;
 
 public class TiledGameMap extends GameMap {
 
-    private TiledMap tiledMap;
+    private final TiledMap tiledMap;
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
     private final TiledMapTileLayer blockLayer;
 
@@ -36,6 +38,7 @@ public class TiledGameMap extends GameMap {
             this.tiledMap = new TmxMapLoader().load(map);
         } catch (final Exception e) {
             GameMain.getConsoleHandler().logf("Failed to load map '%s'", LogLevel.ERROR, map);
+            throw new IllegalArgumentException("Invalid map");
         }
 
         MapProperties mapProperties = this.tiledMap.getProperties();
@@ -48,7 +51,7 @@ public class TiledGameMap extends GameMap {
 
         int spawnX = mapProperties.get("spawnX", 0, int.class);
         int spawnY = mapProperties.get("spawnY", 0, int.class);
-        spawn = blockToPixel(spawnX, spawnY);
+        this.spawn = blockToPixel(spawnX, spawnY);
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
@@ -108,7 +111,7 @@ public class TiledGameMap extends GameMap {
         this.blockLayer.setCell(x, y, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
-        if (getSkylightAt(x) + 1 <= y || (tt != null && tt.isEmittingLight()) ||
+        if (getSkylightAt(x) < y || (tt != null && tt.isEmittingLight()) ||
             (oldID != null && oldID.isEmittingLight())) {
             this.tiledMapRenderer.asyncUpdateLightAt(x);
         }
@@ -146,10 +149,28 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public int getSkylightAt(int x) {
-        if (x < 0 || x >= getWidth()) {
-            throw new IllegalArgumentException("No info about the outside of the map, x = " + x);
+    public int getSkylightAt(int blockX) {
+        if (!Util.isBetween(0, blockX, (int) getWidth())) {
+            throw new IllegalArgumentException("No info about the outside of the map, x = " + blockX);
         }
-        return this.tiledMapRenderer.getSkyLights()[x];
+        return this.tiledMapRenderer.getSkyLights()[blockX];
+    }
+
+    @Override
+    public void calculateLightAt(int blockX, int y) {
+        this.tiledMapRenderer.calculateLightAt(blockX, y, LightLevel.LVL_7);
+    }
+
+    @Override
+    public void recalculateLight() {
+        this.tiledMapRenderer.asyncUpdateLights();
+    }
+
+    @Override
+    public LightLevel lightAt(int blockX, int blockY) {
+        if (isOutsideMap(blockX, blockY)) {
+            return null;
+        }
+        return this.tiledMapRenderer.lightAt(blockX, blockY);
     }
 }

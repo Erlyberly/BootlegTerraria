@@ -19,6 +19,7 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
+import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
@@ -208,6 +209,99 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
         //make sure we get no concurrency errors
         Gdx.app.postRunnable(() -> this.brightness = newBrightness);
+    }
+
+    @Deprecated
+    //TODO remove when done debugging
+    public void calculateLightAt(int x, int y, LightLevel newLightLevel) {
+        calculateLightAt(x, y, newLightLevel, cpyBrightness());
+    }
+
+    //Clean all light in radius of the current light at xy
+    //then for every light source that's MAX_LIGHT_LEVEL away,
+    // recalculate for all light of that block that's within the blacked out radius
+    //note: that's not what's implemented below as of yet
+    //TODO implement the lighting over
+    //TODO remove this message then the above todo is done
+    private void calculateLightAt(int blockX, int blockY, LightLevel newLightLevel,
+                                  final LightLevel[][] newBrightness) {
+        System.out.println("blockX = [" + blockX + "], blockY = [" + blockY + "], newLightLevel = [" + newLightLevel +
+                           "], newBrightness = [" + "]");
+        LightLevel currLevel = newBrightness[blockX][blockY];
+        if (newLightLevel != LVL_0) {
+            this.lightSources.put(new Vector2(blockX, blockY), newLightLevel);
+        }
+
+        //How far the light at x,y travel
+        final int lightRadius =
+            (newLightLevel.getLvl() > currLevel.getLvl() ? newLightLevel.getLvl() : currLevel.getLvl()) - 1;
+
+        //start coords, top right
+        final int x0 = Util.between(0, blockX - lightRadius, this.mapWidth);
+        final int y0 = Util.between(0, blockY - lightRadius, this.mapHeight);
+
+        //end coords, lower left
+        final int x1 = Util.between(0, blockX + lightRadius, this.mapWidth);
+        final int y1 = Util.between(0, blockY + lightRadius, this.mapHeight);
+
+
+        //reset light for the affected area
+        for (int x = x0; x <= x1; x++) {
+            for (int y = y0; y <= y1; y++) {
+                newBrightness[x][y] = LightLevel.LVL_0;
+            }
+        }
+
+//        calculateLightColumn(blockX, newBrightness);
+
+        AABB2D orgAABB = new AABB2D(x0, x1, y0, y1);
+        System.out.println("orgAABB = " + orgAABB);
+        this.lightSources.forEach((pos, level) -> {
+            AABB2D lightSourceAABB = Util.fromLight(pos, level);
+            if (orgAABB.overlap(lightSourceAABB)) {
+                newBrightness[(int) pos.x][(int) pos.y] = level;
+                System.out.print("lightSourceAABB = " + lightSourceAABB);
+                System.out.println(" | pos = " + pos);
+                for (Vector2 rv : lightSourceAABB) {
+                    if (orgAABB.hasPoint(rv)) {
+                        System.out.println("rv = " + rv);
+                        boolean relX = blockX >= rv.x;
+                        boolean relY = blockY >= rv.y;
+
+                        System.out.print("relX = " + relX);
+                        System.out.println(" | relY = " + relY);
+
+                        float dx;
+                        float dy;
+
+                        if (relX && relY) {
+                            dx = blockX - rv.x;
+                            dy = blockY - rv.y;
+                        }
+                        else if (relX && !relY) {
+                            dx = blockX + rv.x;
+                            dy = blockY - rv.y;
+                        }
+                        else if (!relX && relY) {
+                            dx = blockX - rv.x;
+                            dy = blockY + rv.y;
+                        }
+                        else /*if(!relX && !relY)*/ {
+                            dx = blockX + rv.x;
+                            dy = blockY + rv.y;
+                        }
+                        newBrightness[(int) rv.x][(int) rv.y] = lightLevelDelta((int) dx, (int) dy, level);
+                    }
+                }
+            }
+        });
+        Gdx.app.postRunnable(() -> this.brightness = newBrightness);
+    }
+
+    private LightLevel lightLevelDelta(float dx, float dy, LightLevel initialLightLevel) {
+        int initialLvl = initialLightLevel.getLvl();
+        int delta = (int) (dx > dy ? dx : dy);
+        return LightLevel.valueOf(initialLvl - delta);
     }
 
     private void calculateLightColumn(final int x, final LightLevel[][] newBrightness) {

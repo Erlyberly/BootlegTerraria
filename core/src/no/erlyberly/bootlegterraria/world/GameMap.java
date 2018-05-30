@@ -195,7 +195,7 @@ public abstract class GameMap {
             removeWaitingEntities = false;
         }
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() || Gdx.input.isButtonPressed(Input.Buttons.FORWARD)) {
             final Vector3 pos =
                 GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             final TileType type = getTileTypeByLocation(getBlockLayer(), pos.x, pos.y);
@@ -223,6 +223,12 @@ public abstract class GameMap {
                 }
                 else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                     tt = null;
+                }
+                else if (Gdx.input.isButtonPressed(Input.Buttons.FORWARD) &&
+                         Gdx.graphics.getFrameId() % Gdx.graphics.getFramesPerSecond() == 0) {
+                    System.out.println("forward pressed");
+                    calculateLightAt(blockX, blockY);
+                    return;
                 }
                 else {
                     return;
@@ -397,5 +403,11 @@ public abstract class GameMap {
      */
     public abstract void spawnPlayer();
 
-    public abstract int getSkylightAt(int x);
+    public abstract int getSkylightAt(int blockX);
+
+    public abstract void calculateLightAt(int blockX, int blockY);
+
+    public abstract void recalculateLight();
+
+    public abstract LightLevel lightAt(int blockX, int blockY);
 }
