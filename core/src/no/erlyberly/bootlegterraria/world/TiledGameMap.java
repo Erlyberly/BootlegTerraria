@@ -99,21 +99,21 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public void setBlockAt(final int x, final int y, final TileType tt) {
-        final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(x, y));
-        if (oldID == tt || isOutsideMap(x, y)) {
+    public void setBlockAt(final int blockX, final int blockY, final TileType tt) {
+        final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(blockX, blockY));
+        if (oldID == tt || isOutsideMap(blockX, blockY)) {
             return;
         }
         Cell cell = null;
         if (tt != null) {
             cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
         }
-        this.blockLayer.setCell(x, y, cell);
+        this.blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
-        if (getSkylightAt(x) < y || (tt != null && tt.isEmittingLight()) ||
+        if (getSkylightAt(blockX) < blockY || (tt != null && tt.isEmittingLight()) ||
             (oldID != null && oldID.isEmittingLight())) {
-            this.tiledMapRenderer.asyncUpdateLightAt(x);
+            this.tiledMapRenderer.asyncUpdateLightAt(blockX);
         }
     }
 
