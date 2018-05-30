@@ -306,8 +306,16 @@ public abstract class GameMap {
         }
     }
 
-    public boolean isOutsideMap(int x, int y) {
-        return x < 0 || y < 0 || x >= getPixelWidth() || y > getPixelHeight();
+    /**
+     * @param blockX
+     *     The x coordinate of the block to check
+     * @param blockY
+     *     The y coordinate of the block to check
+     *
+     * @return true if the block at ({@code x, y}) is outside of the maps bounds
+     */
+    public boolean isOutsideMap(int blockX, int blockY) {
+        return blockX < 0 || blockY < 0 || blockX > getWidth() || blockY >= getHeight();
     }
 
     public void checkPlayerEnemyCollision() {
