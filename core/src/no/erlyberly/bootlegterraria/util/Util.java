@@ -1,7 +1,10 @@
 package no.erlyberly.bootlegterraria.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 
 public class Util {
 
@@ -61,5 +64,25 @@ public class Util {
                                     "Minimum argument must be less than or equal to the maximum argument");
         if (val.compareTo(min) < 0) { return false; }
         else { return val.compareTo(max) < 0; }
+    }
+
+    public static AABB2D fromLight(Vector2 pos, LightLevel lightLevel) {
+
+        final int lightRadius = lightLevel.getLvl() - 1;
+
+        int mapWidth = (int) GameMain.inst().getGameMap().getWidth();
+        int mapHeight = (int) GameMain.inst().getGameMap().getHeight();
+
+        int x = (int) pos.x;
+        int y = (int) pos.y;
+
+        //start coords, top right
+        final int x0 = Util.between(0, x - lightRadius, mapWidth);
+        final int y0 = Util.between(0, y - lightRadius, mapHeight);
+
+        //end coords, lower left
+        final int x1 = Util.between(0, x + lightRadius, mapWidth);
+        final int y1 = Util.between(0, y + lightRadius, mapHeight);
+        return new AABB2D(x0, x1, y0, y1);
     }
 }
