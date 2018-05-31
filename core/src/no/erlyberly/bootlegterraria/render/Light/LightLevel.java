@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.util;
+package no.erlyberly.bootlegterraria.render.Light;
 
 public enum LightLevel {
     LVL_7(7),

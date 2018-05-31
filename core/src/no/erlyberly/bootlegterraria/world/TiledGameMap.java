@@ -10,12 +10,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Vector2;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.render.Light.LightLevel;
+import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
-import no.erlyberly.bootlegterraria.util.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
 
 public class TiledGameMap extends GameMap {
@@ -24,7 +24,7 @@ public class TiledGameMap extends GameMap {
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
     private final TiledMapTileLayer blockLayer;
 
-    private final Vector2 spawn;
+    private final Vector2Int spawn;
 
     private final int mapWidth;
     private final int mapHeight;
@@ -89,7 +89,7 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public Vector2 getSpawn() {
+    public Vector2Int getSpawn() {
         return this.spawn;
     }
 

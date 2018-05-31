@@ -44,10 +44,10 @@ public abstract class Entity {
         float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
         if (this instanceof Player) {
-            gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
+            this.gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
         }
 
-        if (gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
+        if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             if (this.velocityY < 0) {
                 this.pos.y = (float) Math.floor(this.pos.y);
                 this.onGround = true;
@@ -63,7 +63,7 @@ public abstract class Entity {
 
     public void moveX(float velocityX) {
         float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
-        if (!gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
+        if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
             this.pos.x = newX;
         }
     }
@@ -106,7 +106,7 @@ public abstract class Entity {
     }
 
     public GameMap getGameMap() {
-        return gameMap;
+        return this.gameMap;
     }
 
     public int getFacing() {

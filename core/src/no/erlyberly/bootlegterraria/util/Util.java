@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.render.Light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 
 public class Util {

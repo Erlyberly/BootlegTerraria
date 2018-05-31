@@ -11,14 +11,14 @@ import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
+import no.erlyberly.bootlegterraria.render.Light.LightLevel;
+import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
 import no.erlyberly.bootlegterraria.util.GameInfo;
-import no.erlyberly.bootlegterraria.util.LightLevel;
 
 import java.util.ArrayList;
 
@@ -334,13 +334,13 @@ public abstract class GameMap {
         }
     }
 
-    public Vector2 blockToPixel(int blockX, int BlockY) {
+    public Vector2Int blockToPixel(int blockX, int BlockY) {
         int spawnX = (int) (blockX * getTileWidth());
         int spawnY = (int) ((getHeight() - BlockY) * getTileHeight());
 
         spawnX = (int) Math.max(0, Math.min(spawnX, getPixelWidth() - 1));
         spawnY = (int) Math.max(0, Math.min(spawnY, getPixelHeight() - 1));
-        return new Vector2(spawnX, spawnY);
+        return new Vector2Int(spawnX, spawnY);
     }
 
     public float getPixelWidth() {
@@ -394,7 +394,7 @@ public abstract class GameMap {
     /**
      * @return Player spawn location
      */
-    public abstract Vector2 getSpawn();
+    public abstract Vector2Int getSpawn();
 
     /**
      * @return The layer where the collidable blocks are

@@ -2,7 +2,7 @@ package no.erlyberly.bootlegterraria.world;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.google.common.base.Preconditions;
-import no.erlyberly.bootlegterraria.util.LightLevel;
+import no.erlyberly.bootlegterraria.render.Light.LightLevel;
 
 import java.util.HashMap;
 
@@ -107,6 +107,6 @@ public enum TileType {
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 }

@@ -13,33 +13,37 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.render.Light.LightLevel;
+import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
-import no.erlyberly.bootlegterraria.util.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
-import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
-import static no.erlyberly.bootlegterraria.util.LightLevel.*;
+import static no.erlyberly.bootlegterraria.render.Light.LightLevel.*;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
     private final int mapWidth;
     private final int mapHeight;
     private final int[] skyLight;
-    private final HashMap<Vector2, LightLevel> lightSources;
-    private LightLevel[][] brightness;
+    private final HashMap<Vector2Int, LightLevel> lightSources;
+    private int[][][] brightness;
 
-    public static boolean logLightTime = false;
+    public static boolean logLightTime = true;
 
     public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
     private static final int MIN_LIGHT_DEPTH = -1;
 
+    private static final int LIGHT_INFO_SIZE = 3; //how much information we have at each block
+
+    private static final int LIGHT_INFO_BRIGHTNESS = 0; //how bright this block should be
+    private static final int LIGHT_INFO_SOURCES = 1; //how many light sources shine at this block
+    private static final int LIGHT_INFO_CALC_LL = 2; //the calculated light level at this location
 
     private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
 
