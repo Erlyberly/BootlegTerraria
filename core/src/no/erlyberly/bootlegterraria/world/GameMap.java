@@ -132,8 +132,9 @@ public abstract class GameMap {
         font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
         font.draw(batch, "FPS    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
         font.draw(batch, "Block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
-        font.draw(batch, "Mouse  : (" + blockX + ", " + blockY + ") LL: " + lightAt(blockX, blockY), 7f,
-                  GameInfo.HEIGHT / (1.145f));
+        String m = String.format("Mouse : (%d, %d) (%.1f, %.1f) LL: %s ", blockX, blockY, mousePos.x, mousePos.y,
+                                 lightAt(blockX, blockY));
+        font.draw(batch, m, 7f, GameInfo.HEIGHT / (1.145f));
         batch.end();
     }
 
