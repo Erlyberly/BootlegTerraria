@@ -115,8 +115,14 @@ public class TiledGameMap extends GameMap {
 //            (oldID != null && oldID.isEmittingLight())) {
 
         LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
-        this.tiledMapRenderer.getLight().put(blockX, blockY, ll);
-//        }
+        boolean isEmittingLight = tt != null && tt.isEmittingLight();
+
+        if (isEmittingLight) {
+            this.tiledMapRenderer.getLight().put(blockX, blockY, ll);
+        }
+        else if (oldID != null && oldID.isEmittingLight()) {
+            this.tiledMapRenderer.getLight().remove(blockX, blockY);
+        }
     }
 
     @Override

@@ -43,7 +43,7 @@ public class BlockLightMap implements LightMap {
     @Override
     public void put(Vector2Int pos, LightLevel ll) {
         if (ll == LightLevel.LVL_0) {
-            remove(pos);
+            throw new IllegalArgumentException("Tried to put light level 0 as a light source");
         }
         AABB2D affected = Util.fromLight(pos, ll);
         for (Vector2Int v : affected) {
@@ -61,7 +61,6 @@ public class BlockLightMap implements LightMap {
                 if (li != null) {
                     li.remove(pos);
                 }
-
             }
             this.lightInfos.remove(pos);
             if (logLightTime) {

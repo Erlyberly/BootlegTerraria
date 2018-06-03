@@ -48,6 +48,12 @@ public interface LightMap {
      */
     void put(Vector2Int pos, LightLevel ll);
 
+    void remove(Vector2Int pos);
+
+    default void remove(int blockX, int blockY) {
+        remove(new Vector2Int(blockX, blockY));
+    }
+
     /**
      * @return A copy of the blocking light positions
      */
