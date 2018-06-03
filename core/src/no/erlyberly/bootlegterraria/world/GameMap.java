@@ -16,8 +16,8 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
-import no.erlyberly.bootlegterraria.render.Light.LightLevel;
-import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
+import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 
 import java.util.ArrayList;

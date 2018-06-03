@@ -1,6 +1,6 @@
 package no.erlyberly.bootlegterraria.util.aabb;
 
-import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.Util;
 
 import java.util.Iterator;

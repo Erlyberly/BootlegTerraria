@@ -1,16 +1,17 @@
-package no.erlyberly.bootlegterraria.render.Light;
+package no.erlyberly.bootlegterraria.render.light;
 
 public enum LightLevel {
-    LVL_7(7),
-    LVL_6(6),
-    LVL_5(5),
-    LVL_4(4),
-    LVL_3(3),
-    LVL_2(2),
-    LVL_1(1),
-    LVL_0(0);
+    LVL_0,
+    LVL_1,
+    LVL_2,
+    LVL_3,
+    LVL_4,
+    LVL_5,
+    LVL_6,
+    LVL_7,
+    LVL_8;
 
-    public static final int LIGHT_LEVELS = 8;
+    public static final int LIGHT_LEVELS = 9;
 
     final int lvl;
     final float percentage;
@@ -34,9 +35,9 @@ public enum LightLevel {
         }
     }
 
-    LightLevel(int lvl) {
-        this.lvl = lvl;
-        this.percentage = (lvl / ((float) LIGHT_LEVELS - 1));
+    LightLevel() {
+        this.lvl = ordinal();
+        this.percentage = (this.lvl / ((float) LIGHT_LEVELS - 1));
     }
 
     public int getLvl() {
@@ -47,6 +48,13 @@ public enum LightLevel {
         return this.percentage;
     }
 
+    public LightLevel dimmer() {
+        return valueOf(this.lvl - 1);
+    }
+
+    public LightLevel brighter() {
+        return valueOf(this.lvl + 1);
+    }
 
     /**
      * Safely get the light level from an integer, if the {@code lvl} is less than 0, {@code LVL_0} is returned. If
@@ -58,16 +66,25 @@ public enum LightLevel {
         return values[lvl];
     }
 
-    public LightLevel dimmer() {
-        return valueOf(this.lvl - 1);
+    /**
+     * @return The brightest possible LightLevel
+     */
+    public static LightLevel max() {
+        return LightLevel.valueOf(Integer.MAX_VALUE);
     }
 
-    public LightLevel brighter() {
-        return valueOf(this.lvl + 1);
+    /**
+     * @return The dimmest possible LightLevel
+     */
+    public static LightLevel min() {
+        return LightLevel.valueOf(Integer.MIN_VALUE);
     }
 
     @Override
     public String toString() {
         return name() + "(" + this.percentage + ")";
     }
+
+
 }
+

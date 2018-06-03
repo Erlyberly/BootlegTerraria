@@ -2,7 +2,7 @@ package no.erlyberly.bootlegterraria.world;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.google.common.base.Preconditions;
-import no.erlyberly.bootlegterraria.render.Light.LightLevel;
+import no.erlyberly.bootlegterraria.render.light.LightLevel;
 
 import java.util.HashMap;
 
