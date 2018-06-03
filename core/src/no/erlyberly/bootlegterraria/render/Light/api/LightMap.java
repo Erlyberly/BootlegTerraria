@@ -8,8 +8,6 @@ import no.erlyberly.bootlegterraria.util.Vector2Int;
  */
 public interface LightMap {
 
-    LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_8;
-
     /**
      * @param blockX
      *     The x-coordinate of the block

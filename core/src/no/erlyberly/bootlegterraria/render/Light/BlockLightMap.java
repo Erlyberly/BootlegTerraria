@@ -96,7 +96,7 @@ public class BlockLightMap implements LightMap {
             if (tt.isCollidable()) {
                 System.out.println("old skylight (" + col + ", " + this.skyLight[col] + ")");
                 this.skyLight[col] = this.skyLight[col] < y ? y + 1 : this.skyLight[col];
-                put(col, this.skyLight[col], SKY_LIGHT_BRIGHTNESS);
+                put(col, this.skyLight[col], LightLevel.SKY_LIGHT);
                 System.out.println("new skylight found (" + col + ", " + this.skyLight[col] + ")");
                 return;
             }
@@ -139,9 +139,9 @@ public class BlockLightMap implements LightMap {
         }
 
         for (int x = 0; x < this.skyLight.length; x++) {
-            put(x, this.skyLight[x], SKY_LIGHT_BRIGHTNESS);
+            put(x, this.skyLight[x], LightLevel.SKY_LIGHT);
 //            for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
-//                put(x, y, SKY_LIGHT_BRIGHTNESS);
+//                put(x, y, LightLevel.SKY_LIGHT);
 //            }
         }
 

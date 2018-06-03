@@ -147,7 +147,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 //            for (int x = 0; x < this.skyLight.length; x++) {
 //                for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
 //                    final Vector2Int v = new Vector2Int(x, y);
-//                    this.lightSources.put(v, Lighting.SKY_LIGHT_BRIGHTNESS);
+//                    this.lightSources.put(v, Lighting.SKY_LIGHT);
 //                }
 //            }
 //            calculateLight(0, this.skyLight.length);

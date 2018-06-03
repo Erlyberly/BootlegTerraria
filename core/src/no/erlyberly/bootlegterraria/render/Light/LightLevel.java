@@ -13,6 +13,8 @@ public enum LightLevel {
 
     public static final int LIGHT_LEVELS = 9;
 
+    public static final LightLevel SKY_LIGHT = LightLevel.LVL_8;
+
     final int lvl;
     final float percentage;
 
