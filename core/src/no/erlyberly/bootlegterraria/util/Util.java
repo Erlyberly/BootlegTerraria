@@ -81,8 +81,8 @@ public class Util {
         final int y0 = Util.between(0, blockY - lightRadius, mapHeight);
 
         //end coords, lower left
-        final int x1 = Util.between(0, blockX + lightRadius, mapWidth);
-        final int y1 = Util.between(0, blockY + lightRadius, mapHeight);
+        final int x1 = Util.between(0, blockX + lightRadius + 1, mapWidth);
+        final int y1 = Util.between(0, blockY + lightRadius + 1, mapHeight);
         return new AABB2D(x0, x1, y0, y1);
     }
 }
