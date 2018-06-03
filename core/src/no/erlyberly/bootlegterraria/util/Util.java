@@ -66,23 +66,23 @@ public class Util {
         else { return val.compareTo(max) < 0; }
     }
 
-    public static AABB2D fromLight(Vector2 pos, LightLevel lightLevel) {
+    public static AABB2D fromLight(Vector2Int src, LightLevel lightLevel) {
 
         final int lightRadius = lightLevel.getLvl() - 1;
+
+        int blockX = src.x;
+        int blockY = src.y;
 
         int mapWidth = (int) GameMain.inst().getGameMap().getWidth();
         int mapHeight = (int) GameMain.inst().getGameMap().getHeight();
 
-        int x = (int) pos.x;
-        int y = (int) pos.y;
-
         //start coords, top right
-        final int x0 = Util.between(0, x - lightRadius, mapWidth);
-        final int y0 = Util.between(0, y - lightRadius, mapHeight);
+        final int x0 = Util.between(0, blockX - lightRadius, mapWidth);
+        final int y0 = Util.between(0, blockY - lightRadius, mapHeight);
 
         //end coords, lower left
-        final int x1 = Util.between(0, x + lightRadius, mapWidth);
-        final int y1 = Util.between(0, y + lightRadius, mapHeight);
+        final int x1 = Util.between(0, blockX + lightRadius, mapWidth);
+        final int y1 = Util.between(0, blockY + lightRadius, mapHeight);
         return new AABB2D(x0, x1, y0, y1);
     }
 }

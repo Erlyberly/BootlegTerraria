@@ -36,7 +36,7 @@ public class GameMain extends Game {
         this.hudCamera = new OrthographicCamera();
         this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-//        camera.position.set(800f, 500f, 0); //Unlocked cam for debugging
+//        camera.position.put(800f, 500f, 0); //Unlocked cam for debugging
         this.camera.update();
 
 
@@ -92,7 +92,7 @@ public class GameMain extends Game {
         return this.batch;
     }
 
-    public static ConsoleHandler getConsoleHandler() {
+    public static ConsoleHandler consHldr() {
         return consoleHandler;
     }
 }

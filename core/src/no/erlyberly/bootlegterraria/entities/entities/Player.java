@@ -102,7 +102,7 @@ public class Player extends Entity {
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             System.out.println("Zombie!");
-            gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2));
+            this.gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2));
         }
     }
 
@@ -200,7 +200,7 @@ public class Player extends Entity {
     public void render(SpriteBatch batch) {
         int direction = getFacing();
 
-        //""animation"" of the player, flips the sprite back and forth on a time scale set by
+        //""animation"" of the player, flips the sprite back and forth on a time scale put by
         // ANIMATION_DIRECTION_DURATION
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             this.animationTime += Gdx.graphics.getRawDeltaTime();

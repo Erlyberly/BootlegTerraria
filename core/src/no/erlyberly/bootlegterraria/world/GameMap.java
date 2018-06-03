@@ -208,12 +208,12 @@ public abstract class GameMap {
             if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
                 if (Gdx.input.justTouched()) {
                     if (type != null) {
-                        GameMain.getConsoleHandler().log(
+                        GameMain.consHldr().log(
                             "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
                             " coord: (" + blockX + ", " + blockY + ")");
                     }
                     else {
-                        GameMain.getConsoleHandler().log("Not a tile");
+                        GameMain.consHldr().log("Not a tile");
                     }
                 }
             }
