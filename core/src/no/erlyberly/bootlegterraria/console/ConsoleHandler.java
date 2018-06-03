@@ -37,18 +37,30 @@ public class ConsoleHandler {
     }
 
     public void log(final String msg) {
-        this.console.log(msg);
+        log(msg, LogLevel.DEFAULT);
     }
 
     public void log(final String msg, final LogLevel level) {
+        if (level == LogLevel.ERROR) {
+            System.err.println(msg);
+        }
+        else {
+            System.out.println(msg);
+        }
         this.console.log(msg, level);
     }
 
     public void logf(final String msg, final Object... objs) {
-        this.console.log(String.format(msg, objs));
+        logf(msg, LogLevel.DEFAULT, objs);
     }
 
     public void logf(final String msg, final LogLevel level, final Object... objs) {
+        if (level == LogLevel.ERROR) {
+            System.err.printf(msg, objs);
+        }
+        else {
+            System.out.printf(msg, objs);
+        }
         this.console.log(String.format(msg, objs), level);
     }
 
