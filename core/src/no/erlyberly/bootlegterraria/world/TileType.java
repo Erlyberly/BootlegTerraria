@@ -10,7 +10,7 @@ public enum TileType {
 
     GRASS(1, "Grass"),
     DIRT(2, "Dirt"),
-    LAVA(3, "Lava", 2500, LightLevel.LVL_6, 0.5f),
+    LAVA(3, "Lava", 2500, LightLevel.LVL_7, 0.5f),
     CLOUD(4, "Cloud", 0),
     STONE(5, "Stone"),
     TORCH(6, "Torch", LightLevel.LVL_6, 0);
