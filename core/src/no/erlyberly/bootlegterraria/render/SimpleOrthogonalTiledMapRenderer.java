@@ -1,11 +1,9 @@
 package no.erlyberly.bootlegterraria.render;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,39 +11,34 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.render.Light.LightLevel;
-import no.erlyberly.bootlegterraria.render.Light.api.Vector2Int;
-import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
+import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
+import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
-import no.erlyberly.bootlegterraria.world.TileType;
-
-import java.util.HashMap;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
-import static no.erlyberly.bootlegterraria.render.Light.LightLevel.*;
+import static no.erlyberly.bootlegterraria.render.light.LightLevel.LVL_0;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
-    private final int mapWidth;
-    private final int mapHeight;
-    private final int[] skyLight;
-    private final HashMap<Vector2Int, LightLevel> lightSources;
+    //    private final int mapWidth;
+//    private final int mapHeight;
+    //    private final int[] skyLight;
+//    private final HashMap<Vector2Int, LightLevel> lightSources;
     private int[][][] brightness;
 
     public static boolean logLightTime = true;
 
-    public static final LightLevel SKY_LIGHT_BRIGHTNESS = LightLevel.LVL_7;
-    private static final int MIN_LIGHT_DEPTH = -1;
+//    private static final int MIN_LIGHT_DEPTH = -1;
+//
+//    private static final int LIGHT_INFO_SIZE = 3; //how much information we have at each block
+//
+//    private static final int LIGHT_INFO_BRIGHTNESS = 0; //how bright this block should be
+//    private static final int LIGHT_INFO_SOURCES = 1; //how many light sources shine at this block
+//    private static final int LIGHT_INFO_CALC_LL = 2; //the calculated light level at this location
 
-    private static final int LIGHT_INFO_SIZE = 3; //how much information we have at each block
 
-    private static final int LIGHT_INFO_BRIGHTNESS = 0; //how bright this block should be
-    private static final int LIGHT_INFO_SOURCES = 1; //how many light sources shine at this block
-    private static final int LIGHT_INFO_CALC_LL = 2; //the calculated light level at this location
-
-    private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
+    private final BlockLightMap light;
 
     private static final Texture BLACK_TEXTURE;
 
@@ -57,275 +50,215 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     }
 
 
-    public SimpleOrthogonalTiledMapRenderer(final TiledMap map, final boolean test) {
+    public SimpleOrthogonalTiledMapRenderer(final TiledMap map) {
         super(map);
 
         //get the width of the map
         final MapProperties prop = map.getProperties();
-        this.mapWidth = prop.get("width", Integer.class);
-        this.mapHeight = prop.get("height", Integer.class);
+        int mapWidth = prop.get("width", Integer.class);
+        int mapHeight = prop.get("height", Integer.class);
 
         GameMain.backgroundColor = Util.convert(prop.get("backgroundcolor", "#FFFF0000", String.class));
-        this.skyLight = new int[this.mapWidth];
-        this.lightSources = new HashMap<>();
-        this.brightness = new LightLevel[this.mapWidth][this.mapHeight];
 
-        for (int x = 0; x < this.brightness.length; x++) {
-            for (int y = 0; y < this.brightness[x].length; y++) {
-                this.brightness[x][y] = LightLevel.LVL_0;
-            }
-        }
+        this.light = new BlockLightMap(mapWidth, mapHeight, map);
 
-        for (int i = 0; i < this.mapWidth; i++) {
-            this.skyLight[i] = MIN_LIGHT_DEPTH;
-        }
-        if (test) {
-            test();
-        }
-        else {
-            asyncUpdateLights();
-        }
+//        LIGHT_THREAD.execute(() -> {
+//            light
+//        });
+//        this.skyLight = new int[this.mapWidth];
+//        this.lightSources = new HashMap<>();
+
+//        this.brightness = new int[this.mapWidth][this.mapHeight][LIGHT_INFO_SIZE];
+
+//        this.brightness[0][0][LIGHT_INFO_BRIGHTNESS] = 7;
+//        this.brightness[0][0][LIGHT_INFO_SOURCES] = 1;
+//        calculateLLfor(0, 0, 7, false, this.brightness);
+
+//        for (int x = 0; x < this.brightness.length; x++) {
+//            for (int y = 0; y < this.brightness[x].length; y++) {
+//                this.brightness[x][y][] = LightLevel.LVL_0;
+//            }
+//        }
+
+//        for (int i = 0; i < this.mapWidth; i++) {
+//            this.skyLight[i] = MIN_LIGHT_DEPTH;
+//        }
+//        if (test) {
+//            test();
+//        }
+//        else {
+//            asyncUpdateLights();
+//        }
     }
 
-    public void asyncUpdateLights() {
-        LIGHT_THREAD.cancelTasks(); //cancel previous lighting tasks
-        asyncUpdateLightBetween(0, this.skyLight.length);
-    }
+//    public void asyncUpdateLights() {
+//        LIGHT_THREAD.cancelTasks(); //cancel previous light tasks
+//        asyncUpdateLightBetween(0, this.skyLight.length);
+//    }
+//
+//    /**
+//     * Update the skylight between {@code min} and {@code max}
+//     *
+//     * @param min
+//     *     The minimum x value to check (inclusive)
+//     * @param max
+//     *     The maximum x value to check (exclusive)
+//     */
+//    public void asyncUpdateLightBetween(final int min, final int max) {
+//
+//        Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
+//        Preconditions.checkArgument(max <= this.skyLight.length,
+//                                    "Maximum argument must be less than or equal to skyLight.length");
+//        Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
+//
+//        LIGHT_THREAD.execute(() -> {
+//            final long startTime = System.currentTimeMillis();
+//            //remove all light sources between min and max
+//            this.lightSources.entrySet().removeIf(entry -> entry.getKey().x >= min && entry.getKey().x < max);
+//
+//            for (final MapLayer layer : this.map.getLayers()) {
+//                if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
+//                    final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
+//                    final int height = tiledLayer.getHeight();
+//                    for (int x = min; x < max; x++) {
+//                        this.skyLight[x] = MIN_LIGHT_DEPTH; //reset skylight if already put
+//                        boolean skyFound = false;
+//                        for (int y = height - 1; y >= 0; y--) {
+//                            //check if the current cell is collidable
+//                            final Cell cell = tiledLayer.getCell(x, y);
+//                            //batch.setColor(1.0f, 1.0f, 1.0f, brightness[x][y].getPercentage());
+//                            if (cell == null) {
+//                                //empty cell
+//                                continue;
+//                            }
+//                            //int yLoc = height - y - 1; //actual map y loc
+//                            final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
+//                            if (!skyFound && tt.isCollidable()) {
+//                                this.skyLight[x] = this.skyLight[x] < y ? y - 1 : this.skyLight[x];
+//                                skyFound = true; //no further looping required
+//                            }
+//                            if (tt.getLuminosity() != LightLevel.LVL_0) {
+//                                this.lightSources.put(new Vector2Int(x, y), tt.getLuminosity());
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            for (int x = 0; x < this.skyLight.length; x++) {
+//                for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
+//                    final Vector2Int v = new Vector2Int(x, y);
+//                    this.lightSources.put(v, Lighting.SKY_LIGHT_BRIGHTNESS);
+//                }
+//            }
+//            calculateLight(0, this.skyLight.length);
+////            calculateLight(min, max);
+//            if (logLightTime) {
+//                GameMain.consHldr().log("light update took " + (System.currentTimeMillis() - startTime) + " ms");
+//            }
+//        });
+//    }
+//
+//    public void asyncUpdateLightAt(final int x) {
+//        Preconditions.checkArgument(x >= 0, "x must be greater than 0");
+//        Preconditions.checkArgument(x < this.skyLight.length, "x must be less than the width of the world");
+//
+//        asyncUpdateLightBetween(x, x + 1);
+//    }
+//
+//    /**
+//     * @return A copy of the blocking light positions
+//     */
+//    public int[] getSkyLights() {
+//        final int[] cpy = new int[this.skyLight.length];
+//        System.arraycopy(this.skyLight, 0, cpy, 0, this.skyLight.length);
+//        return cpy;
+//    }
+//
+//    private int[][][] cpyBrightness() {
+//        final int[][][] newBrightness = new int[this.mapWidth][this.mapHeight][LIGHT_INFO_SIZE];
+//        System.arraycopy(this.brightness, 0, newBrightness, 0, this.skyLight.length);
+//        return newBrightness;
+//    }
+//
+//    private void calculateLight(final int rawMin, final int rawMax) {
+//        Preconditions.checkArgument(rawMin >= 0, "Minimum argument must be greater than or equal to 0");
+//        Preconditions.checkArgument(rawMax <= this.skyLight.length,
+//                                    "Maximum argument must be less than or equal to skyLight.length");
+//        Preconditions.checkArgument(rawMin < rawMax, "Minimum argument must be less than maximum argument");
+//
+//        final int calculatedMin = Math.max(0, rawMin - LIGHT_LEVELS);
+//        final int calculatedMax = Math.min(this.skyLight.length, rawMax + LIGHT_LEVELS);
+//
+//        //copy the current brightness
+//        final int[][][] newBrightness = cpyBrightness();
+//
+//        //reset the lights between min and max
+//        for (int x = calculatedMin; x < calculatedMax; x++) {
+//            for (int y = 0; y < newBrightness[x].length; y++) {
+//                resetLL(x, y, newBrightness);
+//            }
+//        }
+//
+//
+//        this.lightSources.forEach((coord, lightLevel) -> {
+//            if (coord.x >= calculatedMin && coord.x < calculatedMax) {
+//                calculateLLfor(coord.x, coord.y, lightLevel.getLvl(), false, newBrightness);
+//            }
+//        });
+//
+//        //do a pass for right-to-left light then a pass for left-to-right light
+//        for (int x = calculatedMin; x < calculatedMax; x++) {
+//            calculateLightColumn(x, newBrightness);
+//        }
+//        for (int x = calculatedMax - 1; x >= calculatedMin; x--) {
+//            calculateLightColumn(x, newBrightness);
+//        }
+//
+//        //make sure we get no concurrency errors
+//        Gdx.app.postRunnable(() -> this.brightness = newBrightness);
+//    }
 
-    /**
-     * Update the skylight between {@code min} and {@code max}
-     *
-     * @param min
-     *     The minimum x value to check (inclusive)
-     * @param max
-     *     The maximum x value to check (exclusive)
-     */
-    public void asyncUpdateLightBetween(final int min, final int max) {
-
-        Preconditions.checkArgument(min >= 0, "Minimum argument must be greater than or equal to 0");
-        Preconditions.checkArgument(max <= this.skyLight.length,
-                                    "Maximum argument must be less than or equal to skyLight.length");
-        Preconditions.checkArgument(min < max, "Minimum argument must be less than maximum argument");
-
-        LIGHT_THREAD.execute(() -> {
-            final long startTime = System.currentTimeMillis();
-            //remove all light sources between min and max
-            this.lightSources.entrySet().removeIf(entry -> entry.getKey().x >= min && entry.getKey().x < max);
-
-            for (final MapLayer layer : this.map.getLayers()) {
-                if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
-                    final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
-                    final int height = tiledLayer.getHeight();
-                    for (int x = min; x < max; x++) {
-                        this.skyLight[x] = MIN_LIGHT_DEPTH; //reset skylight if already set
-                        boolean skyFound = false;
-                        for (int y = height - 1; y >= 0; y--) {
-                            //check if the current cell is collidable
-                            final Cell cell = tiledLayer.getCell(x, y);
-                            //batch.setColor(1.0f, 1.0f, 1.0f, brightness[x][y].getPercentage());
-                            if (cell == null) {
-                                //empty cell
-                                continue;
-                            }
-                            //int yLoc = height - y - 1; //actual map y loc
-                            final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
-                            if (!skyFound && tt.isCollidable()) {
-                                this.skyLight[x] = this.skyLight[x] < y ? y - 1 : this.skyLight[x];
-                                skyFound = true; //no further looping required
-                            }
-                            if (tt.getLuminosity() != LightLevel.LVL_0) {
-                                this.lightSources.put(new Vector2(x, y), tt.getLuminosity());
-                            }
-                        }
-                    }
-                }
-            }
-            for (int x = 0; x < this.skyLight.length; x++) {
-                for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
-                    final Vector2 v = new Vector2(x, y);
-                    this.lightSources.put(v, SKY_LIGHT_BRIGHTNESS);
-                }
-            }
-            calculateLight(0, this.skyLight.length);
-//            calculateLight(min, max);
-            if (logLightTime) {
-                GameMain.getConsoleHandler()
-                        .log("Light update took " + (System.currentTimeMillis() - startTime) + " ms");
-            }
-        });
-    }
-
-    public void asyncUpdateLightAt(final int x) {
-        Preconditions.checkArgument(x >= 0, "x must be greater than 0");
-        Preconditions.checkArgument(x < this.skyLight.length, "x must be less than the width of the world");
-
-        asyncUpdateLightBetween(x, x + 1);
-    }
-
-    /**
-     * @return A copy of the blocking lighting positions
-     */
-    public int[] getSkyLights() {
-        final int[] cpy = new int[this.skyLight.length];
-        System.arraycopy(this.skyLight, 0, cpy, 0, this.skyLight.length);
-        return cpy;
-    }
-
-    private LightLevel[][] cpyBrightness() {
-        final LightLevel[][] newBrightness = new LightLevel[this.mapWidth][this.mapHeight];
-        System.arraycopy(this.brightness, 0, newBrightness, 0, this.skyLight.length);
-        return newBrightness;
-    }
-
-    private void calculateLight(final int rawMin, final int rawMax) {
-        Preconditions.checkArgument(rawMin >= 0, "Minimum argument must be greater than or equal to 0");
-        Preconditions.checkArgument(rawMax <= this.skyLight.length,
-                                    "Maximum argument must be less than or equal to skyLight.length");
-        Preconditions.checkArgument(rawMin < rawMax, "Minimum argument must be less than maximum argument");
-
-        final int calculatedMin = Math.max(0, rawMin - LIGHT_LEVELS);
-        final int calculatedMax = Math.min(this.skyLight.length, rawMax + LIGHT_LEVELS);
-
-        //copy the current brightness
-        final LightLevel[][] newBrightness = cpyBrightness();
-
-        //reset the lights between min and max
-        for (int x = calculatedMin; x < calculatedMax; x++) {
-            for (int y = 0; y < newBrightness[x].length; y++) {
-                newBrightness[x][y] = LightLevel.LVL_0;
-            }
-        }
-
-
-        this.lightSources.forEach((coord, lightLevel) -> {
-            if (coord.x >= calculatedMin && coord.x < calculatedMax) {
-                newBrightness[(int) coord.x][(int) coord.y] = lightLevel;
-            }
-        });
-
-        //do a pass for right-to-left light then a pass for left-to-right light
-        for (int x = calculatedMin; x < calculatedMax; x++) {
-            calculateLightColumn(x, newBrightness);
-        }
-        for (int x = calculatedMax - 1; x >= calculatedMin; x--) {
-            calculateLightColumn(x, newBrightness);
-        }
-
-        //make sure we get no concurrency errors
-        Gdx.app.postRunnable(() -> this.brightness = newBrightness);
-    }
-
-    @Deprecated
-    //TODO remove when done debugging
-    public void calculateLightAt(int x, int y, LightLevel newLightLevel) {
-        calculateLightAt(x, y, newLightLevel, cpyBrightness());
-    }
-
-    //Clean all light in radius of the current light at xy
-    //then for every light source that's MAX_LIGHT_LEVEL away,
-    // recalculate for all light of that block that's within the blacked out radius
-    //note: that's not what's implemented below as of yet
-    //TODO implement the lighting over
-    //TODO remove this message then the above todo is done
-    private void calculateLightAt(int blockX, int blockY, LightLevel newLightLevel,
-                                  final LightLevel[][] newBrightness) {
-        System.out.println("blockX = [" + blockX + "], blockY = [" + blockY + "], newLightLevel = [" + newLightLevel +
-                           "], newBrightness = [" + "]");
-        LightLevel currLevel = newBrightness[blockX][blockY];
-        if (newLightLevel != LVL_0) {
-            this.lightSources.put(new Vector2(blockX, blockY), newLightLevel);
-        }
-
-        //How far the light at x,y travel
-        final int lightRadius =
-            (newLightLevel.getLvl() > currLevel.getLvl() ? newLightLevel.getLvl() : currLevel.getLvl()) - 1;
-
-        //start coords, top right
-        final int x0 = Util.between(0, blockX - lightRadius, this.mapWidth);
-        final int y0 = Util.between(0, blockY - lightRadius, this.mapHeight);
-
-        //end coords, lower left
-        final int x1 = Util.between(0, blockX + lightRadius, this.mapWidth);
-        final int y1 = Util.between(0, blockY + lightRadius, this.mapHeight);
-
-
-        //reset light for the affected area
-        for (int x = x0; x <= x1; x++) {
-            for (int y = y0; y <= y1; y++) {
-                newBrightness[x][y] = LightLevel.LVL_0;
-            }
-        }
-
-//        calculateLightColumn(blockX, newBrightness);
-
-        AABB2D orgAABB = new AABB2D(x0, x1, y0, y1);
-        System.out.println("orgAABB = " + orgAABB);
-        this.lightSources.forEach((pos, level) -> {
-            AABB2D lightSourceAABB = Util.fromLight(pos, level);
-            if (orgAABB.overlap(lightSourceAABB)) {
-                newBrightness[(int) pos.x][(int) pos.y] = level;
-                System.out.print("lightSourceAABB = " + lightSourceAABB);
-                System.out.println(" | pos = " + pos);
-                for (Vector2 rv : lightSourceAABB) {
-                    if (orgAABB.hasPoint(rv)) {
-                        System.out.println("rv = " + rv);
-                        boolean relX = blockX >= rv.x;
-                        boolean relY = blockY >= rv.y;
-
-                        System.out.print("relX = " + relX);
-                        System.out.println(" | relY = " + relY);
-
-                        float dx;
-                        float dy;
-
-                        if (relX && relY) {
-                            dx = blockX - rv.x;
-                            dy = blockY - rv.y;
-                        }
-                        else if (relX && !relY) {
-                            dx = blockX + rv.x;
-                            dy = blockY - rv.y;
-                        }
-                        else if (!relX && relY) {
-                            dx = blockX - rv.x;
-                            dy = blockY + rv.y;
-                        }
-                        else /*if(!relX && !relY)*/ {
-                            dx = blockX + rv.x;
-                            dy = blockY + rv.y;
-                        }
-                        newBrightness[(int) rv.x][(int) rv.y] = lightLevelDelta((int) dx, (int) dy, level);
-                    }
-                }
-            }
-        });
-        Gdx.app.postRunnable(() -> this.brightness = newBrightness);
-    }
-
-    private LightLevel lightLevelDelta(float dx, float dy, LightLevel initialLightLevel) {
-        int initialLvl = initialLightLevel.getLvl();
-        int delta = (int) (dx > dy ? dx : dy);
-        return LightLevel.valueOf(initialLvl - delta);
-    }
-
-    private void calculateLightColumn(final int x, final LightLevel[][] newBrightness) {
-        for (int y = 0, length = newBrightness[x].length; y < length; y++) {
-            final LightLevel currBrightness = newBrightness[x][y];
-            final LightLevel dimmer = currBrightness.dimmer();
-            if (currBrightness == LVL_0 || currBrightness == LVL_1) {
-                continue;
-            }
-
-            for (int x1 = Math.max(x - 1, 0), maxX = Math.min(x + 1, newBrightness.length - 1); x1 <= maxX; x1++) {
-                for (int y1 = Math.max(y - 1, 0), maxY = Math.min(y + 1, newBrightness[x].length - 1);
-                     y1 <= maxY; y1++) {
-                    if (newBrightness[x1][y1].getLvl() < currBrightness.getLvl()) {
-                        newBrightness[x1][y1] = dimmer;
-                    }
-                }
-            }
-        }
-    }
+//    @Deprecated
+//    //TODO remove when done debugging
+//    public void calculateLightAt(int x, int y, LightLevel newLightLevel) {
+//        calculateLightAt(x, y, newLightLevel, cpyBrightness());
+//    }
+//
+//    //Clean all light in radius of the current light at xy
+//    //then for every light source that's MAX_LIGHT_LEVEL away,
+//    // recalculate for all light of that block that's within the blacked out radius
+//    //note: that's not what's implemented below as of yet
+//    //TODO implement the light over
+//    //TODO remove this message then the above todo is done
+//    private void calculateLightAt(int blockX, int blockY, LightLevel newLightLevel, final int[][][] newBrightness) {
+//        System.out.println("blockX = [" + blockX + "], blockY = [" + blockY + "], newLightLevel = [" + newLightLevel +
+//                           "], newBrightness = [" + "]");
+//        LightLevel currLevel = lightAt(blockX, blockY, newBrightness);
+//        if (newLightLevel != LVL_0) {
+//            this.lightSources.put(new Vector2Int(blockX, blockY), newLightLevel);
+//        }
+//        //TODO
+//        Gdx.app.postRunnable(() -> this.brightness = newBrightness);
+//    }
+//
+//
+//    private void calculateLightColumn(final int x, final int[][][] newBrightness) {
+//        for (int y = 0, length = newBrightness[x].length; y < length; y++) {
+//            final LightLevel currBrightness = lightAt(x, y, newBrightness);
+//            final LightLevel dimmer = currBrightness.dimmer();
+//            if (currBrightness == LVL_0 || currBrightness == LVL_1) {
+//                continue;
+//            }
+//
+//            for (int x1 = Math.max(x - 1, 0), maxX = Math.min(x + 1, newBrightness.length - 1); x1 <= maxX; x1++) {
+//                for (int y1 = Math.max(y - 1, 0), maxY = Math.min(y + 1, newBrightness[x].length - 1);
+//                     y1 <= maxY; y1++) {
+//                    //FIXME not working :(:(:(
+//                    calculateLLfor(x, y, dimmer.getLvl(), false, newBrightness);
+//                }
+//            }
+//        }
+//    }
 
     @SuppressWarnings("Duplicates")
     @Override
@@ -357,7 +290,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         final float[] vertices = this.vertices;
 
 
-        Texture texture = null;
+        Texture texture;
 
         for (int row = row2; row >= row1; row--) {
             float x = xStart;
@@ -387,7 +320,8 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                     final float u2 = region.getU2();
                     final float v2 = region.getV();
 
-                    final float darkness = this.brightness[col][row].getPercentage();
+                    LightLevel ll = this.light.lightAt(col, row);
+                    final float darkness = ll.getPercentage();
                     final float color = Color
                         .toFloatBits(batchColor.r * darkness, batchColor.g * darkness, batchColor.b * darkness,
                                      batchColor.a * layer.getOpacity());
@@ -479,7 +413,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                             }
                         }
                     }
-                    if (this.brightness[col][row] == LVL_0) {
+                    if (ll == LVL_0) {
                         texture = BLACK_TEXTURE;
                     }
                     else {
@@ -506,20 +440,85 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         endRender();
     }
 
-    private void test() {
-        final SimpleOrthogonalTiledMapRendererTest mapRendererTest = new SimpleOrthogonalTiledMapRendererTest();
+//    private void test() {
+//        final SimpleOrthogonalTiledMapRendererTest mapRendererTest = new SimpleOrthogonalTiledMapRendererTest();
+//
+//        mapRendererTest.updateSkylightsAt(this);
+//        mapRendererTest.updateSkylightsAll(this);
+//        mapRendererTest.testLightSources(this);
+//        Gdx.app.exit();
+//    }
 
-        mapRendererTest.updateSkylightsAt(this);
-        mapRendererTest.updateSkylightsAll(this);
-        mapRendererTest.testLightSources(this);
-        Gdx.app.exit();
+    public BlockLightMap getLight() {
+        return this.light;
     }
 
-    HashMap<Vector2, LightLevel> getLightSources() {
-        return this.lightSources;
-    }
+    //
+//    HashMap<Vector2Int, LightLevel> getLightSources() {
+//        return this.lightSources;
+//    }
 
-    public LightLevel lightAt(int x, int y) {
-        return this.brightness[x][y];
-    }
+//    public LightLevel lightAt(int x, int y) {
+//        return lightAt(x, y, this.brightness);
+//    }
+
+//    private LightLevel lightAt(int x, int y, int[][][] ll) {
+//        return LightLevel.valueOf(ll[x][y][LIGHT_INFO_BRIGHTNESS]);
+//    }
+//
+//    /**
+//     * Calculate internal state for a new light source
+//     *
+//     * @param x
+//     *     The x coordinate of the block's position
+//     * @param y
+//     *     The x coordinate of the block's position
+//     * @param newll
+//     *     How much light to add/remove
+//     * @param remove
+//     *     If this calculation should remove or add light
+//     * @param newBrightness
+//     *     The array to modify
+//     */
+//    private void calculateLLfor(int x, int y, int newll, boolean remove, int[][][] newBrightness) {
+//        int[] li = newBrightness[x][y];
+//
+//        if (remove) {
+//            if (li[LIGHT_INFO_SOURCES] == 0) {
+//                return;
+//            }
+//            li[LIGHT_INFO_SOURCES]--;
+//            li[LIGHT_INFO_BRIGHTNESS] -= newll;
+//
+//            if (li[LIGHT_INFO_SOURCES] == 0) {
+//                li[LIGHT_INFO_CALC_LL] = 0;
+//                if (li[LIGHT_INFO_BRIGHTNESS] != 0) {
+//                    GameMain.consHldr()
+//                            .logf("The brightness of block (%d,%d) is not 0 (%d)even tough there are no sources.",
+// x, y,
+//                                  li[LIGHT_INFO_BRIGHTNESS]);
+//                    li[LIGHT_INFO_BRIGHTNESS] = 0;
+//                }
+//                return;
+//            }
+//        }
+//        else {
+//            li[LIGHT_INFO_SOURCES]++;
+//            li[LIGHT_INFO_BRIGHTNESS] += newll;
+//        }
+//
+//
+//        li[LIGHT_INFO_CALC_LL] = li[LIGHT_INFO_BRIGHTNESS] / li[LIGHT_INFO_SOURCES];
+//        newBrightness[x][y] = li;
+////        System.out.println("newBrightness = " + Arrays.toString(newBrightness[x][y]));
+//    }
+//
+//    /**
+//     * Reset the light level of a location back to default
+//     */
+//    private void resetLL(int x, int y, int[][][] newBrightness) {
+//        newBrightness[x][y][LIGHT_INFO_SOURCES] = 0;
+//        newBrightness[x][y][LIGHT_INFO_BRIGHTNESS] = 0;
+//        newBrightness[x][y][LIGHT_INFO_BRIGHTNESS] = 0;
+//    }
 }

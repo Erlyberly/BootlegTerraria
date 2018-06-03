@@ -55,7 +55,7 @@ public class TiledGameMap extends GameMap {
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
-        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, GameMain.TEST);
+        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap);
     }
 
     @Override
@@ -111,10 +111,12 @@ public class TiledGameMap extends GameMap {
         this.blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
-        if (getSkylightAt(blockX) < blockY || (tt != null && tt.isEmittingLight()) ||
-            (oldID != null && oldID.isEmittingLight())) {
-            this.tiledMapRenderer.asyncUpdateLightAt(blockX);
-        }
+//        if (getSkylightAt(blockX) < blockY || (tt != null && tt.isEmittingLight()) ||
+//            (oldID != null && oldID.isEmittingLight())) {
+
+        LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
+        this.tiledMapRenderer.getLight().put(blockX, blockY, ll);
+//        }
     }
 
     @Override
@@ -153,17 +155,17 @@ public class TiledGameMap extends GameMap {
         if (!Util.isBetween(0, blockX, (int) getWidth())) {
             throw new IllegalArgumentException("No info about the outside of the map, x = " + blockX);
         }
-        return this.tiledMapRenderer.getSkyLights()[blockX];
+        return this.tiledMapRenderer.getLight().getSkylight()[blockX];
     }
 
     @Override
     public void calculateLightAt(int blockX, int y) {
-        this.tiledMapRenderer.calculateLightAt(blockX, y, LightLevel.LVL_7);
+//        this.tiledMapRenderer.calculateLightAt(blockX, y, LightLevel.LVL_7);
     }
 
     @Override
     public void recalculateLight() {
-        this.tiledMapRenderer.asyncUpdateLights();
+//        this.tiledMapRenderer.asyncUpdateLights();
     }
 
     @Override
@@ -171,6 +173,6 @@ public class TiledGameMap extends GameMap {
         if (isOutsideMap(blockX, blockY)) {
             return null;
         }
-        return this.tiledMapRenderer.lightAt(blockX, blockY);
+        return this.tiledMapRenderer.getLight().lightAt(blockX, blockY);
     }
 }
