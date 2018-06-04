@@ -13,7 +13,7 @@ public enum TileType {
     LAVA(3, "Lava", 2500, LightLevel.LVL_7, 0.5f),
     CLOUD(4, "Cloud", 0),
     STONE(5, "Stone"),
-    TORCH(6, "Torch", 0),
+    TORCH(6, "Torch", LightLevel.LVL_6, 0),
     LOG(7, "Log"),
     LEAVES(8, "Leaves"),;
 
