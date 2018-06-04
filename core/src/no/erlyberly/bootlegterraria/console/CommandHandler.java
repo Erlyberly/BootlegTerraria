@@ -50,7 +50,8 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Load a map", paramDescriptions = "The map to load")
     public void load(String mapName) {
-        if (!mapName.endsWith(".tmx")) {
+
+        if (!mapName.toLowerCase().endsWith(".tmx")) {
             mapName += ".tmx";
         }
         GameMain.inst().loadMap(mapName);
