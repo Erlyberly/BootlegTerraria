@@ -113,14 +113,6 @@ public class CommandHandler extends CommandExecutor {
         }
     }
 
-    public void calcLight(int blockX, int blockY) {
-        GameMain.inst().getGameMap().calculateLightAt(blockX, blockY);
-    }
-
-    public void reCalcLight() {
-        GameMain.inst().getGameMap().recalculateLight();
-    }
-
     public void fly() {
         Player p = GameMain.inst().getGameMap().getPlayer();
         p.setFlying(!p.isFlying());

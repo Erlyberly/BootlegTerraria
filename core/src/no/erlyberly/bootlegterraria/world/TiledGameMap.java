@@ -172,16 +172,6 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public void calculateLightAt(int blockX, int y) {
-//        this.tiledMapRenderer.calculateLightAt(blockX, y, LightLevel.LVL_7);
-    }
-
-    @Override
-    public void recalculateLight() {
-//        this.tiledMapRenderer.asyncUpdateLights();
-    }
-
-    @Override
     public LightLevel lightAt(int blockX, int blockY) {
         if (isOutsideMap(blockX, blockY)) {
             return null;

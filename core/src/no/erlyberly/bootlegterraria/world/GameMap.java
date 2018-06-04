@@ -225,13 +225,8 @@ public abstract class GameMap {
                 else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                     tt = null;
                 }
-                else if (Gdx.input.isButtonPressed(Input.Buttons.FORWARD) &&
-                         Gdx.graphics.getFrameId() % Gdx.graphics.getFramesPerSecond() == 0) {
-                    System.out.println("forward pressed");
-                    calculateLightAt(blockX, blockY);
-                    return;
-                }
                 else {
+                    //invalid button pressed, do nothing
                     return;
                 }
                 setBlockAt(blockX, blockY, tt);
@@ -404,10 +399,6 @@ public abstract class GameMap {
     public abstract void spawnPlayer();
 
     public abstract int getSkylightAt(int blockX);
-
-    public abstract void calculateLightAt(int blockX, int blockY);
-
-    public abstract void recalculateLight();
 
     public abstract LightLevel lightAt(int blockX, int blockY);
 }
