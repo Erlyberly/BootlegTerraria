@@ -229,7 +229,7 @@ public abstract class GameMap {
                     //invalid button pressed, do nothing
                     return;
                 }
-                setBlockAt(blockX, blockY, tt);
+                setTile(blockX, blockY, tt);
             }
         }
     }
@@ -349,14 +349,21 @@ public abstract class GameMap {
     /**
      * Change the block at ({@code x}, {@code y}) to {@code tt}
      *
-     * @param x
+     * @param blockX
      *     X coordinate of the block to change
-     * @param y
+     * @param blockY
      *     Y coordinate of the block to change
      * @param tt
      *     The new block
      */
-    public abstract void setBlockAt(int x, int y, TileType tt);
+    public abstract void setTile(int blockX, int blockY, TileType tt);
+
+    /**
+     * @return The TileType at given location
+     */
+    public TileType getTile(int blockX, int blockY) {
+        return getTileTypeByCoordinate(getBlockLayer(), blockX, blockY);
+    }
 
     /**
      * @return Number of blocks horizontally

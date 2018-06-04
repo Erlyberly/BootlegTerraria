@@ -15,6 +15,7 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
+import no.erlyberly.bootlegterraria.world.GameMap;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 import static no.erlyberly.bootlegterraria.render.light.LightLevel.LVL_0;
@@ -35,17 +36,14 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     }
 
 
-    public SimpleOrthogonalTiledMapRenderer(final TiledMap map) {
+    public SimpleOrthogonalTiledMapRenderer(final TiledMap map, GameMap gameMap) {
         super(map);
 
         //get the width of the map
         final MapProperties prop = map.getProperties();
-        int mapWidth = prop.get("width", Integer.class);
-        int mapHeight = prop.get("height", Integer.class);
-
         GameMain.backgroundColor = Util.convert(prop.get("backgroundcolor", "#FFFF0000", String.class));
 
-        this.light = new BlockLightMap(mapWidth, mapHeight, map);
+        this.light = new BlockLightMap(gameMap);
     }
 
     @SuppressWarnings("Duplicates")

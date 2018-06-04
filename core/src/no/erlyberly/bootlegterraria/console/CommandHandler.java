@@ -85,7 +85,7 @@ public class CommandHandler extends CommandExecutor {
                 paramDescriptions = {"X coord of block", "Y coord of block", "TileID of new block"})
     public void setBlock(final int x, final int y, final int tileID) {
         final TileType tt = TileType.getTileTypeById(tileID);
-        GameMain.inst().getGameMap().setBlockAt(x, y, tt);
+        GameMain.inst().getGameMap().setTile(x, y, tt);
     }
 
     @HiddenCommand

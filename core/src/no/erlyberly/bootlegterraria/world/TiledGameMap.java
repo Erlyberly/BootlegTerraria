@@ -57,16 +57,15 @@ public class TiledGameMap extends GameMap {
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
 
-        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap);
+
+        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, this);
     }
 
     @Override
     public void render(final OrthographicCamera camera, final OrthographicCamera hudCamera, final SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined);
         this.tiledMapRenderer.setView(camera);
-
         this.tiledMapRenderer.render();
-
         super.render(camera, hudCamera, batch);
     }
 
@@ -77,6 +76,9 @@ public class TiledGameMap extends GameMap {
 
     @Override
     public TileType getTileTypeByCoordinate(final MapLayer layer, final int col, final int row) {
+        if (!(layer instanceof TiledMapTileLayer)) {
+            throw new IllegalArgumentException("layer must be of the TiledMapTileLayer type");
+        }
         final Cell cell = ((TiledMapTileLayer) layer).getCell(col, row);
 
         if (cell != null) {
@@ -106,7 +108,7 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public void setBlockAt(final int blockX, final int blockY, final TileType tt) {
+    public void setTile(final int blockX, final int blockY, final TileType tt) {
         final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(blockX, blockY));
         if (oldID == tt || isOutsideMap(blockX, blockY) || overlapPlayer(blockX, blockY)) {
             return;
