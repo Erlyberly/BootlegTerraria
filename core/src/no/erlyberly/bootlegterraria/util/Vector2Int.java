@@ -70,6 +70,6 @@ public class Vector2Int implements Comparable<Vector2Int> {
 
     @Override
     public String toString() {
-        return "Vector2Int{" + "x=" + this.x + ", y=" + this.y + '}';
+        return "(" + this.x + ", " + this.y + ')';
     }
 }

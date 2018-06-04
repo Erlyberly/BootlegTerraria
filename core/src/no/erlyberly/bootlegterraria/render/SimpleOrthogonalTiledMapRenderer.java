@@ -22,7 +22,7 @@ import static no.erlyberly.bootlegterraria.render.light.LightLevel.LVL_0;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
-    public static boolean logLightTime = true;
+    public static boolean logLightTime = false;
 
     private final BlockLightMap light;
 
