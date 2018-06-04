@@ -82,7 +82,7 @@ public class BlockLightMap implements LightMap {
             }
             if (pos.y == this.skylight[pos.x] + 1) {
                 System.out.println("recalculating skylight at " + pos.x);
-                recalculateSkylight(pos.x);
+                calculateSkylight(pos.x);
             }
         }
     }
@@ -95,7 +95,7 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public void recalculateSkylight(int blockX) {
+    public void calculateSkylight(int blockX) {
         int oldSkylight = this.skylight[blockX];
 
         TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.inst().getGameMap().getBlockLayer();
@@ -150,7 +150,7 @@ public class BlockLightMap implements LightMap {
             final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
             final int height = tiledLayer.getHeight();
             for (int x = 0, width = (int) this.map.getWidth(); x < width; x++) {
-                boolean skyFound = false;
+                calculateSkylight(x);
                 for (int y = height - 1; y >= 0; y--) { //start at the top of the map
                     //check if the current cell is collidable
                     final TiledMapTileLayer.Cell cell = tiledLayer.getCell(x, y);
@@ -158,13 +158,7 @@ public class BlockLightMap implements LightMap {
                         //empty cell
                         continue;
                     }
-//                    int yLoc = height - y - 1; //actual map y loc
                     final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
-                    if (!skyFound && tt.isCollidable()) {
-                        this.skylight[x] = y + 1;
-//                        System.out.printf("Skylight @ (%d, %d)%n", x, this.skylight[x]);
-                        skyFound = true; //no further looping required
-                    }
                     if (tt.getLuminosity() != LightLevel.LVL_0) {
                         addSource(x, y, tt.getLuminosity());
                     }

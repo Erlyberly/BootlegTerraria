@@ -81,7 +81,7 @@ public interface LightMap {
      * @param x
      *     The column to recalculate the skylight of
      */
-    void recalculateSkylight(int x);
+    void calculateSkylight(int x);
 
     default LightInfo lightInfoAt(int blockX, int blockY) {
         return lightInfoAt(new Vector2Int(blockX, blockY));

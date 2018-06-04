@@ -124,7 +124,7 @@ public class TiledGameMap extends GameMap {
         boolean isEmittingLight = tt != null && tt.isEmittingLight();
         LightMap lightMap = this.tiledMapRenderer.getLight();
 
-        lightMap.recalculateSkylight(blockX);
+        lightMap.calculateSkylight(blockX);
         if (isEmittingLight) {
             lightMap.addSource(blockX, blockY, ll);
         }
