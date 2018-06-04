@@ -13,15 +13,15 @@ import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.HashMap;
 
+import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightTime;
+
 public class BlockLightMap implements LightMap {
 
-    protected static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
+    private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
 
     private final int[] skyLight;
     private final HashMap<Vector2Int, LightInfo> lightInfoMap;
     private final GameMap map;
-
-    public static boolean logLightTime = true;
 
     public BlockLightMap(GameMap map) {
         this.map = map;
