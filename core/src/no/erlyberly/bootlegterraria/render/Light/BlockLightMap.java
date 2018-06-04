@@ -144,9 +144,12 @@ public class BlockLightMap implements LightMap {
 
         for (int x = 0; x < this.skyLight.length; x++) {
             put(x, this.skyLight[x], LightLevel.SKY_LIGHT);
-//            for (int y = this.mapHeight - 1, length = Math.max(-1, this.skyLight[x]); y > length; y--) {
-//                put(x, y, LightLevel.SKY_LIGHT);
-//            }
+
+            for (int y = (int) this.map.getHeight() - 1, length = Math.max(-1, this.skyLight[x] - 1); y > length; y--) {
+                if (this.map.getTile(x, y) != null) {
+                    put(x, y, LightLevel.SKY_LIGHT);
+                }
+            }
         }
 
         if (oldLogLightTime) {
