@@ -35,9 +35,11 @@ public class Player extends Entity {
     private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
     private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
 
-    public boolean god = false;
     private boolean isHurt;
     private boolean flying;
+
+    public boolean god = false;
+    public float flightSpeed = 2;
 
     public Player(float x, float y) {
         super(x, y);
@@ -74,29 +76,39 @@ public class Player extends Entity {
         }
 
         if (isFlying()) {
+            float speed = this.flightSpeed * HORIZONTAL_SPEED;
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                moveY(HORIZONTAL_SPEED);
+                moveY(speed);
             }
             else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                moveY(-HORIZONTAL_SPEED);
+                moveY(-speed);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
+                moveX(-speed);
+                setFacing(-1);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
+                moveX(speed);
+                setFacing(1);
             }
         }
         else {
             if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
                 this.velocityY = JUMP_VELOCITY;
             }
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
+                moveX(-HORIZONTAL_SPEED);
+                setFacing(-1);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
+                moveX(HORIZONTAL_SPEED);
+                setFacing(1);
+            }
             super.update();//Apply gravity
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
-            moveX(-HORIZONTAL_SPEED);
-            setFacing(-1);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
-            moveX(HORIZONTAL_SPEED);
-            setFacing(1);
-        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.E) && !this.dodging &&
             this.stamina - this.weapon.getStaminaUsage() >= 0 && this.weapon.isCooledDown()) {
