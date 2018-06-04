@@ -37,7 +37,7 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public void put(Vector2Int pos, LightLevel ll, boolean skylight) {
+    public void put(Vector2Int pos, LightLevel ll) {
         if (ll == LightLevel.LVL_0) {
             throw new IllegalArgumentException("Tried to put light level 0 as a light source");
         }
@@ -47,7 +47,6 @@ public class BlockLightMap implements LightMap {
             this.lightInfoMap.putIfAbsent(v, new LightInfo(v.x, v.y));
             this.lightInfoMap.get(v).put(pos, ll);
         }
-        this.lightInfoMap.get(pos).setSkylight(skylight);
         if (logLightTime) {
             GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
         }
