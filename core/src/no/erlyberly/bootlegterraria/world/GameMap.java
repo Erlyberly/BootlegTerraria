@@ -248,7 +248,6 @@ public abstract class GameMap {
     public abstract TileType getTileTypeByCoordinate(MapLayer layer, int col, int row);
 
     public boolean checkMapCollision(float x, float y, float width, float height) {
-
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
         }
@@ -257,12 +256,10 @@ public abstract class GameMap {
              row < rows; row++) {
             for (int col = (int) (x / TileType.TILE_SIZE), cols = (int) Math.ceil((x + width) / TileType.TILE_SIZE);
                  col < cols; col++) {
-//                for (int layer = 0; layer < getLayers(); layer++) {
                 TileType type = getTileTypeByCoordinate(getBlockLayer(), col, row);
                 if (type != null && type.isCollidable()) {
                     return true;
                 }
-//                }
             }
         }
 
@@ -287,21 +284,22 @@ public abstract class GameMap {
                     }
                     return true;
                 }
-//                }
             }
         }
 
         return false;
     }
 
+    /**
+     * Check if there is a collision between entities and enemies
+     */
     public void checkEntityEnemyCollision() {
-        for (Entity entities : entities) {
-            for (Entity enemies : enemies) {
-                if (Intersector.overlaps(
-                    new Rectangle(entities.getX(), entities.getY(), entities.getWidth(), entities.getHeight()),
-                    new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()))) {
-                    enemies.modifyHp(-entities.getDamage() * Gdx.graphics.getDeltaTime());
-                    enemies.moveX(enemies.getHorizontalSpeed() * -enemies.getFacing());
+        for (Entity entity : entities) {
+            Rectangle entRect = entity.toRect();
+            for (Entity enemy : enemies) {
+                if (Intersector.overlaps(entRect, enemy.toRect())) {
+                    enemy.modifyHp(-entity.getDamage() * Gdx.graphics.getDeltaTime());
+                    enemy.moveX(enemy.getHorizontalSpeed() * -enemy.getFacing());
                 }
             }
         }
@@ -320,17 +318,11 @@ public abstract class GameMap {
     }
 
     public void checkPlayerEnemyCollision() {
+        Rectangle playerRect = player.toRect();
 
-        float playerX = player.getX();
-        float playerY = player.getY();
-        float playerWidth = player.getWidth();
-        float playerHeight = player.getHeight();
-
-        for (Entity enemies : enemies) {
-            if (!player.isInvincible() && Intersector
-                .overlaps(new Rectangle(enemies.getX(), enemies.getY(), enemies.getWidth(), enemies.getHeight()),
-                          new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
-                player.modifyHp(-enemies.getDamage() * Gdx.graphics.getDeltaTime());
+        for (Entity enemy : enemies) {
+            if (!player.isInvincible() && Intersector.overlaps(enemy.toRect(), playerRect)) {
+                player.modifyHp(-enemy.getDamage() * Gdx.graphics.getDeltaTime());
             }
         }
     }

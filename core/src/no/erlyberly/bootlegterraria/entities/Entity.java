@@ -2,6 +2,7 @@ package no.erlyberly.bootlegterraria.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
@@ -19,6 +20,8 @@ public abstract class Entity {
     protected boolean destroyed;
     protected float health;
     private int facing;
+    private final Rectangle entRect;
+
 
     /**
      * Spawn an entity at ({@code x}, {@code y})
@@ -36,6 +39,7 @@ public abstract class Entity {
         this.onGround = false;
         this.destroyed = false;
         this.facing = 1;
+        this.entRect = new Rectangle(x, y, getWidth(), getHeight());
     }
 
     public void update() {
@@ -151,6 +155,14 @@ public abstract class Entity {
         this.pos.x = tpX;
         this.pos.y = tpY;
         return new Vector2(tpX / this.gameMap.getTileWidth(), tpY / this.gameMap.getTileHeight());
+    }
+
+
+    /**
+     * @return An minimum rectangle that cover the player
+     */
+    public Rectangle toRect() {
+        return this.entRect.setPosition(this.pos);
     }
 
     /**
