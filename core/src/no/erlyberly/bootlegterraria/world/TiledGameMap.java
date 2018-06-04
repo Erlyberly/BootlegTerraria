@@ -10,13 +10,15 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
-import no.erlyberly.bootlegterraria.render.light.LightLevel;
-import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
+import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 
 public class TiledGameMap extends GameMap {
 
@@ -98,10 +100,15 @@ public class TiledGameMap extends GameMap {
         setPlayer(new Player(this.spawn.x, this.spawn.y));
     }
 
+    private boolean overlapPlayer(int blockX, int blockY) {
+        Rectangle br = new Rectangle(blockX * this.tileWidth, blockY * this.tileWidth, this.tileWidth, this.tileHeight);
+        return Intersector.overlaps(getPlayer().toRect(), br);
+    }
+
     @Override
     public void setBlockAt(final int blockX, final int blockY, final TileType tt) {
         final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(blockX, blockY));
-        if (oldID == tt || isOutsideMap(blockX, blockY)) {
+        if (oldID == tt || isOutsideMap(blockX, blockY) || overlapPlayer(blockX, blockY)) {
             return;
         }
         Cell cell = null;
