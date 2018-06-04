@@ -51,10 +51,6 @@ public abstract class Entity {
             this.gameMap.checkPlayerMapCollisionDamage(this.pos.x, newY, getWidth(), getHeight());
         }
 
-//        if (isFlying()) {
-//            this.pos.y = newY;
-//        }
-//        else {
         if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             if (this.velocityY < 0) {
                 this.pos.y = (float) Math.floor(this.pos.y);
@@ -66,8 +62,13 @@ public abstract class Entity {
             this.pos.y = newY;
             this.onGround = false;
         }
-//        }
+    }
 
+    public void moveY(float velocityY) {
+        float newY = this.pos.y + velocityY * Gdx.graphics.getDeltaTime();
+        if (!this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
+            this.pos.y = newY;
+        }
     }
 
 

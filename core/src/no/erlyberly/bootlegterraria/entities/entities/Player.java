@@ -74,22 +74,19 @@ public class Player extends Entity {
         }
 
         if (isFlying()) {
-            System.out.println("velocityY = " + this.velocityY);
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                this.pos.y += JUMP_VELOCITY * Gdx.graphics.getDeltaTime();
+                moveY(HORIZONTAL_SPEED);
             }
-            else {
-                this.pos.y -= JUMP_VELOCITY * Gdx.graphics.getDeltaTime();
+            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                moveY(-HORIZONTAL_SPEED);
             }
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
-            this.velocityY = JUMP_VELOCITY;
+        else {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
+                this.velocityY = JUMP_VELOCITY;
+            }
+            super.update();//Apply gravity
         }
-
-        /*
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && !onGround && this.velocityY > 0 && !dodging) {
-            this.velocityY += gravity / 4;
-        }*/
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
             moveX(-HORIZONTAL_SPEED);
@@ -107,8 +104,6 @@ public class Player extends Entity {
             this.weapon.attack(this);
             modifyStamina(-this.weapon.getStaminaUsage());
         }
-
-        super.update();//Apply gravity
 
         //For testing purposes only
         if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
