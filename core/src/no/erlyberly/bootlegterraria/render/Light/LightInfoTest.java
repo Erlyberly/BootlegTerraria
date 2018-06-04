@@ -27,8 +27,8 @@ class LightInfoTest {
         LightInfo li = new LightInfo(0, 0);
 
 
-        int x = (int) li.getPos().x;
-        int y = (int) li.getPos().y;
+        int x = (int) li.getPosf().x;
+        int y = (int) li.getPosf().y;
 
         testPut(x, y, LightLevel.LVL_8, LightLevel.LVL_8, li);
 

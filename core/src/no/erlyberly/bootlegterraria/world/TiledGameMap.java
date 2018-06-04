@@ -17,6 +17,7 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.render.light.api.LightMap;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 
@@ -56,7 +57,6 @@ public class TiledGameMap extends GameMap {
         this.spawn = blockToPixel(spawnX, spawnY);
 
         this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
-
 
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, this);
     }
@@ -119,19 +119,20 @@ public class TiledGameMap extends GameMap {
         }
         this.blockLayer.setCell(blockX, blockY, cell);
 
-        //Only update light when the block below the skylight is changed or if tile that emit light is placed or removed
-//        if (getSkylightAt(blockX) < blockY || (tt != null && tt.isEmittingLight()) ||
-//            (oldID != null && oldID.isEmittingLight())) {
-
+        //Only update light when the block below the skylight is changed or if tile that emit light is placed or
         LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
         boolean isEmittingLight = tt != null && tt.isEmittingLight();
+        LightMap lightMap = this.tiledMapRenderer.getLight();
 
+        lightMap.recalculateSkylight(blockX);
         if (isEmittingLight) {
-            this.tiledMapRenderer.getLight().put(blockX, blockY, ll);
+            lightMap.addSource(blockX, blockY, ll);
         }
         else if (oldID != null && oldID.isEmittingLight()) {
-            this.tiledMapRenderer.getLight().remove(blockX, blockY);
+            lightMap.removeSource(blockX, blockY);
         }
+
+
     }
 
     @Override
@@ -174,10 +175,15 @@ public class TiledGameMap extends GameMap {
     }
 
     @Override
-    public LightLevel lightAt(int blockX, int blockY) {
-        if (isOutsideMap(blockX, blockY)) {
+    public LightLevel lightAt(Vector2Int pos) {
+        if (isOutsideMap(pos.x, pos.y)) {
             return null;
         }
-        return this.tiledMapRenderer.getLight().lightAt(blockX, blockY);
+        return this.tiledMapRenderer.getLight().lightAt(pos);
+    }
+
+    @Override
+    public LightMap getLightMap() {
+        return this.tiledMapRenderer.getLight();
     }
 }

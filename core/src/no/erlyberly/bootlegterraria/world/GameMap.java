@@ -17,6 +17,7 @@ import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.render.light.api.LightMap;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 
@@ -128,13 +129,18 @@ public abstract class GameMap {
         final int blockX = (int) (mousePos.x / TileType.TILE_SIZE);
         final int blockY = (int) (mousePos.y / TileType.TILE_SIZE);
 
+        Vector2Int pos = new Vector2Int(blockX, blockY);
+
+        String m = String.format("Mouse  : (%d, %d) (%.1f, %.1f) ", blockX, blockY, mousePos.x, mousePos.y);
+        String bam = String
+            .format("B @ M  : Blk: %s LL: %s", getTileTypeByCoordinate(getBlockLayer(), blockX, blockY), lightAt(pos));
+
         //hud text
         font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
         font.draw(batch, "FPS    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
         font.draw(batch, "Block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
-        String m = String.format("Mouse : (%d, %d) (%.1f, %.1f) LL: %s ", blockX, blockY, mousePos.x, mousePos.y,
-                                 lightAt(blockX, blockY));
         font.draw(batch, m, 7f, GameInfo.HEIGHT / (1.145f));
+        font.draw(batch, bam, 7f, GameInfo.HEIGHT / (1.170f));
         batch.end();
     }
 
@@ -407,5 +413,11 @@ public abstract class GameMap {
 
     public abstract int getSkylightAt(int blockX);
 
-    public abstract LightLevel lightAt(int blockX, int blockY);
+    public LightLevel lightAt(int blockX, int blockY) {
+        return lightAt(new Vector2Int(blockX, blockY));
+    }
+
+    public abstract LightLevel lightAt(Vector2Int pos);
+
+    public abstract LightMap getLightMap();
 }

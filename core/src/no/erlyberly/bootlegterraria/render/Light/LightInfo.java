@@ -3,8 +3,9 @@ package no.erlyberly.bootlegterraria.render.light;
 import com.badlogic.gdx.math.Vector2;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.Map;
 
 public class LightInfo {
 
@@ -12,12 +13,17 @@ public class LightInfo {
     private final HashMap<Vector2Int, Float> litFrom; // where this light is lit from
     //    private final Vector2Int pos;
     private final Vector2 posf;
+    private final Vector2Int posi;
 
-
-    public LightInfo(int blockX, int blockY) {
+    LightInfo(Vector2Int pos) {
         this.currLL = LightLevel.LVL_0;
-        this.posf = new Vector2(blockX, blockY);
         this.litFrom = new HashMap<>();
+        this.posf = new Vector2(pos.x, pos.y);
+        this.posi = pos;
+    }
+
+    LightInfo(int blockX, int blockY) {
+        this(new Vector2Int(blockX, blockY));
     }
 
     /**
@@ -63,25 +69,25 @@ public class LightInfo {
         //if nothing is shining of it the light level must be 0
         if (this.litFrom.isEmpty()) {
             this.currLL = LightLevel.LVL_0;
+
             return;
         }
-//        System.out.println("litFrom = " + this.litFrom);
-        Optional<Float> max = this.litFrom.values().stream().max(Float::compareTo);
-        if (max.isPresent()) {
-//            System.out.print("max = " + max);
-//            System.out.println("| Math.round(avgBrightness.getAsDouble()) = " + Math.round(max.getAsDouble()));
-            this.currLL = LightLevel.valueOf(Math.round(max.get()));
-        }
-        else {
-            this.currLL = LightLevel.LVL_0;
-        }
+        this.currLL = LightLevel.valueOf(Collections.max(this.litFrom.values()));
     }
 
     public LightLevel getLightLevel() {
         return this.currLL;
     }
 
-    public Vector2 getPos() {
+    public Map<Vector2Int, Float> litFrom() {
+        return this.litFrom;
+    }
+
+    Vector2 getPosf() {
         return this.posf;
+    }
+
+    Vector2Int getPosi() {
+        return this.posi;
     }
 }

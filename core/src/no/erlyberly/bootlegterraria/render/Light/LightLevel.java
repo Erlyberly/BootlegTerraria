@@ -58,6 +58,14 @@ public enum LightLevel {
         return valueOf(this.lvl + 1);
     }
 
+    public static LightLevel valueOf(float lvl) {
+        return valueOf(Math.round(lvl));
+    }
+
+    public static LightLevel valueOf(double lvl) {
+        return valueOf((int) Math.round(lvl));
+    }
+
     /**
      * Safely get the light level from an integer, if the {@code lvl} is less than 0, {@code LVL_0} is returned. If
      * {@code lvl} is greater than or equal to {@link #LIGHT_LEVELS} {@code LVL_7} is returned
