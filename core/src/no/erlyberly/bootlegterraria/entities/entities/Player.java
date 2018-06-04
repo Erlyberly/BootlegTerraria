@@ -31,11 +31,13 @@ public class Player extends Entity {
     private float dodgeCooldown = 0;
     private final float dodgeStaminaUsage = 3000;
 
+
     private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
     private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
 
     public boolean god = false;
     private boolean isHurt;
+    private boolean flying;
 
     public Player(float x, float y) {
         super(x, y);
@@ -71,7 +73,16 @@ public class Player extends Entity {
             this.dodgeCooldown = DODGE_COOLDOWN;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
+        if (isFlying()) {
+            System.out.println("velocityY = " + this.velocityY);
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                this.pos.y += JUMP_VELOCITY * Gdx.graphics.getDeltaTime();
+            }
+            else {
+                this.pos.y -= JUMP_VELOCITY * Gdx.graphics.getDeltaTime();
+            }
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
             this.velocityY = JUMP_VELOCITY;
         }
 
@@ -229,5 +240,14 @@ public class Player extends Entity {
     @Override
     public float getDamage() {
         return 0;
+    }
+
+    @Override
+    public boolean isFlying() {
+        return this.flying;
+    }
+
+    public void setFlying(boolean flying) {
+        this.flying = flying;
     }
 }

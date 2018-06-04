@@ -22,11 +22,11 @@ public class Bullet extends WeaponEntity {
     @Override
     public void update() {
         float newX = getPos().x + getHorizontalSpeed() * getFacing() * Gdx.graphics.getDeltaTime();
-        boolean colliding = gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
-        boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > gameMap.getPlayer().getWidth() * 15;
+        boolean colliding = this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
+        boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > this.gameMap.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
             this.destroyed = true;
-            gameMap.removeEntity();
+            this.gameMap.removeEntity();
         }
         moveX(getHorizontalSpeed() * getFacing());
     }
@@ -49,6 +49,11 @@ public class Bullet extends WeaponEntity {
     @Override
     public float getDamage() {
         return getHorizontalSpeed() * 100;
+    }
+
+    @Override
+    public boolean isFlying() {
+        return false;
     }
 
     @Override

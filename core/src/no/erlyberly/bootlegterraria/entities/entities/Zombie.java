@@ -33,16 +33,16 @@ public class Zombie extends Entity {
 
         super.update(); //Apply gravity
 
-        float horizontalDistanceFromPlayer = this.pos.x - gameMap.getPlayer().getPos().x;
+        float horizontalDistanceFromPlayer = this.pos.x - this.gameMap.getPlayer().getPos().x;
 
-        if (horizontalDistanceFromPlayer > gameMap.getPlayer().getWidth() / 2 &&
-            horizontalDistanceFromPlayer < gameMap.getPlayer().getWidth() * 10) {
+        if (horizontalDistanceFromPlayer > this.gameMap.getPlayer().getWidth() / 2 &&
+            horizontalDistanceFromPlayer < this.gameMap.getPlayer().getWidth() * 10) {
             moveX(-this.horizontalSpeed);
             setFacing(-1);
             this.chasing = true;
         }
-        else if (horizontalDistanceFromPlayer < -gameMap.getPlayer().getWidth() / 2 &&
-                 horizontalDistanceFromPlayer > -gameMap.getPlayer().getWidth() * 10) {
+        else if (horizontalDistanceFromPlayer < -this.gameMap.getPlayer().getWidth() / 2 &&
+                 horizontalDistanceFromPlayer > -this.gameMap.getPlayer().getWidth() * 10) {
             moveX(this.horizontalSpeed);
             setFacing(1);
             this.chasing = true;
@@ -51,8 +51,9 @@ public class Zombie extends Entity {
             this.chasing = false;
         }
 
-        if (gameMap.checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
-                                      getWidth(), getHeight()) && this.onGround && this.chasing) {
+        if (this.gameMap
+                .checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
+                                   getWidth(), getHeight()) && this.onGround && this.chasing) {
             this.velocityY += JUMP_VELOCITY;
         }
     }
@@ -66,7 +67,7 @@ public class Zombie extends Entity {
         if (this.health <= 0) {
             this.health = 0;
             this.destroyed = true;
-            gameMap.removeEnemy();
+            this.gameMap.removeEnemy();
         }
 
         if (this.health > this.getMaxHealth()) {
@@ -86,6 +87,11 @@ public class Zombie extends Entity {
     @Override
     public float getDamage() {
         return 500;
+    }
+
+    @Override
+    public boolean isFlying() {
+        return false;
     }
 
     @Override

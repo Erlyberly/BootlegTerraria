@@ -267,16 +267,15 @@ public abstract class GameMap {
     }
 
     /**
-     * @return {@code true} if there is collision
+     * @return if the player takes damage from fall damage
      */
-    public boolean checkPlayerMapCollision(float x, float y, float width, float height) {
+    public boolean checkPlayerMapCollisionDamage(float x, float y, float width, float height) {
         if (x < 0 || y < 0 || x + width > getPixelWidth() || y + height > getPixelHeight()) {
             return true;
         }
 
         for (int row = (int) (y / TileType.TILE_SIZE); row < ceil((y + height) / TileType.TILE_SIZE); row++) {
             for (int col = (int) (x / TileType.TILE_SIZE); col < ceil((x + width) / TileType.TILE_SIZE); col++) {
-//                for (int layer = 0; layer < getLayers(); layer++) {
                 TileType type = getTileTypeByCoordinate(getBlockLayer(), col, row);
                 if (type != null && type.isCollidable()) {
                     if (type.getDps() != 0 && !player.isInvincible()) {

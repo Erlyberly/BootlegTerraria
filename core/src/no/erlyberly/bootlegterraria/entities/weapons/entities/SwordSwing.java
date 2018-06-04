@@ -24,7 +24,7 @@ public class SwordSwing extends WeaponEntity {
         this.attackTime -= Gdx.graphics.getRawDeltaTime();
         if (this.attackTime <= 0) {
             this.destroyed = true;
-            gameMap.removeEntity();
+            this.gameMap.removeEntity();
         }
     }
 
@@ -45,8 +45,8 @@ public class SwordSwing extends WeaponEntity {
         if (isFacingRight()) { rotation = this.attackTime * 180f - 20; }
         else { rotation = -this.attackTime * 180f + 200; }
 
-        batch.draw(TEXTURE, gameMap.getPlayer().getX() + gameMap.getPlayer().getWidth() / 2, gameMap.getPlayer().getY(),
-                   0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
+        batch.draw(TEXTURE, this.gameMap.getPlayer().getX() + this.gameMap.getPlayer().getWidth() / 2,
+                   this.gameMap.getPlayer().getY(), 0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
     }
 
     @Override
@@ -57,5 +57,10 @@ public class SwordSwing extends WeaponEntity {
     @Override
     public float getDamage() {
         return 5000;
+    }
+
+    @Override
+    public boolean isFlying() {
+        return false;
     }
 }

@@ -48,9 +48,13 @@ public abstract class Entity {
         float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
         if (this instanceof Player) {
-            this.gameMap.checkPlayerMapCollision(this.pos.x, newY, getWidth(), getHeight());
+            this.gameMap.checkPlayerMapCollisionDamage(this.pos.x, newY, getWidth(), getHeight());
         }
 
+//        if (isFlying()) {
+//            this.pos.y = newY;
+//        }
+//        else {
         if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             if (this.velocityY < 0) {
                 this.pos.y = (float) Math.floor(this.pos.y);
@@ -62,6 +66,8 @@ public abstract class Entity {
             this.pos.y = newY;
             this.onGround = false;
         }
+//        }
+
     }
 
 
@@ -147,7 +153,7 @@ public abstract class Entity {
         tpX = (int) Math.max(0, Math.min(tpX, this.gameMap.getPixelWidth() - 1));
         tpY = (int) Math.max(0, Math.min(tpY, this.gameMap.getPixelHeight() - 1));
 
-        if (this.gameMap.checkPlayerMapCollision(tpX, tpY, getWidth(), getHeight())) {
+        if (this.gameMap.checkPlayerMapCollisionDamage(tpX, tpY, getWidth(), getHeight())) {
             tpY = (int) ((this.gameMap.getSkylightAt(blockX) + (this.getHeight() / this.gameMap.getTileHeight())) *
                          this.gameMap.getTileWidth());
         }
@@ -208,4 +214,8 @@ public abstract class Entity {
      * @return How hard the entity hits
      */
     public abstract float getDamage();
+
+    public abstract boolean isFlying();
+
+
 }

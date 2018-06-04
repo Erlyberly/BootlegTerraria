@@ -120,4 +120,10 @@ public class CommandHandler extends CommandExecutor {
     public void reCalcLight() {
         GameMain.inst().getGameMap().recalculateLight();
     }
+
+    public void fly() {
+        Player p = GameMain.inst().getGameMap().getPlayer();
+        p.setFlying(!p.isFlying());
+        GameMain.consHldr().logf("Flight status: %b", p.isFlying());
+    }
 }
