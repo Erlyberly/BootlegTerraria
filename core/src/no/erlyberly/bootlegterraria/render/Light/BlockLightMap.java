@@ -33,6 +33,7 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public LightLevel lightAt(Vector2Int pos) {
+        //hide the real light level
         if (pos.y > this.skylight[pos.x]) {
             return LightLevel.SKY_LIGHT;
         }
@@ -143,14 +144,13 @@ public class BlockLightMap implements LightMap {
         boolean oldLogLightTime = logLightTime;
         logLightTime = false;
 
-        final long startTime = System.currentTimeMillis();
+        final long startTimeMain = System.currentTimeMillis();
 
         MapLayer layer = this.map.getBlockLayer();
         if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
             final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
             final int height = tiledLayer.getHeight();
             for (int x = 0, width = (int) this.map.getWidth(); x < width; x++) {
-                calculateSkylight(x);
                 for (int y = height - 1; y >= 0; y--) { //start at the top of the map
                     //check if the current cell is collidable
                     final TiledMapTileLayer.Cell cell = tiledLayer.getCell(x, y);
@@ -159,6 +159,9 @@ public class BlockLightMap implements LightMap {
                         continue;
                     }
                     final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
+                    if (tt.isCollidable() && this.skylight[x] == 0) {
+                        this.skylight[x] = y + 1;
+                    }
                     if (tt.getLuminosity() != LightLevel.LVL_0) {
                         addSource(x, y, tt.getLuminosity());
                     }
@@ -166,21 +169,23 @@ public class BlockLightMap implements LightMap {
             }
         }
 
-        GameMain.consHldr()
-                .log("Finding skylight and light emitters took " + (System.currentTimeMillis() - startTime) + " ms");
+        GameMain.consHldr().log(
+            "Finding skylight and light emitters took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
+        final long startTimeSkylight = System.currentTimeMillis();
 
         for (int x = 0; x < this.skylight.length; x++) {
-            addSource(x, this.skylight[x], LightLevel.SKY_LIGHT);
-            int skyLength = Math.max(-1, this.skylight[x] - 1);
-            for (int y = (int) this.map.getHeight() - 1; y > skyLength; y--) {
-                if (this.map.getTile(x, y) != null) {
-                    addSource(x, y, LightLevel.SKY_LIGHT);
-                }
+            int skyLft = this.skylight[Math.max(0, x - 1)];
+            int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
+            int hi = Math.max(skyLft, skyRht);
+
+            for (int y = this.skylight[x]; y < hi + 1; y++) {
+                addSource(x, y, LightLevel.SKY_LIGHT);
             }
         }
-
-        GameMain.consHldr().log("Total initial calculation took " + (System.currentTimeMillis() - startTime) + " ms");
+        GameMain.consHldr().log(
+            "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
+            "Total initial calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
         logLightTime = oldLogLightTime;
     }
