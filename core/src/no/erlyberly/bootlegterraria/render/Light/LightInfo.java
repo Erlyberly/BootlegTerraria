@@ -69,9 +69,9 @@ public class LightInfo {
         //if nothing is shining of it the light level must be 0
         if (this.litFrom.isEmpty()) {
             this.currLL = LightLevel.LVL_0;
-
             return;
         }
+        //FIXME threw a NoSuchElementException from Collections.max
         this.currLL = LightLevel.valueOf(Collections.max(this.litFrom.values()));
     }
 

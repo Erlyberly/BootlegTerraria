@@ -79,8 +79,9 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             float x = xStart;
             for (int col = col1; col < col2; col++) {
                 final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-
                 LightLevel ll = this.light.lightAt(col, row);
+
+                //do not draw skylight
                 if (ll == LightLevel.LVL_8 && cell == null) {
                     x += layerTileWidth;
                     continue;
@@ -116,9 +117,6 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                     region = BLACK_TEXTURE;
                     color = Color.toFloatBits(0, 0, 0, 0.95f - darkness);
                 }
-
-//                if (tile != null || ll != LVL_8 || true) {
-
 
                 final float x1 = x + tileOffsetX * this.unitScale;
                 final float y1 = y + tileOffsetY * this.unitScale;
