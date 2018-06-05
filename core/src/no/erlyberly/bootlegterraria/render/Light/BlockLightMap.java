@@ -89,10 +89,8 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public int[] getSkylight() {
-        final int[] cpy = new int[this.skylight.length];
-        System.arraycopy(this.skylight, 0, cpy, 0, this.skylight.length);
-        return cpy;
+    public int getSkylightAt(int blockX) {
+        return this.skylight[blockX];
     }
 
     @Override

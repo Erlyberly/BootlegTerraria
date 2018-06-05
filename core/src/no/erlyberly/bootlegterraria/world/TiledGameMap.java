@@ -171,7 +171,7 @@ public class TiledGameMap extends GameMap {
         if (!Util.isBetween(0, blockX, (int) getWidth())) {
             throw new IllegalArgumentException("No info about the outside of the map, x = " + blockX);
         }
-        return this.tiledMapRenderer.getLight().getSkylight()[blockX];
+        return this.tiledMapRenderer.getLight().getSkylightAt(blockX);
     }
 
     @Override

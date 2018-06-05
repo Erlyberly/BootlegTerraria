@@ -71,9 +71,9 @@ public interface LightMap {
     }
 
     /**
-     * @return A copy of the blocking light positions
+     * @return The skylight's position at {@code blockX}
      */
-    int[] getSkylight();
+    int getSkylightAt(int blockX);
 
     /**
      * Force a recalculation of the skylight in a given column
