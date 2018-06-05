@@ -48,6 +48,7 @@ public class GameMain extends Game {
     public void loadMap(final String map) {
         this.gameMap = new TiledGameMap(map);
         this.gameMap.spawnPlayer();
+        this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
         consoleHandler.resetInputProcessing();
     }
 
@@ -63,7 +64,6 @@ public class GameMain extends Game {
 
         Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.input.setOnscreenKeyboardVisible(true);
 
         this.camera.update();
         this.gameMap.update();

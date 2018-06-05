@@ -29,6 +29,7 @@ import static java.lang.Math.ceil;
 public abstract class GameMap {
 
     public static float gravity = 9.81f;
+    public static float cameraLerp = 2.5f;
 
     private ArrayList<Entity> enemies;
     private ArrayList<Entity> addEnimies;
@@ -97,8 +98,12 @@ public abstract class GameMap {
             entities.render(batch);
         }
 
-        camera.position.x = player.getX();
-        camera.position.y = player.getY();
+        Vector3 position = camera.position;
+        position.x += (player.getX() - position.x) * cameraLerp * Gdx.graphics.getDeltaTime();
+        position.y += (player.getY() - position.y) * cameraLerp * Gdx.graphics.getDeltaTime();
+
+//        camera.position.x = player.getX();
+//        camera.position.y = player.getY();
 
         batch.setProjectionMatrix(hudCamera.combined);
 
