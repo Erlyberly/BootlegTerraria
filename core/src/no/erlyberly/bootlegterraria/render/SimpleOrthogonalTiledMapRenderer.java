@@ -16,9 +16,9 @@ import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
+import no.erlyberly.bootlegterraria.world.TileType;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
-import static no.erlyberly.bootlegterraria.render.light.LightLevel.LVL_0;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
@@ -26,13 +26,13 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
     private final BlockLightMap light;
 
-    private static final Texture BLACK_TEXTURE;
+    private static final TextureRegion BLACK_TEXTURE;
 
     static {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+        Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
-        BLACK_TEXTURE = new Texture(pixmap);
+        BLACK_TEXTURE = new TextureRegion(new Texture(pixmap));
     }
 
 
@@ -75,138 +75,151 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         final float xStart = col1 * layerTileWidth + layerOffsetX;
         final float[] vertices = this.vertices;
 
-
-        Texture texture;
-
         for (int row = row2; row >= row1; row--) {
             float x = xStart;
             for (int col = col1; col < col2; col++) {
                 final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-                if (cell == null) {
+
+                LightLevel ll = this.light.lightAt(col, row);
+                if (ll == LightLevel.LVL_8 && cell == null) {
                     x += layerTileWidth;
                     continue;
                 }
-                final TiledMapTile tile = cell.getTile();
 
-                if (tile != null) {
+                final float darkness = ll.getPercentage();
 
-                    final boolean flipX = cell.getFlipHorizontally();
-                    final boolean flipY = cell.getFlipVertically();
-                    final int rotations = cell.getRotation();
 
-                    final TextureRegion region = tile.getTextureRegion();
+                TiledMapTile tile;
+                boolean flipX = false;
+                boolean flipY = false;
+                int rotations = 0;
 
-                    final float x1 = x + tile.getOffsetX() * this.unitScale;
-                    final float y1 = y + tile.getOffsetY() * this.unitScale;
-                    final float x2 = x1 + region.getRegionWidth() * this.unitScale;
-                    final float y2 = y1 + region.getRegionHeight() * this.unitScale;
+                float tileOffsetX = 0;
+                float tileOffsetY = 0;
 
-                    final float u1 = region.getU();
-                    final float v1 = region.getV2();
-                    final float u2 = region.getU2();
-                    final float v2 = region.getV();
+                final TextureRegion region;
+                final float color;
 
-                    LightLevel ll = this.light.lightAt(col, row);
-                    final float darkness = ll.getPercentage();
-                    final float color = Color
-                        .toFloatBits(batchColor.r * darkness, batchColor.g * darkness, batchColor.b * darkness,
-                                     batchColor.a * layer.getOpacity());
+                if (cell != null) {
+                    tile = cell.getTile();
+                    flipX = cell.getFlipHorizontally();
+                    flipY = cell.getFlipVertically();
+                    rotations = cell.getRotation();
 
-                    vertices[X1] = x1;
-                    vertices[Y1] = y1;
-                    vertices[C1] = color;
-                    vertices[U1] = u1;
-                    vertices[V1] = v1;
+                    region = tile.getTextureRegion();
+                    tileOffsetX = tile.getOffsetX();
+                    tileOffsetY = tile.getOffsetY();
+                    color = Color.toFloatBits(batchColor.r * darkness, batchColor.g * darkness, batchColor.b * darkness,
+                                              batchColor.a * layer.getOpacity());
+                }
+                else {
+                    region = BLACK_TEXTURE;
+                    color = Color.toFloatBits(0, 0, 0, 0.95f - darkness);
+                }
 
-                    vertices[X2] = x1;
-                    vertices[Y2] = y2;
-                    vertices[C2] = color;
-                    vertices[U2] = u1;
-                    vertices[V2] = v2;
+//                if (tile != null || ll != LVL_8 || true) {
 
-                    vertices[X3] = x2;
-                    vertices[Y3] = y2;
-                    vertices[C3] = color;
-                    vertices[U3] = u2;
-                    vertices[V3] = v2;
 
-                    vertices[X4] = x2;
-                    vertices[Y4] = y1;
-                    vertices[C4] = color;
-                    vertices[U4] = u2;
-                    vertices[V4] = v1;
+                final float x1 = x + tileOffsetX * this.unitScale;
+                final float y1 = y + tileOffsetY * this.unitScale;
+                final float x2 = x1 + region.getRegionWidth() * this.unitScale;
+                final float y2 = y1 + region.getRegionHeight() * this.unitScale;
 
-                    if (flipX) {
-                        float temp = vertices[U1];
-                        vertices[U1] = vertices[U3];
-                        vertices[U3] = temp;
-                        temp = vertices[U2];
-                        vertices[U2] = vertices[U4];
-                        vertices[U4] = temp;
-                    }
-                    if (flipY) {
-                        float temp = vertices[V1];
-                        vertices[V1] = vertices[V3];
-                        vertices[V3] = temp;
-                        temp = vertices[V2];
-                        vertices[V2] = vertices[V4];
-                        vertices[V4] = temp;
-                    }
-                    if (rotations != 0) {
-                        switch (rotations) {
-                            case Cell.ROTATE_90: {
-                                final float tempV = vertices[V1];
-                                vertices[V1] = vertices[V2];
-                                vertices[V2] = vertices[V3];
-                                vertices[V3] = vertices[V4];
-                                vertices[V4] = tempV;
+                final float u1 = region.getU();
+                final float v1 = region.getV2();
+                final float u2 = region.getU2();
+                final float v2 = region.getV();
 
-                                final float tempU = vertices[U1];
-                                vertices[U1] = vertices[U2];
-                                vertices[U2] = vertices[U3];
-                                vertices[U3] = vertices[U4];
-                                vertices[U4] = tempU;
-                                break;
-                            }
-                            case Cell.ROTATE_180: {
-                                float tempU = vertices[U1];
-                                vertices[U1] = vertices[U3];
-                                vertices[U3] = tempU;
-                                tempU = vertices[U2];
-                                vertices[U2] = vertices[U4];
-                                vertices[U4] = tempU;
-                                float tempV = vertices[V1];
-                                vertices[V1] = vertices[V3];
-                                vertices[V3] = tempV;
-                                tempV = vertices[V2];
-                                vertices[V2] = vertices[V4];
-                                vertices[V4] = tempV;
-                                break;
-                            }
-                            case Cell.ROTATE_270: {
-                                final float tempV = vertices[V1];
-                                vertices[V1] = vertices[V4];
-                                vertices[V4] = vertices[V3];
-                                vertices[V3] = vertices[V2];
-                                vertices[V2] = tempV;
 
-                                final float tempU = vertices[U1];
-                                vertices[U1] = vertices[U4];
-                                vertices[U4] = vertices[U3];
-                                vertices[U3] = vertices[U2];
-                                vertices[U2] = tempU;
-                                break;
-                            }
+                vertices[X1] = x1;
+                vertices[Y1] = y1;
+                vertices[C1] = color;
+                vertices[U1] = u1;
+                vertices[V1] = v1;
+
+                vertices[X2] = x1;
+                vertices[Y2] = y2;
+                vertices[C2] = color;
+                vertices[U2] = u1;
+                vertices[V2] = v2;
+
+                vertices[X3] = x2;
+                vertices[Y3] = y2;
+                vertices[C3] = color;
+                vertices[U3] = u2;
+                vertices[V3] = v2;
+
+                vertices[X4] = x2;
+                vertices[Y4] = y1;
+                vertices[C4] = color;
+                vertices[U4] = u2;
+                vertices[V4] = v1;
+
+                if (flipX) {
+                    float temp = vertices[U1];
+                    vertices[U1] = vertices[U3];
+                    vertices[U3] = temp;
+                    temp = vertices[U2];
+                    vertices[U2] = vertices[U4];
+                    vertices[U4] = temp;
+                }
+                if (flipY) {
+                    float temp = vertices[V1];
+                    vertices[V1] = vertices[V3];
+                    vertices[V3] = temp;
+                    temp = vertices[V2];
+                    vertices[V2] = vertices[V4];
+                    vertices[V4] = temp;
+                }
+                if (rotations != 0) {
+                    switch (rotations) {
+                        case Cell.ROTATE_90: {
+                            final float tempV = vertices[V1];
+                            vertices[V1] = vertices[V2];
+                            vertices[V2] = vertices[V3];
+                            vertices[V3] = vertices[V4];
+                            vertices[V4] = tempV;
+
+                            final float tempU = vertices[U1];
+                            vertices[U1] = vertices[U2];
+                            vertices[U2] = vertices[U3];
+                            vertices[U3] = vertices[U4];
+                            vertices[U4] = tempU;
+                            break;
+                        }
+                        case Cell.ROTATE_180: {
+                            float tempU = vertices[U1];
+                            vertices[U1] = vertices[U3];
+                            vertices[U3] = tempU;
+                            tempU = vertices[U2];
+                            vertices[U2] = vertices[U4];
+                            vertices[U4] = tempU;
+                            float tempV = vertices[V1];
+                            vertices[V1] = vertices[V3];
+                            vertices[V3] = tempV;
+                            tempV = vertices[V2];
+                            vertices[V2] = vertices[V4];
+                            vertices[V4] = tempV;
+                            break;
+                        }
+                        case Cell.ROTATE_270: {
+                            final float tempV = vertices[V1];
+                            vertices[V1] = vertices[V4];
+                            vertices[V4] = vertices[V3];
+                            vertices[V3] = vertices[V2];
+                            vertices[V2] = tempV;
+
+                            final float tempU = vertices[U1];
+                            vertices[U1] = vertices[U4];
+                            vertices[U4] = vertices[U3];
+                            vertices[U3] = vertices[U2];
+                            vertices[U2] = tempU;
+                            break;
                         }
                     }
-                    if (ll == LVL_0) {
-                        texture = BLACK_TEXTURE;
-                    }
-                    else {
-                        texture = region.getTexture();
-                    }
-                    this.batch.draw(texture, vertices, 0, NUM_VERTICES);
                 }
+                this.batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+//                }
                 x += layerTileWidth;
             }
             y -= layerTileHeight;
