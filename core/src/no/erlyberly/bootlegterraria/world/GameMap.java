@@ -314,7 +314,7 @@ public abstract class GameMap {
      * @return true if the block at ({@code x, y}) is outside of the maps bounds
      */
     public boolean isOutsideMap(int blockX, int blockY) {
-        return blockX < 0 || blockY < 0 || blockX > getWidth() || blockY >= getHeight();
+        return blockX < 0 || blockY < 0 || blockX >= getWidth() || blockY >= getHeight();
     }
 
     public void checkPlayerEnemyCollision() {
