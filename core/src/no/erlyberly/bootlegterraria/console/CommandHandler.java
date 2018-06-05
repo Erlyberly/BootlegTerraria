@@ -11,6 +11,8 @@ import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Sword;
+import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
+import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -123,5 +125,11 @@ public class CommandHandler extends CommandExecutor {
     public void speed(float speed) {
         GameMain.inst().getGameMap().getPlayer().flightSpeed = speed;
         GameMain.consHldr().logf("Flying speed: %.2f", LogLevel.SUCCESS, speed);
+    }
+
+    public void debugLight(boolean debug) {
+        BlockLightMap.realLight = !debug;
+        SimpleOrthogonalTiledMapRenderer.logLightTime = debug;
+        GameMain.consHldr().logf("Light debugging: " + debug, LogLevel.SUCCESS);
     }
 }
