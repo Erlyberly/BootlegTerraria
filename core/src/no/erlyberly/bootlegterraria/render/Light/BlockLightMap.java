@@ -71,7 +71,7 @@ public class BlockLightMap implements LightMap {
                     if (li != null) {
                         li.remove(pos);
                         //remove the instance if there is no light at it
-                        if (litFrom.isEmpty()) {
+                        if (li.litFrom().isEmpty()) {
                             this.lightInfoMap.remove(v);
                         }
                     }
@@ -118,13 +118,13 @@ public class BlockLightMap implements LightMap {
         int newSkylight = this.skylight[blockX];
 
         if (oldSkylight < newSkylight) { //placed a block above skylight
-            System.out.println("Placed above old skylight");
+//            System.out.println("Placed above old skylight");
             for (int i = oldSkylight; i < newSkylight; i++) {
                 removeSource(blockX, i);
             }
         }
         else if (oldSkylight > this.skylight[blockX]) { //placed a block below skylight
-            System.out.println("Placed below old skylight");
+//            System.out.println("Placed below old skylight");
             for (int i = newSkylight; i < oldSkylight; i++) {
                 addSource(blockX, i, LightLevel.SKY_LIGHT);
             }
@@ -161,6 +161,7 @@ public class BlockLightMap implements LightMap {
                     final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
                     if (tt.isCollidable() && this.skylight[x] == 0) {
                         this.skylight[x] = y + 1;
+//                        System.out.printf("skylight @ (%d,%d)%n", x, this.skylight[x]);
                     }
                     if (tt.getLuminosity() != LightLevel.LVL_0) {
                         addSource(x, y, tt.getLuminosity());
@@ -177,7 +178,9 @@ public class BlockLightMap implements LightMap {
         for (int x = 0; x < this.skylight.length; x++) {
             int skyLft = this.skylight[Math.max(0, x - 1)];
             int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
-            int hi = Math.max(skyLft, skyRht);
+            int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
+
+//            System.out.printf("Adding skylight from %d to %d @ %d%n", this.skylight[x], hi, x);
 
             for (int y = this.skylight[x]; y < hi + 1; y++) {
                 addSource(x, y, LightLevel.SKY_LIGHT);
