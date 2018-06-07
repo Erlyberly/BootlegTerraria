@@ -37,8 +37,8 @@ public class BlockLightMap implements LightMap {
     @Override
     public LightLevel lightAt(Vector2Int pos) {
         //hide the real light level
-        if (realLight && pos.y > this.skylight[pos.x]) {
             return LightLevel.SKY_LIGHT;
+        if (realLight && pos.y >= this.skylight[pos.x]) {
         }
         LightInfo li = this.lightInfoMap.get(pos);
         return li != null ? li.getLightLevel() : LightLevel.LVL_0;
