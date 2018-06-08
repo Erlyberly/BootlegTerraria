@@ -26,6 +26,7 @@ import no.erlyberly.bootlegterraria.util.Vector2Int;
 public class TiledGameMap extends GameMap implements Loadable {
 
     private static final String BLOCK_LAYER_NAME_STRING = "blocks";
+    private static final String BACKGROUND_LAYER_NAME_STRING = "background";
 
     private static final String SPAWN_X_MAP_STRING = "spawnX";
     private static final String SPAWN_Y_MAP_STRING = "spawnY";
@@ -40,6 +41,7 @@ public class TiledGameMap extends GameMap implements Loadable {
     private final TiledMap tiledMap;
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
     private final TiledMapTileLayer blockLayer;
+    private final TiledMapTileLayer backgroundLayer;
 
     private final Vector2Int spawn;
 
@@ -77,7 +79,14 @@ public class TiledGameMap extends GameMap implements Loadable {
                 "Map " + map + " does not has a tile layer named '" + BLOCK_LAYER_NAME_STRING + "'");
         }
 
+        final MapLayer backgroundLayer = this.tiledMap.getLayers().get(BACKGROUND_LAYER_NAME_STRING);
+        if (!(backgroundLayer instanceof TiledMapTileLayer)) {
+            throw new IllegalArgumentException(
+                "Map " + map + " does not has a tile layer named '" + BACKGROUND_LAYER_NAME_STRING + "'");
+        }
+
         this.blockLayer = (TiledMapTileLayer) blockLayer;
+        this.backgroundLayer = (TiledMapTileLayer) backgroundLayer;
 
 
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, this);
@@ -192,6 +201,11 @@ public class TiledGameMap extends GameMap implements Loadable {
 
     @Override
     public TiledMapTileLayer getBlockLayer() {
+        return this.blockLayer;
+    }
+
+    @Override
+    public TiledMapTileLayer getBackgroundLayer() {
         return this.blockLayer;
     }
 

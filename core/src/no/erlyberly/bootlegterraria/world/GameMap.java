@@ -407,6 +407,12 @@ public abstract class GameMap {
     public abstract MapLayer getBlockLayer();
 
     /**
+     * @return The layer where the non-collidable blocks are
+     */
+    public abstract MapLayer getBackgroundLayer();
+
+
+    /**
      * @return Instance of the map object
      */
     public abstract Map getMap();
