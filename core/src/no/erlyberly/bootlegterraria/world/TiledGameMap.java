@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.Map;
@@ -84,10 +85,20 @@ public class TiledGameMap extends GameMap implements Loadable {
 
     @Override
     public void render(final OrthographicCamera camera, final OrthographicCamera hudCamera, final SpriteBatch batch) {
-        batch.setProjectionMatrix(camera.combined);
-        this.tiledMapRenderer.setView(camera);
-        this.tiledMapRenderer.render();
-        super.render(camera, hudCamera, batch);
+
+        if (isInitialized()) {
+            batch.setProjectionMatrix(camera.combined);
+            this.tiledMapRenderer.setView(camera);
+            this.tiledMapRenderer.render();
+            super.render(camera, hudCamera, batch);
+        }
+        else {
+            batch.setProjectionMatrix(hudCamera.combined);
+            batch.begin();
+            System.out.println("loading");
+            this.font.draw(batch, "LOADING...", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            batch.end();
+        }
     }
 
     @Override

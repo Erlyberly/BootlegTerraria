@@ -5,7 +5,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
-import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
@@ -19,8 +18,6 @@ import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRender
 import static no.erlyberly.bootlegterraria.render.light.LightLevel.SKY_LIGHT;
 
 public class BlockLightMap implements LightMap {
-
-    private static final CancellableThreadScheduler LIGHT_THREAD = new CancellableThreadScheduler();
 
     private final int[] skylight;
     private final HashMap<Vector2Int, LightInfo> lightInfoMap;
@@ -106,7 +103,7 @@ public class BlockLightMap implements LightMap {
     public void calculateSkylight(final int blockX) {
         Preconditions.checkArgument(Util.isBetween(0, blockX, this.skylight.length),
                                     "The argument must be between 0 and mapWidth - 1");
-        LIGHT_THREAD.execute(() -> {
+        GameMain.SECONDARY_THREAD.execute(() -> {
             final long startTime = System.currentTimeMillis();
             final boolean oldLogLightTime = logLightTime;
             logLightTime = false;
@@ -167,7 +164,7 @@ public class BlockLightMap implements LightMap {
     }
 
     private void initialCalculations() {
-        LIGHT_THREAD.execute(() -> {
+        GameMain.SECONDARY_THREAD.execute(() -> {
             //do not log light time for each added time during the initial calculation to speed things up
             final boolean oldLogLightTime = logLightTime;
             logLightTime = false;

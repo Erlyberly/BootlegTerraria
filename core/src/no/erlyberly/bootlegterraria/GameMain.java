@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
+import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
@@ -14,6 +15,7 @@ public class GameMain extends Game {
 
     public static final boolean TEST = false;
     private static final String TEST_MAP = "testmaps/testmap3.tmx";
+    public static final CancellableThreadScheduler SECONDARY_THREAD = new CancellableThreadScheduler();
 
     private SpriteBatch batch;
     private OrthographicCamera camera;

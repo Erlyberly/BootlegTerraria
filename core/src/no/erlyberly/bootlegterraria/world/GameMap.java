@@ -43,7 +43,7 @@ public abstract class GameMap {
 
     private Player player;
 
-    private BitmapFont font;
+    BitmapFont font;
 
     private static Texture hpBar = new Texture("hp_fill.png");
     private static Texture barOutline = new Texture("bar_outline.png");
