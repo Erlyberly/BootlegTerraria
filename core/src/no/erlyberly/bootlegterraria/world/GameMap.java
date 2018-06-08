@@ -48,6 +48,7 @@ public abstract class GameMap {
     private static Texture hpBar = new Texture("hp_fill.png");
     private static Texture barOutline = new Texture("bar_outline.png");
     private static Texture staminaBar = new Texture("stamina_fill.png");
+    Texture LoadingSplashScreen = new Texture("goodlogic.png");
 
     private final CreativeInventory inv;
 
