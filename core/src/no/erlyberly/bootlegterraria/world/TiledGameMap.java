@@ -95,8 +95,9 @@ public class TiledGameMap extends GameMap implements Loadable {
         else {
             batch.setProjectionMatrix(hudCamera.combined);
             batch.begin();
-            System.out.println("loading");
-            this.font.draw(batch, "LOADING...", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            this.font.getData().scale(1);
+            this.font.draw(batch, "LOADING...", Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 5);
+            this.font.getData().scale(-1);
             batch.end();
         }
     }
