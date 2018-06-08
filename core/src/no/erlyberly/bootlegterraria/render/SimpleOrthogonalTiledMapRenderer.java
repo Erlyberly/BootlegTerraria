@@ -14,13 +14,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.util.Loadable;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
-public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
+public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer implements Loadable {
 
     public static boolean logLightTime = false;
 
@@ -239,5 +240,10 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
     public BlockLightMap getLight() {
         return this.light;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return this.light.isInitialized();
     }
 }
