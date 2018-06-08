@@ -24,6 +24,18 @@ import no.erlyberly.bootlegterraria.util.Vector2Int;
 
 public class TiledGameMap extends GameMap implements Loadable {
 
+    private static final String BLOCK_LAYER_NAME_STRING = "blocks";
+
+    private static final String SPAWN_X_MAP_STRING = "spawnX";
+    private static final String SPAWN_Y_MAP_STRING = "spawnY";
+
+    private static final String WIDTH_MAP_STRING = "width";
+    private static final String HEIGHT_MAP_STRING = "height";
+
+    private static final String TILE_WIDTH_MAP_STRING = "tilewidth";
+    private static final String TILE_HEIGHT_MAP_STRING = "tileheight";
+
+
     private final TiledMap tiledMap;
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
     private final TiledMapTileLayer blockLayer;
@@ -45,19 +57,27 @@ public class TiledGameMap extends GameMap implements Loadable {
             throw new IllegalArgumentException("Invalid map");
         }
 
-        MapProperties mapProperties = this.tiledMap.getProperties();
+        final MapProperties mapProperties = this.tiledMap.getProperties();
 
-        this.tileWidth = mapProperties.get("tilewidth", int.class);
-        this.tileHeight = mapProperties.get("tileheight", int.class);
+        this.tileWidth = mapProperties.get(TILE_WIDTH_MAP_STRING, int.class);
+        this.tileHeight = mapProperties.get(TILE_HEIGHT_MAP_STRING, int.class);
 
-        this.mapWidth = mapProperties.get("width", int.class);
-        this.mapHeight = mapProperties.get("height", int.class);
+        this.mapWidth = mapProperties.get(WIDTH_MAP_STRING, int.class);
+        this.mapHeight = mapProperties.get(HEIGHT_MAP_STRING, int.class);
 
-        int spawnX = mapProperties.get("spawnX", 0, int.class);
-        int spawnY = mapProperties.get("spawnY", 0, int.class);
+        final int spawnX = mapProperties.get(SPAWN_X_MAP_STRING, 0, int.class);
+        final int spawnY = mapProperties.get(SPAWN_Y_MAP_STRING, 0, int.class);
         this.spawn = blockToPixel(spawnX, spawnY);
 
-        this.blockLayer = (TiledMapTileLayer) this.tiledMap.getLayers().get("blocks");
+
+        final MapLayer blockLayer = this.tiledMap.getLayers().get(BLOCK_LAYER_NAME_STRING);
+        if (!(blockLayer instanceof TiledMapTileLayer)) {
+            throw new IllegalArgumentException(
+                "Map " + map + " does not has a tile layer named '" + BLOCK_LAYER_NAME_STRING + "'");
+        }
+
+        this.blockLayer = (TiledMapTileLayer) blockLayer;
+
 
         this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, this);
     }
