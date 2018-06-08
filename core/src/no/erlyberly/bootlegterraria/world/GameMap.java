@@ -18,8 +18,8 @@ import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
-import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.GameInfo;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 
 import java.util.ArrayList;
 
@@ -99,8 +99,8 @@ public abstract class GameMap {
         }
 
         Vector3 position = camera.position;
-        position.x += (player.getX() - position.x) * cameraLerp * Gdx.graphics.getDeltaTime();
-        position.y += (player.getY() - position.y) * cameraLerp * Gdx.graphics.getDeltaTime();
+        position.x += (player.getX() - position.x) * cameraLerp * player.speed * Gdx.graphics.getDeltaTime();
+        position.y += (player.getY() - position.y) * cameraLerp * player.speed * Gdx.graphics.getDeltaTime();
 
 //        camera.position.x = player.getX();
 //        camera.position.y = player.getY();

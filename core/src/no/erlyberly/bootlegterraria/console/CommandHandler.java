@@ -122,12 +122,17 @@ public class CommandHandler extends CommandExecutor {
         GameMain.consHldr().logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
     }
 
-    public void speed(float speed) {
-        GameMain.inst().getGameMap().getPlayer().flightSpeed = speed;
-        GameMain.consHldr().logf("Flying speed: %.2f", LogLevel.SUCCESS, speed);
+    public void speed(final float speed) {
+        GameMain.inst().getGameMap().getPlayer().speed = speed;
+        speed();
     }
 
-    public void debugLight(boolean debug) {
+    public void speed() {
+        GameMain.consHldr()
+                .logf("Flying speed: %.2f", LogLevel.SUCCESS, GameMain.inst().getGameMap().getPlayer().speed);
+    }
+
+    public void debugLight(final boolean debug) {
         BlockLightMap.realLight = !debug;
         SimpleOrthogonalTiledMapRenderer.logLightTime = debug;
         GameMain.consHldr().logf("Light debugging: " + debug, LogLevel.SUCCESS);

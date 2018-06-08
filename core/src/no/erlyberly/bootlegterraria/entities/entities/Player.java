@@ -39,9 +39,9 @@ public class Player extends Entity {
     private boolean flying;
 
     public boolean god = false;
-    public float flightSpeed = 2;
+    public float speed = 1;
 
-    public Player(float x, float y) {
+    public Player(final float x, final float y) {
         super(x, y);
     }
 
@@ -75,8 +75,10 @@ public class Player extends Entity {
             this.dodgeCooldown = DODGE_COOLDOWN;
         }
 
+        final float speed = this.speed * HORIZONTAL_SPEED;
+
         if (isFlying()) {
-            float speed = this.flightSpeed * HORIZONTAL_SPEED;
+
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 moveY(speed);
             }
@@ -98,12 +100,12 @@ public class Player extends Entity {
                 this.velocityY = JUMP_VELOCITY;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
-                moveX(-HORIZONTAL_SPEED);
+                moveX(-speed);
                 setFacing(-1);
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
-                moveX(HORIZONTAL_SPEED);
+                moveX(speed);
                 setFacing(1);
             }
             super.update();//Apply gravity
@@ -126,7 +128,7 @@ public class Player extends Entity {
 
     @Override
     public float getHorizontalSpeed() {
-        return HORIZONTAL_SPEED;
+        return HORIZONTAL_SPEED * this.speed;
     }
 
     @Override
