@@ -18,10 +18,11 @@ import no.erlyberly.bootlegterraria.entities.entities.Player;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
+import no.erlyberly.bootlegterraria.util.Loadable;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 
-public class TiledGameMap extends GameMap {
+public class TiledGameMap extends GameMap implements Loadable {
 
     private final TiledMap tiledMap;
     private final SimpleOrthogonalTiledMapRenderer tiledMapRenderer;
@@ -185,5 +186,10 @@ public class TiledGameMap extends GameMap {
     @Override
     public LightMap getLightMap() {
         return this.tiledMapRenderer.getLight();
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return this.tiledMapRenderer.isInitialized();
     }
 }

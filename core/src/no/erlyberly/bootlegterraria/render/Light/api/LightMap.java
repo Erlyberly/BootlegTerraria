@@ -2,12 +2,13 @@ package no.erlyberly.bootlegterraria.render.light.api;
 
 import no.erlyberly.bootlegterraria.render.light.LightInfo;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.util.Loadable;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 
 /**
  * An interface to hold the light data of a map.
  */
-public interface LightMap {
+public interface LightMap extends Loadable {
 
     /**
      * @param blockX

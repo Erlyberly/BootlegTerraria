@@ -27,7 +27,10 @@ public class BlockLightMap implements LightMap {
 
     public static boolean realLight = true;
 
-    public BlockLightMap(GameMap map) {
+    private boolean initialized;
+
+    public BlockLightMap(final GameMap map) {
+        this.initialized = false;
         this.map = map;
         this.lightInfoMap = new HashMap<>();
         this.skylight = new int[(int) map.getWidth()];
@@ -215,7 +218,12 @@ public class BlockLightMap implements LightMap {
                 "Total initial calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
             logLightTime = oldLogLightTime;
+            this.initialized = true;
         });
     }
 
+    @Override
+    public boolean isInitialized() {
+        return this.initialized;
+}
 }
