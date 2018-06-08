@@ -8,7 +8,7 @@ import no.erlyberly.bootlegterraria.entities.Entity;
  */
 public abstract class WeaponEntity extends Entity {
 
-    protected WeaponEntity(final float x, final float y, int facing) {
+    protected WeaponEntity(final float x, final float y, final int facing) {
         super(x, y);
         setFacing(facing);
     }

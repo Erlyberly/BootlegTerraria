@@ -11,7 +11,7 @@ public abstract class Weapon {
     public Weapon() {}
 
 
-    public Weapon(String name) {
+    public Weapon(final String name) {
         this.name = name;
     }
 
@@ -28,7 +28,7 @@ public abstract class Weapon {
     /**
      * Attack with a the weapon and reset the cooldown time
      */
-    public void attack(Entity attacker) {
+    public void attack(final Entity attacker) {
         attack0(attacker);
         resetCooldown();
     }

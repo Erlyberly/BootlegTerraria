@@ -22,7 +22,7 @@ public class Zombie extends Entity {
     private boolean chasing;
 
 
-    Zombie(float x, float y) {
+    Zombie(final float x, final float y) {
         super(x, y);
         this.horizontalSpeed = 40 + RNG.nextInt(40);
         this.chasing = false;
@@ -33,7 +33,7 @@ public class Zombie extends Entity {
 
         super.update(); //Apply gravity
 
-        float horizontalDistanceFromPlayer = this.pos.x - this.gameMap.getPlayer().getPos().x;
+        final float horizontalDistanceFromPlayer = this.pos.x - this.gameMap.getPlayer().getPos().x;
 
         if (horizontalDistanceFromPlayer > this.gameMap.getPlayer().getWidth() / 2 &&
             horizontalDistanceFromPlayer < this.gameMap.getPlayer().getWidth() * 10) {
@@ -59,7 +59,7 @@ public class Zombie extends Entity {
     }
 
     @Override
-    public void modifyHp(float amount) {
+    public void modifyHp(final float amount) {
         if (this.health > 0) {
             this.health += amount;
         }
@@ -110,7 +110,7 @@ public class Zombie extends Entity {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(final SpriteBatch batch) {
         batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
                    getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
                    TEXTURE.getRegionHeight(), isFacingRight(), false);

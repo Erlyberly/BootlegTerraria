@@ -23,7 +23,7 @@ public enum LightLevel {
 
     static {
         values = new LightLevel[values().length];
-        for (LightLevel ll : values()) {
+        for (final LightLevel ll : values()) {
             if (values[ll.getLvl()] != null) {
                 throw new ExceptionInInitializerError(
                     "There are more than one LightLevel declared as the level '" + ll.getLvl() + "': " + ll + " and " +
@@ -58,11 +58,11 @@ public enum LightLevel {
         return valueOf(this.lvl + 1);
     }
 
-    public static LightLevel valueOf(float lvl) {
+    public static LightLevel valueOf(final float lvl) {
         return valueOf(Math.round(lvl));
     }
 
-    public static LightLevel valueOf(double lvl) {
+    public static LightLevel valueOf(final double lvl) {
         return valueOf((int) Math.round(lvl));
     }
 
@@ -70,7 +70,7 @@ public enum LightLevel {
      * Safely get the light level from an integer, if the {@code lvl} is less than 0, {@code LVL_0} is returned. If
      * {@code lvl} is greater than or equal to {@link #LIGHT_LEVELS} {@code LVL_7} is returned
      */
-    public static LightLevel valueOf(int lvl) {
+    public static LightLevel valueOf(final int lvl) {
         if (lvl <= 0) { return LVL_0; }
         if (lvl >= LIGHT_LEVELS) { return LVL_8; }
         return values[lvl];

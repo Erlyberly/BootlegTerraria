@@ -9,14 +9,14 @@ public class AABB1D extends AABB<AABB1D> {
     final int min;
     final int max;
 
-    public AABB1D(int min, int max) {
+    public AABB1D(final int min, final int max) {
 
         this.min = min;
         this.max = max;
     }
 
     @Override
-    public boolean overlap(AABB1D other) {
+    public boolean overlap(final AABB1D other) {
         return this.max >= other.min && other.max >= this.min;
     }
 

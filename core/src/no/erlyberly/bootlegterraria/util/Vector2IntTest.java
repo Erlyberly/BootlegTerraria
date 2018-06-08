@@ -46,12 +46,12 @@ class Vector2IntTest {
 
     @Test
     void compareTo() {
-        Random random = new Random();
+        final Random random = new Random();
         for (int i = 0; i < 10000; i++) {
-            int x = random.nextInt();
-            int y = random.nextInt();
+            final int x = random.nextInt();
+            final int y = random.nextInt();
 
-            Vector2Int vorg = new Vector2Int(x, y);
+            final Vector2Int vorg = new Vector2Int(x, y);
 
             assertEquals(0, vorg.compareTo(vorg));
 

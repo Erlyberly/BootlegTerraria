@@ -15,7 +15,7 @@ public class SwordSwing extends WeaponEntity {
     private float attackTime = 0.5f;
 
 
-    public SwordSwing(float x, float y, int facing) {
+    public SwordSwing(final float x, final float y, final int facing) {
         super(x, y, facing);
     }
 
@@ -39,9 +39,9 @@ public class SwordSwing extends WeaponEntity {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(final SpriteBatch batch) {
 
-        float rotation;
+        final float rotation;
         if (isFacingRight()) { rotation = this.attackTime * 180f - 20; }
         else { rotation = -this.attackTime * 180f + 200; }
 

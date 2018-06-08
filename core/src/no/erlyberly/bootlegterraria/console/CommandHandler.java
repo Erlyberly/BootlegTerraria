@@ -27,7 +27,7 @@ public class CommandHandler extends CommandExecutor {
 
     private final ConsoleHandler cmdH;
 
-    CommandHandler(ConsoleHandler consoleHandler) {
+    CommandHandler(final ConsoleHandler consoleHandler) {
         this.cmdH = consoleHandler;
     }
 
@@ -98,14 +98,14 @@ public class CommandHandler extends CommandExecutor {
     }
 
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
-    public void tp(int x, int y) {
+    public void tp(final int x, final int y) {
         if (!Util.isBetween(0, x, (int) GameMain.inst().getGameMap().getWidth())) {
             this.cmdH.logf("Cannot teleport player outside of map", LogLevel.ERROR);
             return;
         }
-        GameMap gameMap = GameMain.inst().getGameMap();
+        final GameMap gameMap = GameMain.inst().getGameMap();
         this.cmdH.logf("Trying to teleport player to (%d, %d)", x, y);
-        Vector2 v = gameMap.getPlayer().teleport(x, y);
+        final Vector2 v = gameMap.getPlayer().teleport(x, y);
 
         if (!v.equals(new Vector2(x, y))) {
             this.cmdH.log("Failed to teleport player to original coordinate.");
@@ -117,7 +117,7 @@ public class CommandHandler extends CommandExecutor {
     }
 
     public void fly() {
-        Player p = GameMain.inst().getGameMap().getPlayer();
+        final Player p = GameMain.inst().getGameMap().getPlayer();
         p.setFlying(!p.isFlying());
         GameMain.consHldr().logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
     }

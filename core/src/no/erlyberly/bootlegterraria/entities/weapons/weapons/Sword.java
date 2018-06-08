@@ -6,13 +6,13 @@ import no.erlyberly.bootlegterraria.entities.weapons.entities.SwordSwing;
 
 public class Sword extends Weapon {
 
-    public Sword(String name) {
+    public Sword(final String name) {
         super(name);
     }
 
     @Override
-    public void attack0(Entity attacker) {
-        float dir = attacker.getFacing() == 1 ? attacker.getWidth() : -SwordSwing.SWORD_LENGTH;
+    public void attack0(final Entity attacker) {
+        final float dir = attacker.getFacing() == 1 ? attacker.getWidth() : -SwordSwing.SWORD_LENGTH;
         attacker.getGameMap()
                 .addEntity(new SwordSwing(attacker.getX() + dir, attacker.getY() + 16f, attacker.getFacing()));
     }

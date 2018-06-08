@@ -6,7 +6,7 @@ import no.erlyberly.bootlegterraria.entities.weapons.entities.Bullet;
 
 public class Gun extends Weapon {
 
-    public Gun(String name) {
+    public Gun(final String name) {
         super(name);
     }
 
@@ -14,7 +14,7 @@ public class Gun extends Weapon {
     }
 
     @Override
-    public void attack0(Entity attacker) {
+    public void attack0(final Entity attacker) {
         attacker.getGameMap().addEntity(
             new Bullet(attacker.getX() + (attacker.getWidth() / 3f * attacker.getFacing()), attacker.getY() + 16f,
                        attacker.getFacing()));

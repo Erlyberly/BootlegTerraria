@@ -26,11 +26,11 @@ public enum InputSetting {
 
     private int[] keys;
 
-    InputSetting(int... defaultKey) {
+    InputSetting(final int... defaultKey) {
         this.keys = defaultKey;
     }
 
-    public void setKeys(int... newKeys) {
+    public void setKeys(final int... newKeys) {
         this.keys = newKeys;
     }
 

@@ -31,7 +31,7 @@ public abstract class Entity {
      * @param y
      *     Y coordinate to spawn the entity on
      */
-    protected Entity(float x, float y) {
+    protected Entity(final float x, final float y) {
         this.pos = new Vector2(x, y);
         this.health = getMaxHealth();
 
@@ -45,7 +45,7 @@ public abstract class Entity {
     public void update() {
         this.velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
                           Gdx.graphics.getDeltaTime();
-        float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
+        final float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
         if (this instanceof Player) {
             this.gameMap.checkPlayerMapCollisionDamage(this.pos.x, newY, getWidth(), getHeight());
@@ -64,16 +64,16 @@ public abstract class Entity {
         }
     }
 
-    public void moveY(float velocityY) {
-        float newY = this.pos.y + velocityY * Gdx.graphics.getDeltaTime();
+    public void moveY(final float velocityY) {
+        final float newY = this.pos.y + velocityY * Gdx.graphics.getDeltaTime();
         if (!this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             this.pos.y = newY;
         }
     }
 
 
-    public void moveX(float velocityX) {
-        float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
+    public void moveX(final float velocityX) {
+        final float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
         if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
             this.pos.x = newX;
         }
@@ -137,7 +137,7 @@ public abstract class Entity {
      * @throws IllegalArgumentException
      *     If {@code facing} is not {@code 1} or {@code -1}
      */
-    protected void setFacing(int facing) {
+    protected void setFacing(final int facing) {
         Preconditions.checkArgument(facing == 1 || facing == -1, "Facing must be either -1 or 1");
         this.facing = facing;
     }
@@ -146,7 +146,7 @@ public abstract class Entity {
      * Teleport the entity to a given location. If the destination of the teleportation is out of bounds the entity is
      * moved to the closest point within the map
      */
-    public Vector2 teleport(int blockX, int blockY) {
+    public Vector2 teleport(final int blockX, final int blockY) {
         //TODO just ignore calls to tp out of bounds
         int tpX = (int) (blockX * this.gameMap.getTileWidth());
         int tpY = (int) ((getHeight() - blockY) * this.gameMap.getTileHeight());

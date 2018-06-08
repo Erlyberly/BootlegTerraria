@@ -12,12 +12,12 @@ public class Util {
      * Based on https://gist.github.com/steen919/8a079f4dadf88d4197bb/d732449eb74321207b4b189a3bcbf47a83c5db65
      * Converts the given hex color in 0xAARRGGBB format to a {@link Color} that can be used in a LibGdx application
      */
-    public static Color convert(String str) {
-        long hex = Long.decode(str);
-        float a = (hex & 0xFF000000L) >> 24;
-        float r = (hex & 0x00FF0000L) >> 16;
-        float g = (hex & 0x0000FF00L) >> 8;
-        float b = (hex & 0x000000FFL);
+    public static Color convert(final String str) {
+        final long hex = Long.decode(str);
+        final float a = (hex & 0xFF000000L) >> 24;
+        final float r = (hex & 0x00FF0000L) >> 16;
+        final float g = (hex & 0x0000FF00L) >> 8;
+        final float b = (hex & 0x000000FFL);
         return new Color(r / 255F, g / 255F, b / 255F, a / 255F);
     }
 
@@ -31,7 +31,7 @@ public class Util {
      *
      * @return {@code val} if between {@code min} and {@code max}, if not return {@code min} or {@code max} respectivly
      */
-    public static <T extends Comparable<T>> T between(T min, T val, T max) {
+    public static <T extends Comparable<T>> T between(final T min, final T val, final T max) {
         Preconditions.checkArgument(min != null && val != null && max != null, "None of the parameters can be null");
         Preconditions.checkArgument(min.compareTo(max) <= 0,
                                     "Minimum argument must be less than or equal to the maximum argument");
@@ -54,7 +54,7 @@ public class Util {
      *
      * @return if {@code val} is between {@code min} (inclusive) and {@code max} (exclusive)
      */
-    public static <T extends Comparable<T>> boolean isBetween(T min, T val, T max) {
+    public static <T extends Comparable<T>> boolean isBetween(final T min, final T val, final T max) {
         Preconditions.checkArgument(min != null && val != null && max != null, "None of the parameters can be null");
         Preconditions.checkArgument(min.compareTo(max) <= 0,
                                     "Minimum argument must be less than or equal to the maximum argument");
@@ -68,15 +68,15 @@ public class Util {
      *
      * @return An AABB2D around {@code src} with a radius of lightLevel
      */
-    public static AABB2D fromLight(Vector2Int src, LightLevel lightLevel) {
+    public static AABB2D fromLight(final Vector2Int src, final LightLevel lightLevel) {
 
         final int lightRadius = lightLevel.getLvl() - 1;
 
-        int blockX = src.x;
-        int blockY = src.y;
+        final int blockX = src.x;
+        final int blockY = src.y;
 
-        int mapWidth = (int) GameMain.inst().getGameMap().getWidth();
-        int mapHeight = (int) GameMain.inst().getGameMap().getHeight();
+        final int mapWidth = (int) GameMain.inst().getGameMap().getWidth();
+        final int mapHeight = (int) GameMain.inst().getGameMap().getHeight();
 
         //start coords, top right
         final int x0 = Util.between(0, blockX - lightRadius, mapWidth);

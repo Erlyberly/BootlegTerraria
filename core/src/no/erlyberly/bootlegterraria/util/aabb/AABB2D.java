@@ -1,7 +1,7 @@
 package no.erlyberly.bootlegterraria.util.aabb;
 
-import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.util.Util;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 
 import java.util.Iterator;
 
@@ -16,17 +16,17 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2Int> {
     private final AABB1D x;
     private final AABB1D y;
 
-    public AABB2D(int minX, int maxX, int minY, int maxY) {
+    public AABB2D(final int minX, final int maxX, final int minY, final int maxY) {
         this.x = new AABB1D(minX, maxX);
         this.y = new AABB1D(minY, maxY);
     }
 
     @Override
-    public boolean overlap(AABB2D other) {
+    public boolean overlap(final AABB2D other) {
         return this.x.overlap(other.x) && this.y.overlap(other.y);
     }
 
-    public boolean hasPoint(Vector2Int p) {
+    public boolean hasPoint(final Vector2Int p) {
         return Util.isBetween(this.x.min, p.x, this.x.max) && Util.isBetween(this.y.min, p.y, this.y.max);
     }
 
@@ -51,7 +51,7 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2Int> {
         int cX;
         int cY;
 
-        AABB2DIterator(AABB2D aabb) {
+        AABB2DIterator(final AABB2D aabb) {
             this.minX = aabb.x.min;
             this.maxX = aabb.x.max;
 
@@ -70,7 +70,7 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2Int> {
 
         @Override
         public Vector2Int next() {
-            Vector2Int v = new Vector2Int(this.cX++, this.cY);
+            final Vector2Int v = new Vector2Int(this.cX++, this.cY);
             if (this.cX >= this.maxX) {
                 this.cY++;
                 this.cX = this.minX;

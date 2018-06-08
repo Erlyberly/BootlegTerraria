@@ -9,14 +9,14 @@ public class CreativeInventory {
     private int curr = 0;
 
     public CreativeInventory() {
-        InputAdapter inputAdapter = new InputAdapter() {
+        final InputAdapter inputAdapter = new InputAdapter() {
             @Override
-            public boolean scrolled(int amount) {
-                int next = curr + amount;
-                if (curr == 0 && amount == -1) {
+            public boolean scrolled(final int amount) {
+                int next = CreativeInventory.this.curr + amount;
+                if (CreativeInventory.this.curr == 0 && amount == -1) {
                     next = TileType.TILE_TYPES;
                 }
-                curr = next % (TileType.TILE_TYPES + 1);
+                CreativeInventory.this.curr = next % (TileType.TILE_TYPES + 1);
                 return true;
             }
         };
@@ -25,11 +25,11 @@ public class CreativeInventory {
 
 
     public TileType getSelectedTileType() {
-        return TileType.getTileTypeById(curr);
+        return TileType.getTileTypeById(this.curr);
     }
 
     public String getSelectedTileTypeAsString() {
-        TileType tt = getSelectedTileType();
+        final TileType tt = getSelectedTileType();
         return tt == null ? "Air" : tt.toString();
     }
 

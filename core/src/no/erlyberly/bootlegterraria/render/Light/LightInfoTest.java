@@ -9,7 +9,7 @@ class LightInfoTest {
 
     @Test
     void multipleLights() {
-        LightInfo li = new LightInfo(0, 0);
+        final LightInfo li = new LightInfo(0, 0);
 
         li.put(new Vector2Int(1, -1), LightLevel.LVL_2);
         assertEquals(LightLevel.LVL_1, li.getLightLevel());
@@ -24,20 +24,20 @@ class LightInfoTest {
     @Test
     void singleLight() {
 
-        LightInfo li = new LightInfo(0, 0);
+        final LightInfo li = new LightInfo(0, 0);
 
 
-        int x = (int) li.getPosf().x;
-        int y = (int) li.getPosf().y;
+        final int x = (int) li.getPosf().x;
+        final int y = (int) li.getPosf().y;
 
         testPut(x, y, LightLevel.LVL_8, LightLevel.LVL_8, li);
 
         for (int i = LightLevel.LIGHT_LEVELS; i > 0; i--) {
 
-            LightLevel emLL = LightLevel.valueOf(i - 1);
+            final LightLevel emLL = LightLevel.valueOf(i - 1);
             int t = 1;
             for (int j = i - 1; j >= 0; j--) {
-                LightLevel ll = LightLevel.valueOf(j - 1);
+                final LightLevel ll = LightLevel.valueOf(j - 1);
 //                System.out.println("-");
                 testPut(x + t, y, ll, emLL, li,
                         String.format("j:%d | emLL: %s | i:%d | ll:%s | (%d,%d)", j, emLL, i, ll, x + 1, y));
@@ -79,13 +79,15 @@ class LightInfoTest {
         }
     }
 
-    private void testPut(int x, int y, LightLevel expected, LightLevel newLL, LightInfo li) {
+    private void testPut(final int x, final int y, final LightLevel expected, final LightLevel newLL,
+                         final LightInfo li) {
         testPut(x, y, expected, newLL, li, "");
     }
 
-    private void testPut(int x, int y, LightLevel expected, LightLevel newLL, LightInfo li, String err) {
+    private void testPut(final int x, final int y, final LightLevel expected, final LightLevel newLL,
+                         final LightInfo li, final String err) {
 //        System.out.println("---");
-        Vector2Int v = new Vector2Int(x, y);
+        final Vector2Int v = new Vector2Int(x, y);
         li.put(v, newLL);
         assertEquals(expected, li.getLightLevel(), err);
         li.remove(v);
@@ -99,9 +101,9 @@ class LightInfoTest {
     @Test
     void removeIfExist() {
 
-        LightInfo li = new LightInfo(10, 10);
+        final LightInfo li = new LightInfo(10, 10);
 
-        Vector2Int v = new Vector2Int(10, 10);
+        final Vector2Int v = new Vector2Int(10, 10);
         li.put(v, LightLevel.LVL_8);
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
         li.remove(v);

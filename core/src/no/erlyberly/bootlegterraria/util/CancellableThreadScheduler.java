@@ -27,7 +27,7 @@ public class CancellableThreadScheduler {
      * Cancel all future and running tasks
      */
     public void cancelTasks() {
-        for (ScheduledFuture sf : this.tasks) {
+        for (final ScheduledFuture sf : this.tasks) {
             sf.cancel(true);
         }
     }
@@ -42,7 +42,7 @@ public class CancellableThreadScheduler {
      * @param runnable
      *     What to do
      */
-    public void execute(Runnable runnable) {
+    public void execute(final Runnable runnable) {
         this.tasks.add(this.executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
     }
 
@@ -54,7 +54,7 @@ public class CancellableThreadScheduler {
      * @param ms
      *     How many milliseconds to wait before running the task
      */
-    public void schedule(Runnable runnable, long ms) {
+    public void schedule(final Runnable runnable, final long ms) {
         this.tasks.add(this.executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
     }
 

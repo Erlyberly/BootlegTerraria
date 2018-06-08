@@ -26,7 +26,7 @@ class UtilTest {
         assertTrue(Util.isBetween(0, 0, 2));
         assertFalse(Util.isBetween(0, 2, 2));
 
-        int width = 16;
+        final int width = 16;
         int x;
         for (int i = 0; i < 1000; i++) {
             x = (int) (Math.random() * 16);
