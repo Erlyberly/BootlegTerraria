@@ -13,8 +13,6 @@ import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
 public class GameMain extends Game {
 
-    public static final boolean TEST = false;
-    private static final String TEST_MAP = "testmaps/testmap3.tmx";
     public static final CancellableThreadScheduler SECONDARY_THREAD = new CancellableThreadScheduler();
 
     private SpriteBatch batch;
@@ -44,7 +42,7 @@ public class GameMain extends Game {
 
         consoleHandler = new ConsoleHandler(); //must be last
 
-        loadMap(GameMain.TEST ? GameMain.TEST_MAP : "map.tmx");
+        loadMap("map.tmx");
     }
 
     public void loadMap(final String map) {
