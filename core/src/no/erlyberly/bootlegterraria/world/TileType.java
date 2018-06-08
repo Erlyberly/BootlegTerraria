@@ -24,7 +24,7 @@ public enum TileType {
 
     static {
         tileMap = new HashMap<>();
-        for (TileType tileType : TileType.values()) {
+        for (final TileType tileType : TileType.values()) {
             tileMap.put(tileType.getId(), tileType);
         }
     }
@@ -35,15 +35,15 @@ public enum TileType {
     private final LightLevel luminosity;
     private final float viscosity;
 
-    TileType(int id, String name) {
+    TileType(final int id, final String name) {
         this(id, name, 1);
     }
 
-    TileType(int id, String name, float viscosity) {
+    TileType(final int id, final String name, final float viscosity) {
         this(id, name, LightLevel.LVL_0, viscosity);
     }
 
-    TileType(int id, String name, LightLevel lightLevel, float viscosity) {
+    TileType(final int id, final String name, final LightLevel lightLevel, final float viscosity) {
         this(id, name, 0, lightLevel, viscosity);
     }
 
@@ -59,7 +59,7 @@ public enum TileType {
      * @param viscosity
      *     How easily entities move through the tile, 0 is no resistance, 1 is solid
      */
-    TileType(int id, String name, int dps, LightLevel luminosity, float viscosity) {
+    TileType(final int id, final String name, final int dps, final LightLevel luminosity, final float viscosity) {
         Preconditions.checkArgument(viscosity >= 0 && viscosity <= 1, "viscosity must be between 0 and 1");
         this.id = id;
         this.name = name;
@@ -69,11 +69,11 @@ public enum TileType {
     }
 
 
-    public static TileType getTileTypeById(int id) {
         return tileMap.getOrDefault(id, null);
+    public static TileType getTileTypeById(final int id) {
     }
 
-    public static TileType getTileTypeByCell(TiledMapTileLayer.Cell cell) {
+    public static TileType getTileTypeByCell(final TiledMapTileLayer.Cell cell) {
         if (cell == null) {
             return null;
         }

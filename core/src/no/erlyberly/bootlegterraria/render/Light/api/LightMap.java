@@ -18,7 +18,7 @@ public interface LightMap extends Loadable {
      *
      * @return The LightLevel at ({@code blockX, blockY})
      */
-    default LightLevel lightAt(int blockX, int blockY) {
+    default LightLevel lightAt(final int blockX, final int blockY) {
         return lightAt(new Vector2Int(blockX, blockY));
     }
 
@@ -39,7 +39,7 @@ public interface LightMap extends Loadable {
      * @param blockY
      *     The y-coordinate of the block
      */
-    default void addSource(int blockX, int blockY, LightLevel ll) {
+    default void addSource(final int blockX, final int blockY, final LightLevel ll) {
         addSource(new Vector2Int(blockX, blockY), ll);
     }
 
@@ -67,7 +67,7 @@ public interface LightMap extends Loadable {
      * @param blockY
      *     The x-coordinate of the block
      */
-    default void removeSource(int blockX, int blockY) {
+    default void removeSource(final int blockX, final int blockY) {
         removeSource(new Vector2Int(blockX, blockY));
     }
 
@@ -84,7 +84,7 @@ public interface LightMap extends Loadable {
      */
     void calculateSkylight(int x);
 
-    default LightInfo lightInfoAt(int blockX, int blockY) {
+    default LightInfo lightInfoAt(final int blockX, final int blockY) {
         return lightInfoAt(new Vector2Int(blockX, blockY));
     }
 

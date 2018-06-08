@@ -30,14 +30,14 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private static final TextureRegion BLACK_TEXTURE;
 
     static {
-        Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
+        final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
         pixmap.setColor(Color.BLACK);
         pixmap.fill();
         BLACK_TEXTURE = new TextureRegion(new Texture(pixmap));
     }
 
 
-    public SimpleOrthogonalTiledMapRenderer(final TiledMap map, GameMap gameMap) {
+    public SimpleOrthogonalTiledMapRenderer(final TiledMap map, final GameMap gameMap) {
         super(map);
 
         //get the width of the map
@@ -80,7 +80,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             float x = xStart;
             for (int col = col1; col < col2; col++) {
                 final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-                LightLevel ll = this.light.lightAt(col, row);
+                final LightLevel ll = this.light.lightAt(col, row);
 
                 //do not draw skylight
                 if (ll == LightLevel.LVL_8 && cell == null) {
@@ -91,7 +91,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 final float darkness = ll.getPercentage();
 
 
-                TiledMapTile tile;
+                final TiledMapTile tile;
                 boolean flipX = false;
                 boolean flipY = false;
                 int rotations = 0;

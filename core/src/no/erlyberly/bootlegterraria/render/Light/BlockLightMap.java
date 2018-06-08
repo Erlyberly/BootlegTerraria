@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightTime;
+import static no.erlyberly.bootlegterraria.render.light.LightLevel.SKY_LIGHT;
 
 public class BlockLightMap implements LightMap {
 
@@ -38,17 +39,17 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public LightLevel lightAt(Vector2Int pos) {
+    public LightLevel lightAt(final Vector2Int pos) {
         //hide the real light level
-            return LightLevel.SKY_LIGHT;
         if (realLight && pos.y >= this.skylight[pos.x]) {
+            return SKY_LIGHT;
         }
-        LightInfo li = this.lightInfoMap.get(pos);
+        final LightInfo li = this.lightInfoMap.get(pos);
         return li != null ? li.getLightLevel() : LightLevel.LVL_0;
     }
 
     @Override
-    public void addSource(Vector2Int pos, LightLevel ll) {
+    public void addSource(final Vector2Int pos, final LightLevel ll) {
         if (ll == LightLevel.LVL_0) {
             throw new IllegalArgumentException("Tried to add light level 0 as a light source");
         }
@@ -56,8 +57,8 @@ public class BlockLightMap implements LightMap {
             throw new IllegalArgumentException("Tried to add light source outside of map");
         }
         final long startTime = System.currentTimeMillis();
-        AABB2D affected = Util.fromLight(pos, ll);
-        for (Vector2Int v : affected) {
+        final AABB2D affected = Util.fromLight(pos, ll);
+        for (final Vector2Int v : affected) {
             this.lightInfoMap.putIfAbsent(v, new LightInfo(v.x, v.y));
             this.lightInfoMap.get(v).put(pos, ll);
         }
@@ -67,19 +68,19 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public void removeSource(Vector2Int pos) {
+    public void removeSource(final Vector2Int pos) {
         if (pos.x < 0 || pos.y < 0 || pos.x >= this.map.getWidth() || pos.y >= this.map.getHeight()) {
             throw new IllegalArgumentException("Tried to remove light source outside of map");
         }
         if (this.lightInfoMap.containsKey(pos)) {
             final long startTime = System.currentTimeMillis();
 
-            LightInfo posLi = this.lightInfoMap.get(pos);
-            Map<Vector2Int, Float> litFrom = posLi.litFrom();
+            final LightInfo posLi = this.lightInfoMap.get(pos);
+            final Map<Vector2Int, Float> litFrom = posLi.litFrom();
 
             if (litFrom.containsKey(pos)) {
-                for (Vector2Int v : Util.fromLight(pos, LightLevel.valueOf(litFrom.get(pos)))) {
-                    LightInfo li = this.lightInfoMap.get(v);
+                for (final Vector2Int v : Util.fromLight(pos, LightLevel.valueOf(litFrom.get(pos)))) {
+                    final LightInfo li = this.lightInfoMap.get(v);
                     if (li != null) {
                         li.remove(pos);
                         //remove the instance if there is no light at it
@@ -97,12 +98,12 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public int getSkylightAt(int blockX) {
+    public int getSkylightAt(final int blockX) {
         return this.skylight[blockX];
     }
 
     @Override
-    public void calculateSkylight(int blockX) {
+    public void calculateSkylight(final int blockX) {
         Preconditions.checkArgument(Util.isBetween(0, blockX, this.skylight.length),
                                     "The argument must be between 0 and mapWidth - 1");
         LIGHT_THREAD.execute(() -> {
@@ -128,7 +129,7 @@ public class BlockLightMap implements LightMap {
                 }
             }
 
-            int newSkylight = this.skylight[blockX];
+            final int newSkylight = this.skylight[blockX];
 
             if (oldSkylight < newSkylight) { //placed a block above skylight
                 for (int y = oldSkylight; y < newSkylight; y++) {
@@ -136,20 +137,20 @@ public class BlockLightMap implements LightMap {
 
                     //add lights on either end
                     if (blockX + 1 < this.skylight.length && this.skylight[blockX + 1] < y) {
-                        addSource(blockX + 1, y, LightLevel.SKY_LIGHT);
+                        addSource(blockX + 1, y, SKY_LIGHT);
                     }
                     if (blockX - 1 > 0 && this.skylight[blockX - 1] < y) {
-                        addSource(blockX - 1, y, LightLevel.SKY_LIGHT);
+                        addSource(blockX - 1, y, SKY_LIGHT);
                     }
                 }
             }
             else if (oldSkylight > this.skylight[blockX]) { //placed a block below skylight
                 for (int y = newSkylight; y < oldSkylight; y++) {
-                    addSource(blockX, y, LightLevel.SKY_LIGHT);
+                    addSource(blockX, y, SKY_LIGHT);
                 }
             }
             if (oldSkylight != newSkylight) {
-                addSource(blockX, newSkylight, LightLevel.SKY_LIGHT);
+                addSource(blockX, newSkylight, SKY_LIGHT);
             }
             if (oldLogLightTime) {
                 GameMain.consHldr().log(
@@ -161,7 +162,7 @@ public class BlockLightMap implements LightMap {
     }
 
     @Override
-    public LightInfo lightInfoAt(Vector2Int pos) {
+    public LightInfo lightInfoAt(final Vector2Int pos) {
         return this.lightInfoMap.getOrDefault(pos, new LightInfo(pos));
     }
 

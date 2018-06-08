@@ -18,7 +18,7 @@ public class GameMain extends Game {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
-    private GameMap gameMap;
+    private TiledGameMap gameMap;
     private static ConsoleHandler consoleHandler;
 
     private static GameMain gameMainInstance;

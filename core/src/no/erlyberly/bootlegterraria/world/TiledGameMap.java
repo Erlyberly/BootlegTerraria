@@ -123,8 +123,9 @@ public class TiledGameMap extends GameMap implements Loadable {
         setPlayer(new Player(this.spawn.x, this.spawn.y));
     }
 
-    private boolean overlapPlayer(int blockX, int blockY) {
-        Rectangle br = new Rectangle(blockX * this.tileWidth, blockY * this.tileWidth, this.tileWidth, this.tileHeight);
+    private boolean overlapPlayer(final int blockX, final int blockY) {
+        final Rectangle br =
+            new Rectangle(blockX * this.tileWidth, blockY * this.tileWidth, this.tileWidth, this.tileHeight);
         return Intersector.overlaps(getPlayer().toRect(), br);
     }
 
@@ -141,9 +142,9 @@ public class TiledGameMap extends GameMap implements Loadable {
         this.blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or
-        LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
-        boolean isEmittingLight = tt != null && tt.isEmittingLight();
-        LightMap lightMap = this.tiledMapRenderer.getLight();
+        final LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
+        final boolean isEmittingLight = tt != null && tt.isEmittingLight();
+        final LightMap lightMap = this.tiledMapRenderer.getLight();
 
         lightMap.calculateSkylight(blockX);
         if (isEmittingLight) {
@@ -188,7 +189,7 @@ public class TiledGameMap extends GameMap implements Loadable {
     }
 
     @Override
-    public int getSkylightAt(int blockX) {
+    public int getSkylightAt(final int blockX) {
         if (!Util.isBetween(0, blockX, (int) getWidth())) {
             throw new IllegalArgumentException("No info about the outside of the map, x = " + blockX);
         }
@@ -196,7 +197,7 @@ public class TiledGameMap extends GameMap implements Loadable {
     }
 
     @Override
-    public LightLevel lightAt(Vector2Int pos) {
+    public LightLevel lightAt(final Vector2Int pos) {
         if (isOutsideMap(pos.x, pos.y)) {
             return null;
         }

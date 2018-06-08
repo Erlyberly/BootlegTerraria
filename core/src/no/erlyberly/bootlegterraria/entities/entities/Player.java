@@ -137,7 +137,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void modifyHp(float amount) {
+    public void modifyHp(final float amount) {
         if (this.god) {
             return;
         }
@@ -161,7 +161,7 @@ public class Player extends Entity {
         return this.maxStamina;
     }
 
-    public void setMaxStamina(int maxStamina) {
+    public void setMaxStamina(final int maxStamina) {
         this.maxStamina = maxStamina;
     }
 
@@ -169,11 +169,11 @@ public class Player extends Entity {
         return this.stamina;
     }
 
-    public void setStamina(int stamina) {
+    public void setStamina(final int stamina) {
         this.stamina = stamina;
     }
 
-    public void modifyStamina(float amount) {
+    public void modifyStamina(final float amount) {
         if (this.god) {
             return;
         }
@@ -191,7 +191,7 @@ public class Player extends Entity {
         return this.weapon;
     }
 
-    public void setWeapon(Weapon weapon) {
+    public void setWeapon(final Weapon weapon) {
         this.weapon = weapon;
     }
 
@@ -199,7 +199,7 @@ public class Player extends Entity {
         return this.invincible;
     }
 
-    public void setInvincible(boolean invincible) {
+    public void setInvincible(final boolean invincible) {
         this.invincible = invincible;
     }
 
@@ -217,7 +217,7 @@ public class Player extends Entity {
     private float animationTime = 0;
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(final SpriteBatch batch) {
         int direction = getFacing();
 
         //""animation"" of the player, flips the sprite back and forth on a time scale put by
@@ -256,7 +256,7 @@ public class Player extends Entity {
         return this.flying;
     }
 
-    public void setFlying(boolean flying) {
+    public void setFlying(final boolean flying) {
         this.flying = flying;
     }
 }
