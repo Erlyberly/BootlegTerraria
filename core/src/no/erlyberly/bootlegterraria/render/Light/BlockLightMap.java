@@ -123,7 +123,7 @@ public class BlockLightMap implements LightMap {
                 }
                 final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
                 //check if the current cell is collidable, if it is this is where the skylight stops
-                if (tt.isCollidable()) {
+                if (tt.isSolid()) {
                     this.skylight[blockX] = y + 1;
                     break;
                 }
@@ -187,7 +187,7 @@ public class BlockLightMap implements LightMap {
                             continue;
                         }
                         final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
-                        if (tt.isCollidable() && this.skylight[x] == 0) {
+                        if (tt.isSolid() && this.skylight[x] == 0) {
                             this.skylight[x] = y + 1;
 //                        System.out.printf("skylight @ (%d,%d)%n", x, this.skylight[x]);
                         }
@@ -226,5 +226,5 @@ public class BlockLightMap implements LightMap {
     @Override
     public boolean isInitialized() {
         return this.initialized;
-}
+    }
 }

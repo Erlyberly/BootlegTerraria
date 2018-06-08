@@ -97,7 +97,7 @@ public enum TileType {
         return this.id;
     }
 
-    public boolean isCollidable() {
+    public boolean isSolid() {
         return this.viscosity > 0;
     }
 
