@@ -69,12 +69,25 @@ public enum TileType {
     }
 
 
-        return tileMap.getOrDefault(id, null);
+    /**
+     * @param id
+     *     The Tiled ID of the {@code TileType} to get
+     *
+     * @return The {@code TileType} of the {@code id} or {@code null} if none is found
+     */
     public static TileType getTileTypeById(final int id) {
+        return tileMap.get(id);
     }
 
+    /**
+     * @param cell
+     *     The cell to get the {@code TileType} of
+     *
+     * @return The {@code TileType} of the given {@code cell} or {@code null} if the cell, the cell's tile or invalid id
+     * of cell's tile
+     */
     public static TileType getTileTypeByCell(final TiledMapTileLayer.Cell cell) {
-        if (cell == null) {
+        if (cell == null || cell.getTile() == null) {
             return null;
         }
         return getTileTypeById(cell.getTile().getId());
