@@ -107,13 +107,13 @@ public class BlockLightMap implements LightMap {
         Preconditions.checkArgument(Util.isBetween(0, blockX, this.skylight.length),
                                     "The argument must be between 0 and mapWidth - 1");
         LIGHT_THREAD.execute(() -> {
-            long startTime = System.currentTimeMillis();
-            boolean oldLogLightTime = logLightTime;
+            final long startTime = System.currentTimeMillis();
+            final boolean oldLogLightTime = logLightTime;
             logLightTime = false;
 
-            int oldSkylight = this.skylight[blockX];
+            final int oldSkylight = this.skylight[blockX];
 
-            TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.inst().getGameMap().getBlockLayer();
+            final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.inst().getGameMap().getBlockLayer();
             for (int y = tiledLayer.getHeight() - 1; y >= 0; y--) { //loop from the top of the map
 
                 final TiledMapTileLayer.Cell cell = tiledLayer.getCell(blockX, y);
@@ -169,12 +169,12 @@ public class BlockLightMap implements LightMap {
     private void initialCalculations() {
         LIGHT_THREAD.execute(() -> {
             //do not log light time for each added time during the initial calculation to speed things up
-            boolean oldLogLightTime = logLightTime;
+            final boolean oldLogLightTime = logLightTime;
             logLightTime = false;
 
             final long startTimeMain = System.currentTimeMillis();
 
-            MapLayer layer = this.map.getBlockLayer();
+            final MapLayer layer = this.map.getBlockLayer();
             if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
                 final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
                 final int height = tiledLayer.getHeight();
@@ -204,9 +204,9 @@ public class BlockLightMap implements LightMap {
             final long startTimeSkylight = System.currentTimeMillis();
 
             for (int x = 0; x < this.skylight.length; x++) {
-                int skyLft = this.skylight[Math.max(0, x - 1)];
-                int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
-                int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
+                final int skyLft = this.skylight[Math.max(0, x - 1)];
+                final int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
+                final int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
 
 //            System.out.printf("Adding skylight from %d to %d @ %d%n", this.skylight[x], hi, x);
 
