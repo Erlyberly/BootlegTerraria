@@ -7,10 +7,11 @@ class LightLevelTest {
 
     @Test
     void getLightLevel() {
-        for (LightLevel level : LightLevel.values()) {
+        for (final LightLevel level : LightLevel.values()) {
             Assertions.assertEquals(level, LightLevel.valueOf(level.lvl));
         }
         Assertions.assertEquals(LightLevel.LVL_0, LightLevel.valueOf(-1));
-        Assertions.assertEquals(LightLevel.LVL_7, LightLevel.valueOf(LightLevel.LIGHT_LEVELS));
+        Assertions.assertNotEquals(LightLevel.LVL_7, LightLevel.valueOf(LightLevel.LIGHT_LEVELS));
+        Assertions.assertEquals(LightLevel.LVL_8, LightLevel.valueOf(LightLevel.LIGHT_LEVELS));
     }
 }

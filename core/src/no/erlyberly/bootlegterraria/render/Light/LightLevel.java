@@ -72,7 +72,7 @@ public enum LightLevel {
      */
     public static LightLevel valueOf(int lvl) {
         if (lvl <= 0) { return LVL_0; }
-        if (lvl >= LIGHT_LEVELS) { return LVL_7; }
+        if (lvl >= LIGHT_LEVELS) { return LVL_8; }
         return values[lvl];
     }
 
