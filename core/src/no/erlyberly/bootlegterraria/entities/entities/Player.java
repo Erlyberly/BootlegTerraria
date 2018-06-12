@@ -205,12 +205,12 @@ public class Player extends Entity {
 
     @Override
     public float getWidth() {
-        return TileType.TILE_SIZE - 1;
+        return TileType.TILE_SIZE - 1.1f;
     }
 
     @Override
     public float getHeight() {
-        return 2 * TileType.TILE_SIZE;
+        return 2 * TileType.TILE_SIZE - 1;
     }
 
     private static final float ANIMATION_DIRECTION_DURATION = 0.3f;
