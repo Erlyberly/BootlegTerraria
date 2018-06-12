@@ -90,4 +90,24 @@ public class LightInfo {
     Vector2Int getPosi() {
         return this.posi;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) { return true; }
+        if (!(o instanceof LightInfo)) { return false; }
+
+        final LightInfo info = (LightInfo) o;
+
+        return this.posi.equals(info.posi);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.posi.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "LightInfo{" + "posi=" + this.posi + ", currLL=" + this.currLL + ", isSkylight=" + this.isSkylight + '}';
+    }
 }

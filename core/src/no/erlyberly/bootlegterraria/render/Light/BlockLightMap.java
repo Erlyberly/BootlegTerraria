@@ -201,6 +201,7 @@ public class BlockLightMap implements LightMap {
             final long startTimeSkylight = System.currentTimeMillis();
 
             for (int x = 0; x < this.skylight.length; x++) {
+                //add lights up to the highest skylight point of either left, right and here
                 final int skyLft = this.skylight[Math.max(0, x - 1)];
                 final int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
                 final int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
@@ -213,11 +214,20 @@ public class BlockLightMap implements LightMap {
             }
             GameMain.consHldr().log(
                 "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
-                "Total initial calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
+                "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
             logLightTime = oldLogLightTime;
             this.initialized = true;
         });
+    }
+
+    private LightInfo getLi(final Vector2Int pos) {
+        this.lightInfoMap.putIfAbsent(pos, new LightInfo(pos.x, pos.y));
+        return this.lightInfoMap.get(pos);
+    }
+
+    private LightInfo getLi(final int blockX, final int blockY) {
+        return getLi(new Vector2Int(blockX, blockY));
     }
 
     @Override
