@@ -16,6 +16,9 @@ public class LightInfo {
     private final Vector2Int posi;
 
     LightInfo(final Vector2Int pos) {
+        if (pos == null) {
+            throw new IllegalArgumentException("Position cannot be null");
+        }
         this.currLL = LightLevel.LVL_0;
         this.litFrom = new HashMap<>();
         this.posf = new Vector2(pos.x, pos.y);
