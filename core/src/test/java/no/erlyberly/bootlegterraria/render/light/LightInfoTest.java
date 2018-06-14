@@ -3,7 +3,7 @@ package no.erlyberly.bootlegterraria.render.light;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LightInfoTest {
 
@@ -11,13 +11,13 @@ class LightInfoTest {
     void multipleLights() {
         final LightInfo li = new LightInfo(0, 0);
 
-        li.put(new Vector2Int(1, -1), LightLevel.LVL_2);
+        li.put(new Vector2Int(1, -1), LightLevel.LVL_2, false);
         assertEquals(LightLevel.LVL_1, li.getLightLevel());
-        li.put(new Vector2Int(1, 1), LightLevel.LVL_8);
+        li.put(new Vector2Int(1, 1), LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
-        li.put(new Vector2Int(-1, -1), LightLevel.LVL_8);
+        li.put(new Vector2Int(-1, -1), LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
-        li.put(new Vector2Int(0, 0), LightLevel.LVL_8);
+        li.put(new Vector2Int(0, 0), LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
     }
 
@@ -39,13 +39,13 @@ class LightInfoTest {
             for (int j = i - 1; j >= 0; j--) {
                 final LightLevel ll = LightLevel.valueOf(j - 1);
 //                System.out.println("-");
-                testPut(x + t, y, ll, emLL, li,
+                testPut(x + t, y, ll, emLL, li, false,
                         String.format("j:%d | emLL: %s | i:%d | ll:%s | (%d,%d)", j, emLL, i, ll, x + 1, y));
-                testPut(x - t, y, ll, emLL, li,
+                testPut(x - t, y, ll, emLL, li, false,
                         String.format("j:%d | emLL: %s | i:%d | ll:%s | (%d,%d)", j, emLL, i, ll, x - 1, y));
-                testPut(x, y + t, ll, emLL, li,
+                testPut(x, y + t, ll, emLL, li, false,
                         String.format("j:%d | emLL: %s | i:%d | ll:%s | (%d,%d)", j, emLL, i, ll, x, y + 1));
-                testPut(x, y - t, ll, emLL, li,
+                testPut(x, y - t, ll, emLL, li, false,
                         String.format("j:%d | emLL: %s | i:%d | ll:%s | (%d,%d)", j, emLL, i, ll, x, y - 1));
                 t++;
             }
@@ -81,16 +81,16 @@ class LightInfoTest {
 
     private void testPut(final int x, final int y, final LightLevel expected, final LightLevel newLL,
                          final LightInfo li) {
-        testPut(x, y, expected, newLL, li, "");
+        testPut(x, y, expected, newLL, li, false, "");
     }
 
     private void testPut(final int x, final int y, final LightLevel expected, final LightLevel newLL,
-                         final LightInfo li, final String err) {
+                         final LightInfo li, final boolean skylight, final String err) {
 //        System.out.println("---");
         final Vector2Int v = new Vector2Int(x, y);
-        li.put(v, newLL);
+        li.put(v, newLL, skylight);
         assertEquals(expected, li.getLightLevel(), err);
-        li.remove(v);
+        li.remove(v, skylight);
     }
 
     @Test
@@ -104,19 +104,63 @@ class LightInfoTest {
         final LightInfo li = new LightInfo(10, 10);
 
         final Vector2Int v = new Vector2Int(10, 10);
-        li.put(v, LightLevel.LVL_8);
+        li.put(v, LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
-        li.remove(v);
+        li.remove(v, false);
         assertEquals(LightLevel.LVL_0, li.getLightLevel());
 
-        li.put(new Vector2Int(10, 10), LightLevel.LVL_8);
+        li.put(new Vector2Int(10, 10), LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
-        li.remove(new Vector2Int(10, 10));
+        li.remove(new Vector2Int(10, 10), false);
         assertEquals(LightLevel.LVL_0, li.getLightLevel());
 
-        li.put(new Vector2Int(10, 10), LightLevel.LVL_8);
+        li.put(new Vector2Int(10, 10), LightLevel.LVL_8, false);
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
-        li.put(new Vector2Int(10, 10), LightLevel.LVL_0);
+        li.put(new Vector2Int(10, 10), LightLevel.LVL_0, false);
+        assertEquals(LightLevel.LVL_0, li.getLightLevel());
+    }
+
+    @Test
+    void skylight() {
+
+        final Vector2Int src = new Vector2Int(0, 0);
+        final LightInfo li = new LightInfo(src);
+
+        li.put(src, LightLevel.LVL_8, true);
+        li.put(src, LightLevel.LVL_7, false);
+
+        assertTrue(li.isSkylight());
+        assertEquals(LightLevel.LVL_8, li.getLightLevel());
+
+        li.remove(src, true);
+        assertFalse(li.isSkylight());
+        assertEquals(LightLevel.LVL_7, li.getLightLevel());
+
+        li.remove(src, true);
+        assertFalse(li.isSkylight());
+        assertEquals(LightLevel.LVL_7, li.getLightLevel());
+
+        li.remove(src, false);
+        assertEquals(LightLevel.LVL_0, li.getLightLevel());
+    }
+
+    @Test
+    void skylight2() {
+
+        final Vector2Int src = new Vector2Int(0, 0);
+        final LightInfo li = new LightInfo(src);
+
+        li.put(src, LightLevel.LVL_7, false);
+        li.put(src, LightLevel.LVL_8, true);
+
+        assertTrue(li.isSkylight());
+        assertEquals(LightLevel.LVL_8, li.getLightLevel());
+
+        li.remove(src, true);
+        assertFalse(li.isSkylight());
+        assertEquals(LightLevel.LVL_7, li.getLightLevel());
+
+        li.remove(src, false);
         assertEquals(LightLevel.LVL_0, li.getLightLevel());
     }
 }

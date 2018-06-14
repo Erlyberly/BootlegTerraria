@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.util;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,7 +9,7 @@ class UtilTest {
 
     @Test
     void between() {
-        assertEquals(new Integer(0), Util.between(0, -1, 1)); //check less than min
+        Assertions.assertEquals(new Integer(0), Util.between(0, -1, 1)); //check less than min
         assertEquals(new Integer(1), Util.between(1, 0, 2)); //check between
         assertEquals(new Integer(1), Util.between(0, 2, 1)); //check max
         assertEquals(new Integer(0), Util.between(0, 0, 0)); //check max == min
