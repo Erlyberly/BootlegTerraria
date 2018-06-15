@@ -123,44 +123,71 @@ class LightInfoTest {
     @Test
     void skylight() {
 
-        final Vector2Int src = new Vector2Int(0, 0);
-        final LightInfo li = new LightInfo(src);
+        final Vector2Int src00 = new Vector2Int(0, 0);
+        final Vector2Int src10 = new Vector2Int(1, 0);
+        final LightInfo li = new LightInfo(src00);
 
-        li.put(src, LightLevel.LVL_8, true);
-        li.put(src, LightLevel.LVL_7, false);
+        li.put(src00, LightLevel.LVL_8, true);
+        li.put(src00, LightLevel.LVL_7, false);
+        li.put(src10, LightLevel.LVL_3, false); //test light
 
         assertTrue(li.isSkylight());
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
 
-        li.remove(src, true);
+        li.remove(src00, true);
+        li.put(src00, li.getEmitting(), false); //simulate putting on the real light
         assertFalse(li.isSkylight());
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
 
-        li.remove(src, true);
+        li.remove(src00, true);
         assertFalse(li.isSkylight());
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
 
-        li.remove(src, false);
-        assertEquals(LightLevel.LVL_0, li.getLightLevel());
+        li.remove(src00, false);
+        assertEquals(LightLevel.LVL_2, li.getLightLevel());
     }
 
     @Test
     void skylight2() {
 
-        final Vector2Int src = new Vector2Int(0, 0);
-        final LightInfo li = new LightInfo(src);
+        final Vector2Int src00 = new Vector2Int(0, 0);
+        final Vector2Int src10 = new Vector2Int(1, 0);
+        final LightInfo li = new LightInfo(src00);
 
-        li.put(src, LightLevel.LVL_7, false);
-        li.put(src, LightLevel.LVL_8, true);
+        li.put(src00, LightLevel.LVL_7, false);
+        li.put(src00, LightLevel.LVL_8, true);
+        li.put(src10, LightLevel.LVL_3, false); //test light
 
         assertTrue(li.isSkylight());
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
 
-        li.remove(src, true);
+        li.remove(src00, true);
+        li.put(src00, li.getEmitting(), false);
         assertFalse(li.isSkylight());
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
 
-        li.remove(src, false);
-        assertEquals(LightLevel.LVL_0, li.getLightLevel());
+        li.remove(src00, false);
+        assertEquals(LightLevel.LVL_2, li.getLightLevel());
+    }
+
+
+    @Test
+    void skylight3() {
+        final Vector2Int src00 = new Vector2Int(0, 0);
+        final Vector2Int src01 = new Vector2Int(0, 1);
+
+        final LightInfo li = new LightInfo(src00);
+        final LightInfo liUp = new LightInfo(src01);
+
+        liUp.put(src00, LightLevel.SKY_LIGHT, true);
+        li.put(src00, LightLevel.SKY_LIGHT, true);
+
+        liUp.put(src01, LightLevel.SKY_LIGHT, true);
+        li.put(src01, LightLevel.SKY_LIGHT, true);
+
+        final int i = 0;
+        li.remove(src00, true);
+
+        assertFalse(li.isSkylight());
     }
 }
