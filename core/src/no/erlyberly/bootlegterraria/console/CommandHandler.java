@@ -17,7 +17,7 @@ import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
-import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightTime;
+import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightEvents;
 
 /**
  * @author kheba
@@ -93,8 +93,8 @@ public class CommandHandler extends CommandExecutor {
 
     @HiddenCommand
     public void logLight() {
-        logLightTime = !logLightTime;
-        this.console.log("Logging light is now " + logLightTime);
+        logLightEvents = !logLightEvents;
+        this.console.log("Logging light is now " + logLightEvents);
     }
 
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
@@ -134,7 +134,7 @@ public class CommandHandler extends CommandExecutor {
 
     public void debugLight(final boolean debug) {
         BlockLightMap.realLight = !debug;
-        SimpleOrthogonalTiledMapRenderer.logLightTime = debug;
+        SimpleOrthogonalTiledMapRenderer.logLightEvents = debug;
         GameMain.consHldr().logf("Light debugging: " + debug, LogLevel.SUCCESS);
     }
 }

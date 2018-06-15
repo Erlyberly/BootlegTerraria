@@ -45,27 +45,38 @@ public abstract class GameMap {
 
     BitmapFont font;
 
-    private static Texture hpBar = new Texture("hp_fill.png");
-    private static Texture barOutline = new Texture("bar_outline.png");
-    private static Texture staminaBar = new Texture("stamina_fill.png");
-    Texture LoadingSplashScreen = new Texture("goodlogic.png");
+    private Texture hpBar;
+    private Texture barOutline;
+    private Texture staminaBar;
+    Texture loadingSplashScreen;
 
-    private final CreativeInventory inv;
+    private CreativeInventory inv;
 
-    GameMap() {
+    GameMap(boolean headless) {
         enemies = new ArrayList<Entity>();
         addEnimies = new ArrayList<Entity>();
         entities = new ArrayList<Entity>();
         addEntities = new ArrayList<Entity>();
 
-        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/UbuntuMono-R.ttf"));
-        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 20;
-        parameter.minFilter = Texture.TextureFilter.Linear;
-        this.font = generator.generateFont(parameter);
-        generator.dispose();
 
-        inv = new CreativeInventory();
+        if (!headless) {
+
+            final FreeTypeFontGenerator generator =
+                new FreeTypeFontGenerator(Gdx.files.internal("fonts/UbuntuMono-R.ttf"));
+            final FreeTypeFontGenerator.FreeTypeFontParameter parameter =
+                new FreeTypeFontGenerator.FreeTypeFontParameter();
+            parameter.size = 20;
+            parameter.minFilter = Texture.TextureFilter.Linear;
+            this.font = generator.generateFont(parameter);
+            generator.dispose();
+
+            hpBar = new Texture("hp_fill.png");
+            barOutline = new Texture("bar_outline.png");
+            staminaBar = new Texture("stamina_fill.png");
+            loadingSplashScreen = new Texture("goodlogic.png");
+
+            inv = new CreativeInventory();
+        }
     }
 
     public void addEnemy(Entity entity) {
@@ -138,8 +149,8 @@ public abstract class GameMap {
         Vector2Int pos = new Vector2Int(blockX, blockY);
 
         String m = String.format("Mouse  : (%d, %d) (%.1f, %.1f) ", blockX, blockY, mousePos.x, mousePos.y);
-        String bam = String
-            .format("B @ M  : Blk: %s LL: %s", getTileTypeByCoordinate(getBlockLayer(), blockX, blockY), lightAt(pos));
+        String bam = String.format("B @ M  : Blk: %s LI: %s", getTileTypeByCoordinate(getBlockLayer(), blockX, blockY),
+                                   getLightMap().lightInfoAt(pos));
 
         //hud text
         font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);

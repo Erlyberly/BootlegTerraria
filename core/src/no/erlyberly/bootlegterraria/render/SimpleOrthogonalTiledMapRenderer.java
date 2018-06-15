@@ -23,17 +23,20 @@ import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
 public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer implements Loadable {
 
-    public static boolean logLightTime = false;
+    public static boolean logLightEvents = false;
 
     private final BlockLightMap light;
 
     private static final TextureRegion BLACK_TEXTURE;
 
     static {
-        final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
-        pixmap.setColor(Color.BLACK);
-        pixmap.fill();
-        BLACK_TEXTURE = new TextureRegion(new Texture(pixmap));
+        if (!GameMain.HEADLESS) {
+            final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
+            pixmap.setColor(Color.BLACK);
+            pixmap.fill();
+            BLACK_TEXTURE = new TextureRegion(new Texture(pixmap));
+        }
+        else { BLACK_TEXTURE = null; }
     }
 
 

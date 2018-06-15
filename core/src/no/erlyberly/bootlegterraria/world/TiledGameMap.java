@@ -52,7 +52,21 @@ public class TiledGameMap extends GameMap implements Loadable {
     private final int tileHeight;
 
 
-    public TiledGameMap(final String map) {
+    public TiledGameMap(final String map, final boolean headless) {
+        super(headless);
+        if (headless) {
+            this.tiledMap = new TiledMap();
+            this.tiledMapRenderer = null;
+            this.blockLayer = null;
+            this.spawn = new Vector2Int(0, 0);
+
+            this.mapWidth = 10;
+            this.mapHeight = 10;
+
+            this.tileWidth = 16;
+            this.tileHeight = 16;
+            return;
+        }
         try {
             this.tiledMap = new TmxMapLoader().load(map);
         } catch (final Exception e) {

@@ -2,9 +2,9 @@ package no.erlyberly.bootlegterraria.util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Preconditions;
-import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
+import no.erlyberly.bootlegterraria.world.GameMap;
 
 public class Util {
 
@@ -29,9 +29,9 @@ public class Util {
      * @param max
      *     The maximum value to return (inclusive)
      *
-     * @return {@code val} if between {@code min} and {@code max}, if not return {@code min} or {@code max} respectivly
+     * @return {@code val} if between {@code min} and {@code max}, if not return {@code min} or {@code max} respectively
      */
-    public static <T extends Comparable<T>> T between(final T min, final T val, final T max) {
+    public static <T extends Comparable<T>> T clamp(final T min, final T val, final T max) {
         Preconditions.checkArgument(min != null && val != null && max != null, "None of the parameters can be null");
         Preconditions.checkArgument(min.compareTo(max) <= 0,
                                     "Minimum argument must be less than or equal to the maximum argument");
@@ -68,23 +68,23 @@ public class Util {
      *
      * @return An AABB2D around {@code src} with a radius of lightLevel
      */
-    public static AABB2D fromLight(final Vector2Int src, final LightLevel lightLevel) {
+    public static AABB2D fromLight(final Vector2Int src, final GameMap gameMap, final LightLevel lightLevel) {
 
         final int lightRadius = lightLevel.getLvl() - 1;
 
         final int blockX = src.x;
         final int blockY = src.y;
 
-        final int mapWidth = (int) GameMain.inst().getGameMap().getWidth();
-        final int mapHeight = (int) GameMain.inst().getGameMap().getHeight();
+        final int mapWidth = (int) gameMap.getWidth();
+        final int mapHeight = (int) gameMap.getHeight();
 
         //start coords, top right
-        final int x0 = Util.between(0, blockX - lightRadius, mapWidth);
-        final int y0 = Util.between(0, blockY - lightRadius, mapHeight);
+        final int x0 = Util.clamp(0, blockX - lightRadius, mapWidth);
+        final int y0 = Util.clamp(0, blockY - lightRadius, mapHeight);
 
         //end coords, lower left
-        final int x1 = Util.between(0, blockX + lightRadius + 1, mapWidth);
-        final int y1 = Util.between(0, blockY + lightRadius + 1, mapHeight);
+        final int x1 = Util.clamp(0, blockX + lightRadius + 1, mapWidth);
+        final int y1 = Util.clamp(0, blockY + lightRadius + 1, mapHeight);
         return new AABB2D(x0, x1, y0, y1);
     }
 }

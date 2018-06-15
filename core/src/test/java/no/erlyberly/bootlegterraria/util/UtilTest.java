@@ -9,13 +9,13 @@ class UtilTest {
 
     @Test
     void between() {
-        Assertions.assertEquals(new Integer(0), Util.between(0, -1, 1)); //check less than min
-        assertEquals(new Integer(1), Util.between(1, 0, 2)); //check between
-        assertEquals(new Integer(1), Util.between(0, 2, 1)); //check max
-        assertEquals(new Integer(0), Util.between(0, 0, 0)); //check max == min
+        Assertions.assertEquals(new Integer(0), Util.clamp(0, -1, 1)); //check less than min
+        assertEquals(new Integer(1), Util.clamp(1, 0, 2)); //check between
+        assertEquals(new Integer(1), Util.clamp(0, 2, 1)); //check max
+        assertEquals(new Integer(0), Util.clamp(0, 0, 0)); //check max == min
 
         //make sure min must less than or equal to max
-        assertThrows(IllegalArgumentException.class, () -> Util.between(2, 0, 0));
+        assertThrows(IllegalArgumentException.class, () -> Util.clamp(2, 0, 0));
     }
 
     @Test

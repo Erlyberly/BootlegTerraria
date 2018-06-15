@@ -25,6 +25,16 @@ public class GameMain extends Game {
 
     public static Color backgroundColor = Color.BLACK;
 
+    public static final boolean HEADLESS;
+
+    private static final String HEADLESS_FLAG = "-headless";
+
+    static {
+        //suuuuuuuper hacky way of getting main's arg[] args
+        final String headlessFlag = System.getProperty("sun.java.command", "");
+        HEADLESS = headlessFlag.contains(HEADLESS_FLAG);
+    }
+
     @Override
     public void create() {
         gameMainInstance = this; //must be first
@@ -46,7 +56,7 @@ public class GameMain extends Game {
     }
 
     public void loadMap(final String map) {
-        this.gameMap = new TiledGameMap(map);
+        this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();
         this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
         consoleHandler.resetInputProcessing();
