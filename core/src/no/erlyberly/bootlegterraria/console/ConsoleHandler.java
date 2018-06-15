@@ -29,7 +29,9 @@ public class ConsoleHandler {
     }
 
     public void draw() {
-        this.console.draw();
+        try {
+            this.console.draw();
+        } catch (final Exception ignore) {}
     }
 
     public boolean isConsoleVisible() {
