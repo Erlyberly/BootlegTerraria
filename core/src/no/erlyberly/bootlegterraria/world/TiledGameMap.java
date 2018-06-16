@@ -53,7 +53,7 @@ public class TiledGameMap extends GameMap implements Loadable {
 
 
     public TiledGameMap(final String map, final boolean headless) {
-        super(headless);
+        super(map, headless);
         if (headless) {
             this.tiledMap = new TiledMap();
             this.tiledMapRenderer = null;

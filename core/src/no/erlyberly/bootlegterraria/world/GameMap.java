@@ -30,6 +30,7 @@ public abstract class GameMap {
 
     public static float gravity = 9.81f;
     public static float cameraLerp = 2.5f;
+    private final String fileName;
 
     private ArrayList<Entity> enemies;
     private ArrayList<Entity> addEnimies;
@@ -52,7 +53,8 @@ public abstract class GameMap {
 
     private CreativeInventory inv;
 
-    GameMap(boolean headless) {
+    GameMap(String fileName, boolean headless) {
+        this.fileName = fileName;
         enemies = new ArrayList<Entity>();
         addEnimies = new ArrayList<Entity>();
         entities = new ArrayList<Entity>();
@@ -147,19 +149,24 @@ public abstract class GameMap {
         final int blockY = (int) (mousePos.y / TileType.TILE_SIZE);
 
         Vector2Int pos = new Vector2Int(blockX, blockY);
-        String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
-        //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
-        String m = String
-            .format("Mouse  : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y, skylight);
-        String bam = String.format("B @ M  : Blk: %s LI: %s", getTileTypeByCoordinate(getBlockLayer(), blockX, blockY),
-                                   getLightMap().lightInfoAt(pos));
 
-        //hud text
-        font.draw(batch, "Weapon : " + player.getWeapon().getName(), 7f, GameInfo.HEIGHT / 1.07f);
-        font.draw(batch, "FPS    : " + Gdx.graphics.getFramesPerSecond(), 7f, GameInfo.HEIGHT / (1.095f));
-        font.draw(batch, "Block  : " + inv.getSelectedTileTypeAsString(), 7f, GameInfo.HEIGHT / (1.120f));
-        font.draw(batch, m, 7f, GameInfo.HEIGHT / (1.145f));
-        font.draw(batch, bam, 7f, GameInfo.HEIGHT / (1.170f));
+        String tile = getTileTypeByCoordinate(getBlockLayer(), blockX, blockY) + "";
+        String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
+
+        String[] msgs = {//
+            "Equipped : " + player.getWeapon().getName(), //
+            "FPS : " + Gdx.graphics.getFramesPerSecond(), //
+            "Sel Blk : " + inv.getSelectedTileTypeAsString(), //
+        //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
+            String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
+                          skylight),//
+            String.format("Blk @ Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)),//
+            String.format("World : Name %s width %.0f height %.0f", fileName, getWidth(), getHeight()),//
+        };
+
+        for (int i = 0; i < msgs.length; i++) {
+            font.draw(batch, msgs[i], 7f, GameInfo.HEIGHT / (1.07f + 0.030f * i));
+        }
         batch.end();
     }
 
