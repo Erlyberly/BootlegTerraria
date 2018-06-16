@@ -28,6 +28,9 @@ public class GameMain extends Game {
     public static final boolean HEADLESS;
 
     private static final String HEADLESS_FLAG = "-headless";
+    private static final String MAP_ENV = "map";
+    private static final String DEFAULT_MAP = "map.tmx";
+
 
     static {
         //suuuuuuuper hacky way of getting main's arg[] args
@@ -52,10 +55,17 @@ public class GameMain extends Game {
 
         consoleHandler = new ConsoleHandler(); //must be last
 
-        loadMap("map.tmx");
+
+        String map = System.getenv(MAP_ENV);
+        if (map == null) {
+            consoleHandler.log("No environment map specified, loading default (" + DEFAULT_MAP + ")");
+            map = DEFAULT_MAP;
+        }
+        loadMap(map);
     }
 
     public void loadMap(final String map) {
+        consoleHandler.log("Loading map '" + map + '\'');
         this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();
         this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
