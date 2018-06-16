@@ -62,15 +62,17 @@ public class BlockLightMap implements LightMap {
         else if (pos.x < 0 || pos.y < 0 || pos.x >= this.map.getWidth() || pos.y >= this.map.getHeight()) {
             throw new IllegalArgumentException("Tried to add light source outside of map");
         }
-        final long startTime = System.currentTimeMillis();
-        final AABB2D affected = Util.fromLight(pos, this.map, ll);
-        for (final Vector2Int v : affected) {
-            final LightInfo li = getLi(v);
-            li.put(pos, ll, skylight);
-            if (logLightEvents) {
-                GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
+        GameMain.SECONDARY_THREAD.execute(() -> {
+            final long startTime = System.currentTimeMillis();
+            final AABB2D affected = Util.fromLight(pos, this.map, ll);
+            for (final Vector2Int v : affected) {
+                final LightInfo li = getLi(v);
+                li.put(pos, ll, skylight);
+                if (logLightEvents) {
+                    GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -87,38 +89,40 @@ public class BlockLightMap implements LightMap {
             throw new IllegalArgumentException("Tried to remove light source outside of map");
         }
         if (this.lightInfoMap.containsKey(pos)) {
-            final long startTime = System.currentTimeMillis();
+            GameMain.SECONDARY_THREAD.execute(() -> {
+                final long startTime = System.currentTimeMillis();
 
-            final LightInfo posLi = this.lightInfoMap.get(pos);
-            final Map<Vector2Int, Float> litFrom = posLi.litFrom();
+                final LightInfo posLi = this.lightInfoMap.get(pos);
+                final Map<Vector2Int, Float> litFrom = posLi.litFrom();
 
-            final ArrayList<LightInfo> emittedLight = new ArrayList<>();
+                final ArrayList<LightInfo> emittedLight = new ArrayList<>();
 
-            if (litFrom.containsKey(pos)) {
-                for (final Vector2Int v : Util.fromLight(pos, this.map, LightLevel.valueOf(litFrom.get(pos)))) {
-                    final LightInfo li = this.lightInfoMap.get(v);
-                    if (li != null) {
-                        final boolean oldSkylight = li.isSkylight();
-                        li.remove(pos, skylight);
-                        if (skylight && oldSkylight && li.getEmitting() != null) {
-                            emittedLight.add(li);
-                        }
-                        //remove the instance if there is no light at it
-                        if (li.litFrom().isEmpty()) {
-                            this.lightInfoMap.remove(v);
+                if (litFrom.containsKey(pos)) {
+                    for (final Vector2Int v : Util.fromLight(pos, this.map, LightLevel.valueOf(litFrom.get(pos)))) {
+                        final LightInfo li = this.lightInfoMap.get(v);
+                        if (li != null) {
+                            final boolean oldSkylight = li.isSkylight();
+                            li.remove(pos, skylight);
+                            if (skylight && oldSkylight && li.getEmitting() != null) {
+                                emittedLight.add(li);
+                            }
+                            //remove the instance if there is no light at it
+                            if (li.litFrom().isEmpty()) {
+                                this.lightInfoMap.remove(v);
+                            }
                         }
                     }
                 }
-            }
 
-            //re-add all the emitted lights (for torch or lava)
-            for (final LightInfo li : emittedLight) {
-                addSource(li.getPosi(), li.getEmitting());
-            }
+                //re-add all the emitted lights (for torch or lava)
+                for (final LightInfo li : emittedLight) {
+                    addSource(li.getPosi(), li.getEmitting());
+                }
 
-            if (logLightEvents) {
-                GameMain.consHldr().log("Removing light took " + (System.currentTimeMillis() - startTime) + " ms");
-            }
+                if (logLightEvents) {
+                    GameMain.consHldr().log("Removing light took " + (System.currentTimeMillis() - startTime) + " ms");
+                }
+            });
         }
     }
 
@@ -197,6 +201,7 @@ public class BlockLightMap implements LightMap {
 
     private void initialCalculations() {
         GameMain.SECONDARY_THREAD.execute(() -> {
+
             //do not log light time for each added time during the initial calculation to speed things up
             final boolean oldLogLight = logLightEvents;
             logLightEvents = false;
@@ -209,6 +214,7 @@ public class BlockLightMap implements LightMap {
                 final int height = tiledLayer.getHeight();
                 for (int x = 0, width = (int) this.map.getWidth(); x < width; x++) {
                     for (int y = height - 1; y >= 0; y--) { //start at the top of the map
+
                         //check if the current cell is collidable
                         final TiledMapTileLayer.Cell cell = tiledLayer.getCell(x, y);
                         if (cell == null) {
