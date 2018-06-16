@@ -89,7 +89,8 @@ public interface LightMap extends Loadable {
     }
 
     /**
-     * @return The light info on this position. A new light info will be created if there is no info here
+     * @return The light info on this position. A new light info will be created if there is no info here, if {@code
+     * pos} is outside of the map bound {@code null} will be returned
      */
     LightInfo lightInfoAt(Vector2Int pos);
 }

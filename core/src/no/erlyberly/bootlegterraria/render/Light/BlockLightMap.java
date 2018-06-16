@@ -189,6 +189,9 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public LightInfo lightInfoAt(final Vector2Int pos) {
+        if (this.map.isOutsideMap(pos.x, pos.y)) {
+            return null;
+        }
         return this.lightInfoMap.getOrDefault(pos, new LightInfo(pos));
     }
 
