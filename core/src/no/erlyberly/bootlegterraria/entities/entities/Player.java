@@ -205,7 +205,7 @@ public class Player extends Entity {
 
     @Override
     public float getWidth() {
-        return TileType.TILE_SIZE - 1.1f;
+        return TileType.TILE_SIZE - 2f;
     }
 
     @Override
