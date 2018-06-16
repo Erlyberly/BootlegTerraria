@@ -147,8 +147,10 @@ public abstract class GameMap {
         final int blockY = (int) (mousePos.y / TileType.TILE_SIZE);
 
         Vector2Int pos = new Vector2Int(blockX, blockY);
-
-        String m = String.format("Mouse  : (%d, %d) (%.1f, %.1f) ", blockX, blockY, mousePos.x, mousePos.y);
+        String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
+        //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
+        String m = String
+            .format("Mouse  : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y, skylight);
         String bam = String.format("B @ M  : Blk: %s LI: %s", getTileTypeByCoordinate(getBlockLayer(), blockX, blockY),
                                    getLightMap().lightInfoAt(pos));
 
