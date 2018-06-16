@@ -248,14 +248,15 @@ public class BlockLightMap implements LightMap {
                 //add lights up to the highest skylight point of either left, right and here
                 final int skyLft = this.skylight[Math.max(0, x - 1)];
                 final int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
-                final int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
-
-//              System.out.printf("Adding skylight from %d to %d @ %d%n", this.skylight[x], hi, x);
-
+                int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
+                hi = Util.clamp(0, hi, (int) this.map.getHeight() - 1);
+//                System.out.printf("Adding skylight from %d to %d @ %d%n", this.skylight[x], hi, x);
 
                 for (int y = this.skylight[x]; y < hi + 1; y++) {
+//                    System.out.printf("Adding skylight @ (%d,%d)%n", x, y);
                     addSkylight(x, y);
                 }
+
             }
             GameMain.consHldr().log(
                 "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
