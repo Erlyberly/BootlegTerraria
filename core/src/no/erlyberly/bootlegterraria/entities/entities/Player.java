@@ -35,11 +35,12 @@ public class Player extends Entity {
     private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
     private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
 
-    private boolean isHurt;
-    private boolean flying;
+    private boolean flying; //can the player fly?
 
-    public boolean god = false;
-    public float speed = 1;
+    public boolean god = false; //is the player in god mode?
+    public float speed = 1; //how fast is the player going (2 is twice as fast)
+
+    private int hurtTimer; //For how long should the player be hurt?
 
     public Player(final float x, final float y) {
         super(x, y);
@@ -142,7 +143,10 @@ public class Player extends Entity {
             return;
         }
 
-        if (amount < 0) { this.isHurt = true; }
+        if (amount < 0) {
+            //let the player display the hurt sprite for quarter-(ish) of a second
+            this.hurtTimer = Gdx.graphics.getFramesPerSecond() / 4;
+        }
 
         if (this.health > 0) {
             this.health += amount;
@@ -233,16 +237,17 @@ public class Player extends Entity {
         }
 
         TextureRegion region = PLAYER_TEXTURE;
-        if (this.isHurt) {
-            this.isHurt = false;
+        if (this.hurtTimer > 0) {
+            this.hurtTimer--;
             region = HURT_TEXTURE;
         }
 
+        final float rotation = this.dodgeTime / DODGE_TIME * -getFacing() * 360 * 2;
 
         batch
             .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
-                  1, 1, this.dodgeTime / DODGE_TIME * -getFacing() * 360 * 2, region.getRegionX(), region.getRegionY(),
-                  region.getRegionWidth(), region.getRegionHeight(), direction != -1, false);
+                  1, 1, rotation, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                  region.getRegionHeight(), direction != -1, false);
 
     }
 
