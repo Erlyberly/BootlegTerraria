@@ -65,6 +65,7 @@ public class GameMain extends Game {
     }
 
     public void loadMap(final String map) {
+        SECONDARY_THREAD.cancelTasks();
         consoleHandler.log("Loading map '" + map + '\'');
         this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();

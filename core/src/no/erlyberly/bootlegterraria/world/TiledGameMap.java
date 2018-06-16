@@ -179,7 +179,7 @@ public class TiledGameMap extends GameMap implements Loadable {
         this.blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or
-        final LightLevel ll = tt == null ? LightLevel.LVL_0 : tt.getLuminosity();
+        final LightLevel ll = (tt == null) ? LightLevel.LVL_0 : tt.getLuminosity();
         final boolean isEmittingLight = tt != null && tt.isEmittingLight();
         final LightMap lightMap = this.tiledMapRenderer.getLight();
 

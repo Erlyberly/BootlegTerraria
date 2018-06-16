@@ -157,7 +157,7 @@ public abstract class GameMap {
             "Equipped : " + player.getWeapon().getName(), //
             "FPS : " + Gdx.graphics.getFramesPerSecond(), //
             "Sel Blk : " + inv.getSelectedTileTypeAsString(), //
-        //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
+            //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
             String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
                           skylight),//
             String.format("Blk @ Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)),//
@@ -340,7 +340,11 @@ public abstract class GameMap {
      * @return true if the block at ({@code x, y}) is outside of the maps bounds
      */
     public boolean isOutsideMap(int blockX, int blockY) {
-        return blockX < 0 || blockY < 0 || blockX >= getWidth() || blockY >= getHeight();
+        return isOutsideMap(blockX, blockY, (int) getWidth(), (int) getHeight());
+    }
+
+    public static boolean isOutsideMap(int blockX, int blockY, int width, int height) {
+        return blockX < 0 || blockY < 0 || blockX >= width || blockY >= height;
     }
 
     public void checkPlayerEnemyCollision() {
