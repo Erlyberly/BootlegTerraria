@@ -143,8 +143,10 @@ public class BlockLightMap implements LightMap {
             final int oldSkylight = this.skylight[blockX];
 
             final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.inst().getGameMap().getBlockLayer();
-            for (int y = tiledLayer.getHeight() - 1; y >= 0; y--) { //loop from the top of the map
 
+            boolean skylightFound = false;
+
+            for (int y = tiledLayer.getHeight() - 1; y >= 0; y--) { //loop from the top of the map
                 final TiledMapTileLayer.Cell cell = tiledLayer.getCell(blockX, y);
                 if (cell == null) {
                     //empty cell
@@ -154,8 +156,12 @@ public class BlockLightMap implements LightMap {
                 //check if the current cell is collidable, if it is this is where the skylight stops
                 if (tt.isSolid()) {
                     this.skylight[blockX] = y + 1;
+                    skylightFound = true;
                     break;
                 }
+            }
+            if (!skylightFound) {
+                this.skylight[blockX] = 0;
             }
 
             final int newSkylight = this.skylight[blockX];
