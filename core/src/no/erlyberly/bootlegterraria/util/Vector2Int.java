@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.util;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /**
@@ -41,6 +42,10 @@ public class Vector2Int implements Comparable<Vector2Int> {
      */
     public Vector2Int dist(final Vector2Int v) {
         return new Vector2Int(v.x - this.x, v.y - this.y);
+    }
+
+    public static Vector2Int fromV2(final Vector2 v2) {
+        return new Vector2Int((int) v2.x, (int) v2.y);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;

@@ -1,9 +1,11 @@
-package no.erlyberly.bootlegterraria.entities.entities;
+package no.erlyberly.bootlegterraria.entities.living;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.Entity;
+import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.Random;
@@ -111,9 +113,30 @@ public class Zombie extends Entity {
 
     @Override
     public void render(final SpriteBatch batch) {
+
+        //make the player follow the lighting of the block they're standing on
+        final LightLevel ll = this.gameMap.lightAt(getMapPos());
+        final Color oldColor = batch.getColor();
+
+        if (ll != null) {
+            final Color newColor = oldColor.cpy();
+
+            newColor.r *= ll.getPercentage();
+            newColor.g *= ll.getPercentage();
+            newColor.b *= ll.getPercentage();
+
+
+            batch.setColor(newColor);
+        }
+
         batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
                    getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
                    TEXTURE.getRegionHeight(), isFacingRight(), false);
+        if (ll != null) {
+            batch.setColor(oldColor);
+        }
+
+
         batch.draw(HEALTH_BAR, this.pos.x - getWidth() / 2f, this.pos.y + 34f,
                    (this.health / this.getMaxHealth() * getWidth() * 2f), 5f);
         batch.draw(BAR_OUTLINE, this.pos.x - getWidth() / 2f, this.pos.y + 34f, getWidth() * 2f, 5f);

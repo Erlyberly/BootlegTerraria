@@ -6,7 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.entities.living.Player;
+import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -102,8 +103,18 @@ public abstract class Entity {
         return this.destroyed;
     }
 
+    /**
+     * @return Screen position of the player
+     */
     public Vector2 getPos() {
         return this.pos;
+    }
+
+    /**
+     * @return The tile position of the entity
+     */
+    public Vector2Int getMapPos() {
+        return new Vector2Int((int) (this.pos.x / TileType.TILE_SIZE), (int) (this.pos.y / TileType.TILE_SIZE));
     }
 
     public float getX() {
