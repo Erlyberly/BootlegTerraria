@@ -13,6 +13,11 @@ import java.util.List;
  * <p>
  * However for {@link #get(int)} the returned TileStack <bold>MUST</bold> be a valid stacks (or null) if this is not the
  * desired use {@link #getUnsafe(int, boolean)} for invalid stacks
+ * <p>
+ * TODO implement a container that allow for invalid stacks (a sort of main storage)
+ * TODO implement a chest (that can be opened, somehow)
+ * TODO let some entities have inventories
+ * TODO let the player switch between creative and survival
  *
  * @author kheba
  */
