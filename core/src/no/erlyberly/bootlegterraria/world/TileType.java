@@ -10,10 +10,10 @@ public enum TileType {
 
     GRASS(1, "Grass"),
     DIRT(2, "Dirt"),
-    LAVA(3, "Lava", 2500, LightLevel.LVL_8, 0.5f),
-    CLOUD(4, "Cloud", 0),
+    LAVA(3, "Lava", 2500, LightLevel.LVL_8, 0.5f, 64),
+    CLOUD(4, "Cloud", 0, 1024),
     STONE(5, "Stone"),
-    TORCH(6, "Torch", LightLevel.LVL_7, 0),
+    TORCH(6, "Torch", LightLevel.LVL_7, 0, 256),
     LOG(7, "Log"),
     LEAVES(8, "Leaves"),;
 
@@ -34,17 +34,18 @@ public enum TileType {
     private final int dps;
     private final LightLevel luminosity;
     private final float viscosity;
+    private final int stackSize;
 
     TileType(final int id, final String name) {
-        this(id, name, 1);
+        this(id, name, 1, 128);
     }
 
-    TileType(final int id, final String name, final float viscosity) {
-        this(id, name, LightLevel.LVL_0, viscosity);
+    TileType(final int id, final String name, final float viscosity, final int stackSize) {
+        this(id, name, LightLevel.LVL_0, viscosity, stackSize);
     }
 
-    TileType(final int id, final String name, final LightLevel lightLevel, final float viscosity) {
-        this(id, name, 0, lightLevel, viscosity);
+    TileType(final int id, final String name, final LightLevel lightLevel, final float viscosity, final int stackSize) {
+        this(id, name, 0, lightLevel, viscosity, stackSize);
     }
 
     /**
@@ -57,15 +58,23 @@ public enum TileType {
      * @param luminosity
      *     How bright this tile shines
      * @param viscosity
-     *     How easily entities move through the tile, 0 is no resistance, 1 is solid
+     *     How easily living move through the tile, 0 is no resistance, 1 is solid
+     * @param stackSize
+     *     How many of this tile a stack can hold
      */
-    TileType(final int id, final String name, final int dps, final LightLevel luminosity, final float viscosity) {
+    TileType(final int id, final String name, final int dps, final LightLevel luminosity, final float viscosity,
+             final int stackSize) {
         Preconditions.checkArgument(viscosity >= 0 && viscosity <= 1, "viscosity must be between 0 and 1");
+        Preconditions.checkArgument(stackSize > 0, "The stack size must be greater than 0");
+        Preconditions.checkArgument(stackSize != Integer.MAX_VALUE,
+                                    "Max stack size cannot be greater than " + (Integer.MAX_VALUE - 1) +
+                                    " (Integer.MAX_VALUE - 1), given " + stackSize);
         this.id = id;
         this.name = name;
         this.dps = dps;
         this.luminosity = luminosity;
         this.viscosity = viscosity;
+        this.stackSize = stackSize;
     }
 
 
@@ -123,5 +132,9 @@ public enum TileType {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public int getMaxStackSize() {
+        return this.stackSize;
     }
 }

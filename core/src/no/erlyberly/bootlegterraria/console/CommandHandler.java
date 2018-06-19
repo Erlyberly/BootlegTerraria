@@ -7,7 +7,7 @@ import com.strongjoshua.console.LogLevel;
 import com.strongjoshua.console.annotation.ConsoleDoc;
 import com.strongjoshua.console.annotation.HiddenCommand;
 import no.erlyberly.bootlegterraria.GameMain;
-import no.erlyberly.bootlegterraria.entities.entities.Player;
+import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Sword;

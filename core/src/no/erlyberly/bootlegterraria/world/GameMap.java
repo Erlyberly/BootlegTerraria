@@ -153,15 +153,17 @@ public abstract class GameMap {
         String tile = getTileTypeByCoordinate(getBlockLayer(), blockX, blockY) + "";
         String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
 
+        String selBlk = ((inv.holding() == null) ? "Air" : inv.holding().displayName());
+
         String[] msgs = {//
             "Equipped : " + player.getWeapon().getName(), //
             "FPS : " + Gdx.graphics.getFramesPerSecond(), //
-            "Sel Blk : " + inv.getSelectedTileTypeAsString(), //
+            String.format("Sel Blk : %s (id %s)", selBlk, inv.holding().getTileType().getId()), //
             //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
             String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
-                          skylight),//
-            String.format("Blk @ Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)),//
-            String.format("World : Name %s width %.0f height %.0f", fileName, getWidth(), getHeight()),//
+                          skylight), //
+            String.format("Blk @ Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)), //
+            String.format("World : Name %s width %.0f height %.0f", fileName, getWidth(), getHeight()), //
         };
 
         for (int i = 0; i < msgs.length; i++) {
@@ -251,8 +253,8 @@ public abstract class GameMap {
             }
             else {
                 TileType tt = null;
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                    tt = inv.getSelectedTileType();
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && inv.holding() != null) {
+                    tt = inv.holding().getTileType();
                 }
                 else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                     tt = null;
@@ -317,7 +319,7 @@ public abstract class GameMap {
     }
 
     /**
-     * Check if there is a collision between entities and enemies
+     * Check if there is a collision between living and enemies
      */
     public void checkEntityEnemyCollision() {
         for (Entity entity : entities) {
