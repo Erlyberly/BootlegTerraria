@@ -32,9 +32,15 @@ public abstract class Entity {
      *     Y coordinate to spawn the entity on
      */
     protected Entity(final float x, final float y) {
-        this.pos = new Vector2(x, y);
-        this.health = getMaxHealth();
+        float newY = y;
+        if (this.gameMap.checkPlayerMapCollisionDamage(x, y, getWidth(), getHeight())) {
+            newY = (int) ((this.gameMap.getSkylightAt((int) (x / this.gameMap.getTileHeight())) +
+                           (this.getHeight() / this.gameMap.getTileHeight())) * this.gameMap.getTileWidth());
+        }
 
+        this.pos = new Vector2(x, newY);
+
+        this.health = getMaxHealth();
         this.velocityY = 0;
         this.onGround = false;
         this.destroyed = false;
