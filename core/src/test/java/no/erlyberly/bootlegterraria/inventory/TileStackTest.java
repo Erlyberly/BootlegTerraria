@@ -3,12 +3,35 @@ package no.erlyberly.bootlegterraria.inventory;
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author kheba
  */
 class TileStackTest {
+
+    @Test
+    void negAmount() {
+        assertThrows(IllegalArgumentException.class, () -> new TileStack(TileType.CLOUD, -1));
+        assertThrows(IllegalArgumentException.class, () -> new TileStack(TileType.CLOUD, 1).setAmount(-1));
+        assertThrows(NullPointerException.class, () -> new TileStack(null, 1));
+    }
+
+    @Test
+    void validity() {
+        for (final TileType tt : TileType.values()) {
+            //zero should always be allowed
+            assertTrue(new TileStack(tt, 0).isValid());
+
+            final TileStack ts1 = new TileStack(tt, 0);
+
+            ts1.setAmount(tt.getMaxStackSize());
+            assertTrue(ts1.isValid());
+
+            ts1.add(1);
+            assertFalse(ts1.isValid());
+        }
+    }
 
     @Test
     void stack() {
@@ -48,7 +71,7 @@ class TileStackTest {
             final TileStack[] ats5 = TileStack.stack(tt, 0);
             final TileStack[] ets5 = { //
             };
-            assertArrayEquals(ets4, ats4);
+            assertArrayEquals(ets5, ats5);
         }
     }
 }

@@ -6,6 +6,11 @@ import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Util {
 
     /**
@@ -87,5 +92,30 @@ public class Util {
         final int x1 = Util.clamp(0, blockX + lightRadius + 1, mapWidth);
         final int y1 = Util.clamp(0, blockY + lightRadius + 1, mapHeight);
         return new AABB2D(x0, x1, y0, y1);
+    }
+
+    /**
+     * <a href="https://stackoverflow.com/questions/1670862/obtaining-a-powerset-of-a-set-in-java#1670871">original
+     * found here</a>
+     *
+     * @return The power set of a set
+     */
+    public static <T> Set<Set<T>> powerSet(final Set<T> originalSet) {
+        final Set<Set<T>> sets = new HashSet<>();
+        if (originalSet.isEmpty()) {
+            sets.add(new HashSet<>());
+            return sets;
+        }
+        final List<T> list = new ArrayList<>(originalSet);
+        final T head = list.get(0);
+        final Set<T> rest = new HashSet<>(list.subList(1, list.size()));
+        for (final Set<T> set : powerSet(rest)) {
+            final Set<T> newSet = new HashSet<>();
+            newSet.add(head);
+            newSet.addAll(set);
+            sets.add(newSet);
+            sets.add(set);
+        }
+        return sets;
     }
 }

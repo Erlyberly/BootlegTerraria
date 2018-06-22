@@ -1,41 +1,37 @@
 package no.erlyberly.bootlegterraria.inventory;
 
-import com.google.common.base.Preconditions;
-
 /**
  * @author kheba
  */
-public abstract class Inventory implements TileContainer {
-
-    private int sel;
+public interface Inventory {
 
     /**
      * @return The item currently active
      */
-    public abstract TileStack holding();
+    TileStack holding();
 
     /**
      * Select the next item
      */
-    public void next() {
-        this.sel = (this.sel + 1) % getSize();
-    }
+    void next();
 
     /**
      * Select the previous item
      */
-    public void previous() {
-        this.sel = (this.sel - 1) % getSize();
-    }
+    void prev();
 
     /**
-     * Select the {@code index}th item
+     * @return The size of the inventory
      */
-    public void sel(final int index) {
-        this.sel = Preconditions.checkPositionIndex(index, getSize() - 1);
-    }
+    int getSize();
 
-    int getSel() {
-        return this.sel;
-    }
+    /**
+     * Select the {@code index}-th item
+     */
+    void select(final int index);
+
+    /**
+     * @return The index of the selected item
+     */
+    int getSel();
 }

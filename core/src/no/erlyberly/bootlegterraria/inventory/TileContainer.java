@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author kheba
  */
-public interface TileContainer extends Iterable<TileStack> {
+public interface TileContainer extends Iterable<Slot> {
 
     /**
      * @return How many slots this container holds
@@ -98,19 +98,24 @@ public interface TileContainer extends Iterable<TileStack> {
     void removeAll(TileType tileType);
 
     /**
-     * Remove an item from the container
+     * Remove {@code amount} of the given tile type
+     *
+     * @param amount
+     *     How many to remove
+     * @param tileType
+     *     What tile to remove
+     *
+     * @return How many tiles that were not removed
      */
-    default void remove(final TileType tileType, final int amount) {
-        add(TileStack.stack(tileType, amount));
-    }
+    int remove(final TileType tileType, final int amount);
 
     /**
-     * Remove an item from the container
+     * Remove tile stacks in the container that match the given element
      *
      * @param tileStack
-     *     What to remove
+     *     The tile stack to remove
      */
-    void remove(TileStack... tileStack);
+    void remove(TileStack tileStack);
 
     /**
      * Remove tile at index
@@ -118,12 +123,10 @@ public interface TileContainer extends Iterable<TileStack> {
      * @throws IndexOutOfBoundsException
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
-    default void remove(final int index) {
-        put(index, null);
-    }
+    void remove(final int index);
 
     /**
-     * Clear the item completely
+     * Clear the container of all tiles
      */
     void clear();
 
@@ -158,13 +161,7 @@ public interface TileContainer extends Iterable<TileStack> {
      * @throws IndexOutOfBoundsException
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
-    default TileStack get(final int index) {
-        final TileStack tt = getUnsafe(index, true)[0];
-        if (tt != null && !tt.isValid()) {
-            throw new IllegalStateException("The returned stack was not valid");
-        }
-        return tt;
-    }
+    TileStack get(final int index);
 
     /**
      * @param validate
@@ -190,4 +187,9 @@ public interface TileContainer extends Iterable<TileStack> {
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
     void put(int index, TileStack tileStack);
+
+    /**
+     * @return The underlying array of the container
+     */
+    TileStack[] getContent();
 }

@@ -23,12 +23,12 @@ public class TileStack implements Comparable<TileStack> {
      * @param tt
      *     The type of tile this stack is made out of
      * @param amount
-     *     How many items that's in this stack
+     *     How many items that's in this stack, must be zero or greater
      */
     public TileStack(final TileType tt, final int amount) {
         Preconditions.checkNotNull(tt, "The tile type cannot be null");
         this.tt = tt;
-        this.amount = amount;
+        setAmount(amount);
     }
 
     public TileType getTileType() {
@@ -39,7 +39,14 @@ public class TileStack implements Comparable<TileStack> {
         return this.amount;
     }
 
+    /**
+     * Set the amount this stack has,
+     *
+     * @param amount
+     *     new amount, must be zero or greater
+     */
     public void setAmount(final int amount) {
+        Preconditions.checkArgument(amount >= 0, "The amount of a stack cannot be negative: " + amount);
         this.amount = amount;
     }
 
@@ -93,7 +100,7 @@ public class TileStack implements Comparable<TileStack> {
      * @return If this stack is valid with regard to the {@link TileType#getMaxStackSize()}
      */
     public boolean isValid() {
-        return this.amount > 0 && this.amount <= this.tt.getMaxStackSize();
+        return this.amount >= 0 && this.amount <= this.tt.getMaxStackSize();
     }
 
     @Override
