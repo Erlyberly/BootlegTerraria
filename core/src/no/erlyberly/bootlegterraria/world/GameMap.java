@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.living.Player;
-import no.erlyberly.bootlegterraria.inventory.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
 import no.erlyberly.bootlegterraria.util.GameInfo;
@@ -51,8 +50,6 @@ public abstract class GameMap {
     private Texture staminaBar;
     Texture loadingSplashScreen;
 
-    private CreativeInventory inv;
-
     GameMap(String fileName, boolean headless) {
         this.fileName = fileName;
         enemies = new ArrayList<Entity>();
@@ -76,8 +73,6 @@ public abstract class GameMap {
             barOutline = new Texture("bar_outline.png");
             staminaBar = new Texture("stamina_fill.png");
             loadingSplashScreen = new Texture("goodlogic.png");
-
-            inv = new CreativeInventory();
         }
     }
 
@@ -153,12 +148,12 @@ public abstract class GameMap {
         String tile = getTileTypeByCoordinate(getBlockLayer(), blockX, blockY) + "";
         String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
 
-        String selBlk = ((inv.holding() == null) ? "Air" : inv.holding().displayName());
+        String selBlk = ((player.getInv().holding() == null) ? "Air" : player.getInv().holding().displayName());
 
         String[] msgs = {//
             "Equipped : " + player.getWeapon().getName(), //
             "FPS : " + Gdx.graphics.getFramesPerSecond(), //
-            String.format("Sel Blk : %s (id %s)", selBlk, inv.holding().getTileType().getId()), //
+            String.format("Sel Blk : %s (id %s)", selBlk, player.getInv().holding().getTileType().getId()), //
             //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
             String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
                           skylight), //
@@ -253,8 +248,8 @@ public abstract class GameMap {
             }
             else {
                 TileType tt = null;
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && inv.holding() != null) {
-                    tt = inv.holding().getTileType();
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && player.getInv().holding() != null) {
+                    tt = player.getInv().holding().getTileType();
                 }
                 else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                     tt = null;

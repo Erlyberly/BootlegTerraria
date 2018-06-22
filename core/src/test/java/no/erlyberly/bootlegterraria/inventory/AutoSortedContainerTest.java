@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.inventory;
 
+import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedContainer;
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
 

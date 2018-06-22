@@ -1,4 +1,8 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.inventory.impl;
+
+import no.erlyberly.bootlegterraria.entities.Entity;
+import no.erlyberly.bootlegterraria.inventory.AbstractInventory;
+import no.erlyberly.bootlegterraria.inventory.TileStack;
 
 /**
  * An inventory intended to be used by players
@@ -9,7 +13,8 @@ public class AutoSortedInventory extends AbstractInventory {
 
     private final AutoSortedContainer inv;
 
-    public AutoSortedInventory(final int size) {
+    public AutoSortedInventory(final int size, final Entity holder) {
+        super(holder);
         this.inv = new AutoSortedContainer(size);
     }
 

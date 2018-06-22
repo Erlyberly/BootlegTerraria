@@ -7,9 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.living.Player;
+import no.erlyberly.bootlegterraria.inventory.Inventory;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
+
+import javax.annotation.Nonnull;
 
 public abstract class Entity {
 
@@ -21,7 +24,9 @@ public abstract class Entity {
     protected boolean destroyed;
     protected float health;
     private int facing;
+
     private final Rectangle entRect;
+    private Inventory inv;
 
 
     /**
@@ -133,6 +138,7 @@ public abstract class Entity {
         return this.onGround;
     }
 
+    @Nonnull
     public GameMap getGameMap() {
         return this.gameMap;
     }
@@ -185,6 +191,7 @@ public abstract class Entity {
     /**
      * @return An minimum rectangle that cover the player
      */
+    @Nonnull
     public Rectangle toRect() {
         return this.entRect.setPosition(this.pos);
     }
@@ -235,5 +242,13 @@ public abstract class Entity {
 
     public abstract boolean isFlying();
 
+    public Inventory getInv() {
+        return this.inv;
+    }
 
+    public void setInv(final Inventory inv) {
+        Preconditions.checkNotNull(inv);
+        Preconditions.checkArgument(inv.getHolder() == this, "The owner of the inventory must be this entity");
+        this.inv = inv;
+    }
 }

@@ -1,5 +1,7 @@
 package no.erlyberly.bootlegterraria.inventory;
 
+import no.erlyberly.bootlegterraria.entities.Entity;
+
 /**
  * @author kheba
  */
@@ -34,4 +36,9 @@ public interface Inventory {
      * @return The index of the selected item
      */
     int getSel();
+
+    /**
+     * @return Owner of this inventory
+     */
+    Entity getHolder();
 }

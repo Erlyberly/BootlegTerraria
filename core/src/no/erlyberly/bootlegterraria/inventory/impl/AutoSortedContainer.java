@@ -1,6 +1,10 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.inventory.impl;
 
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.inventory.Slot;
+import no.erlyberly.bootlegterraria.inventory.SortOrder;
+import no.erlyberly.bootlegterraria.inventory.TileContainer;
+import no.erlyberly.bootlegterraria.inventory.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.ArrayList;

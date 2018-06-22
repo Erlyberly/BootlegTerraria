@@ -1,13 +1,19 @@
 package no.erlyberly.bootlegterraria.inventory;
 
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.entities.Entity;
 
 /**
  * @author kheba
  */
 public abstract class AbstractInventory implements Inventory {
 
+    private final Entity holder;
     private int sel;
+
+    public AbstractInventory(final Entity holder) {
+        this.holder = holder;
+    }
 
     @Override
     public void next() {
@@ -31,5 +37,10 @@ public abstract class AbstractInventory implements Inventory {
     @Override
     public int getSel() {
         return this.sel;
+    }
+
+    @Override
+    public Entity getHolder() {
+        return this.holder;
     }
 }

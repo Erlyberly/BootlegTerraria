@@ -15,6 +15,7 @@ class AbstractInventoryTest {
         private final int size;
 
         TestAbstractInventory(final int size) {
+            super(null);
             this.size = size;
         }
 

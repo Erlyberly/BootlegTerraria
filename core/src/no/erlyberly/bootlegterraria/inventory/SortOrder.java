@@ -1,6 +1,7 @@
 package no.erlyberly.bootlegterraria.inventory;
 
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedContainer;
 
 import java.util.Arrays;
 import java.util.Comparator;

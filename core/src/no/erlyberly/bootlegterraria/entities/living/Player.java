@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
+import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -21,7 +22,8 @@ public class Player extends Entity {
     private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
     private static final int DEFAULT_MAX_HEALTH = 10000;
 
-    private Weapon weapon = new Gun();
+    private Weapon weapon;
+
     private int maxStamina = 10000; //Should be able to increase
     private float stamina = this.maxStamina;
     private final int staminaRegen = 2000;
@@ -46,6 +48,8 @@ public class Player extends Entity {
 
     public Player(final float x, final float y) {
         super(x, y);
+        this.weapon = new Gun();
+        setInv(new CreativeInventory(this));
     }
 
     @Override
@@ -280,6 +284,7 @@ public class Player extends Entity {
     public boolean isFlying() {
         return this.flying;
     }
+
 
     public void setFlying(final boolean flying) {
         this.flying = flying;

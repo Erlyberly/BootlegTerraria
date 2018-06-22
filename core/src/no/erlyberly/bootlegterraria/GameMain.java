@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
+import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
@@ -70,6 +71,7 @@ public class GameMain extends Game {
         this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();
         this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
+        new InputHandler();
         consoleHandler.resetInputProcessing();
     }
 
