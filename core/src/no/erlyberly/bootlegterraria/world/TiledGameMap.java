@@ -169,13 +169,20 @@ public class TiledGameMap extends GameMap implements Loadable {
     @Override
     public void setTile(final int blockX, final int blockY, final TileType tt) {
         final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(blockX, blockY));
-        if (oldID == tt || isOutsideMap(blockX, blockY) || overlapPlayer(blockX, blockY)) {
+        //do no change the block if
+        //there is no block at the given location
+        //the location is outside the map
+        //the block overlaps the player and is solid
+        if (oldID == tt || isOutsideMap(blockX, blockY) ||
+            (overlapPlayer(blockX, blockY) && tt != null && tt.isSolid())) {
             return;
         }
+
         Cell cell = null;
         if (tt != null) {
             cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
         }
+
         this.blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or
@@ -190,8 +197,6 @@ public class TiledGameMap extends GameMap implements Loadable {
         else if (oldID != null && oldID.isEmittingLight()) {
             lightMap.removeSource(blockX, blockY);
         }
-
-
     }
 
     @Override
