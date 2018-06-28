@@ -38,13 +38,8 @@ public abstract class Entity {
      *     Y coordinate to spawn the entity on
      */
     protected Entity(final float x, final float y) {
-        float newY = y;
-        if (this.gameMap.checkPlayerMapCollisionDamage(x, y, getWidth(), getHeight())) {
-            newY = (int) ((this.gameMap.getSkylightAt((int) (x / this.gameMap.getTileHeight())) +
-                           (this.getHeight() / this.gameMap.getTileHeight())) * this.gameMap.getTileWidth());
-        }
 
-        this.pos = new Vector2(x, newY);
+        this.pos = new Vector2(x, y);
 
         this.health = getMaxHealth();
         this.velocityY = 0;
@@ -59,10 +54,12 @@ public abstract class Entity {
                           Gdx.graphics.getDeltaTime();
         final float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
 
+        //check for damage from tiles
         if (this instanceof Player) {
             this.gameMap.checkPlayerMapCollisionDamage(this.pos.x, newY, getWidth(), getHeight());
         }
 
+        //check for collision with the map
         if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
             if (this.velocityY < 0) {
                 this.pos.y = (float) Math.floor(this.pos.y);
@@ -76,6 +73,12 @@ public abstract class Entity {
         }
     }
 
+    /**
+     * Move the entity vertically
+     *
+     * @param velocityY
+     *     How much to move vertically
+     */
     public void moveY(final float velocityY) {
         final float newY = this.pos.y + velocityY * Gdx.graphics.getDeltaTime();
         if (!this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
@@ -83,7 +86,12 @@ public abstract class Entity {
         }
     }
 
-
+    /**
+     * Move the entity horizontally
+     *
+     * @param velocityY
+     *     How much to move horizontally
+     */
     public void moveX(final float velocityX) {
         final float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
         if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
@@ -133,6 +141,7 @@ public abstract class Entity {
     public float getVelocityY() {
         return this.velocityY;
     }
+
 
     public boolean isOnGround() {
         return this.onGround;

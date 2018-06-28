@@ -19,7 +19,7 @@ import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
-public class Player extends Entity {
+public class Player extends LivingEntity {
 
     private static final int HORIZONTAL_SPEED = 120;
     private static final int JUMP_VELOCITY = 400;
@@ -27,6 +27,9 @@ public class Player extends Entity {
     private static final float DODGE_COOLDOWN = 1f;
     private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
     private static final int DEFAULT_MAX_HEALTH = 10000;
+
+    public static final int FACING_LEFT = -1;
+    public static final int FACING_RIGHT = 1;
 
     private Weapon weapon;
 
@@ -241,7 +244,7 @@ public class Player extends Entity {
         //only apply gravity when the player is not flying
         if (!isFlying()) {
             super.update();
-            }
+        }
 
     }
 
@@ -362,29 +365,12 @@ public class Player extends Entity {
 
         final float rotation = this.dodgeTime / DODGE_TIME * -getFacing() * 360 * 2;
 
-        //make the player follow the lighting of the block they're standing on
-        final LightLevel ll = this.gameMap.lightAt(getMapPos());
-        final Color oldColor = batch.getColor();
-
-        if (ll != null) {
-            final Color newColor = oldColor.cpy();
-
-            newColor.r *= ll.getPercentage();
-            newColor.g *= ll.getPercentage();
-            newColor.b *= ll.getPercentage();
-
-
-            batch.setColor(newColor);
-        }
+        startShade(batch);
         batch
             .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
                   1, 1, rotation, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                   region.getRegionHeight(), direction != -1, false);
-//        batch.flush();
-        if (ll != null) {
-            batch.setColor(oldColor);
-        }
-
+        endShade(batch);
     }
 
     @Override
