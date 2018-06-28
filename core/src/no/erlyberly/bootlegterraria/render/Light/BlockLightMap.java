@@ -68,9 +68,9 @@ public class BlockLightMap implements LightMap {
             for (final Vector2Int v : affected) {
                 final LightInfo li = getLi(v);
                 li.put(pos, ll, skylight);
-                if (logLightEvents) {
-                    GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
-                }
+            }
+            if (logLightEvents) {
+                GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
             }
         });
     }
@@ -258,13 +258,13 @@ public class BlockLightMap implements LightMap {
                 }
 
             }
-            GameMain.consHldr().log(
-                "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
-                "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
             GameMain.SECONDARY_THREAD.execute(() -> {
                 logLightEvents = oldLogLight;
                 this.initialized = true;
+                GameMain.consHldr().log(
+                    "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
+                    "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
             });
         });
     }
