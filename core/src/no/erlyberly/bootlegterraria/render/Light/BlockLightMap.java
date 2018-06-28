@@ -175,7 +175,7 @@ public class BlockLightMap implements LightMap {
                     if (blockX + 1 < this.skylight.length && this.skylight[blockX + 1] < y) {
                         addSkylight(blockX + 1, y);
                     }
-                    if (blockX - 1 > 0 && this.skylight[blockX - 1] < y) {
+                    if (blockX - 1 >= 0 && this.skylight[blockX - 1] < y) {
                         addSkylight(blockX - 1, y);
                     }
                 }
