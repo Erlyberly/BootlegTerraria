@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
+import no.erlyberly.bootlegterraria.GameMain;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -67,6 +68,7 @@ public class ConsoleHandler {
     }
 
     public void resetInputProcessing() {
+        Gdx.input.setInputProcessor(GameMain.inst().getInputHandler());
         this.console.resetInputProcessing();
     }
 }

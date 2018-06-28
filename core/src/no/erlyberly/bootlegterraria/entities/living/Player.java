@@ -2,15 +2,21 @@ package no.erlyberly.bootlegterraria.entities.living;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import no.erlyberly.bootlegterraria.entities.Entity;
+import com.badlogic.gdx.math.Vector3;
+import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.entities.LivingEntity;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
+import no.erlyberly.bootlegterraria.input.InputHandler;
+import no.erlyberly.bootlegterraria.input.InputSetting;
+import no.erlyberly.bootlegterraria.input.event.EventType;
+import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
+import no.erlyberly.bootlegterraria.input.event.metadata.ScrolledMetadata;
 import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
-import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 public class Player extends Entity {
@@ -42,27 +48,176 @@ public class Player extends Entity {
     private boolean flying; //can the player fly?
 
     public boolean god = false; //is the player in god mode?
-    public float speed = 1; //how fast is the player going (2 is twice as fast)
+    public float speedModifier = 1; //how fast is the player going (2 is twice as fast)
+    private final float calculatedSpeed = HORIZONTAL_SPEED * this.speedModifier;
 
     private int hurtTimer; //For how long should the player be hurt?
 
+    static {
+
+        final InputHandler handler = GameMain.inst().getInputHandler();
+
+        /*
+         * handle the scrolling to change selected block
+         */
+        handler.registerListener(metadata -> {
+            final ScrolledMetadata scroll = (ScrolledMetadata) metadata;
+            if (scroll.amount < 0) {
+                GameMain.inst().getGameMap().getPlayer().getInv().next();
+            }
+            else if (scroll.amount > 0) {
+                GameMain.inst().getGameMap().getPlayer().getInv().prev();
+            }
+        }, EventType.MOUSE_SCROLLED);
+
+        /*
+         * Debug the given tile
+         */
+        handler.registerListener(metadata -> {
+            final MouseMetadata mMeta = (MouseMetadata) metadata;
+            final GameMap map = GameMain.inst().getGameMap();
+            final TileType type = map.getTileTypeByLocation(map.getBlockLayer(), mMeta.screenX, mMeta.screenY);
+
+            final int blockX = (int) (mMeta.screenX / TileType.TILE_SIZE);
+            final int blockY = (int) (mMeta.screenY / TileType.TILE_SIZE);
+
+            if (type != null) {
+                GameMain.consHldr().log(
+                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
+                    " coord: (" + blockX + ", " + blockY + ")");
+            }
+            else {
+                GameMain.consHldr().log("Not a tile");
+            }
+        }, EventType.MOUSE_DOWN, Input.Keys.ALT_LEFT);
+
+        /*
+         * break blocks
+         */
+        handler.registerListener(metadata -> {
+            final GameMap map = GameMain.inst().getGameMap();
+            final Vector3 pos =
+                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+            final int blockX = (int) (pos.x / TileType.TILE_SIZE);
+            final int blockY = (int) (pos.y / TileType.TILE_SIZE);
+
+            map.setTile(blockX, blockY, null);
+        }, EventType.MOUSE_TOUCHED, InputSetting.BREAK_BLOCK);
+
+        /*
+         * Place blocks
+         */
+        handler.registerListener(metadata -> {
+            final GameMap map = GameMain.inst().getGameMap();
+            final Player player = map.getPlayer();
+
+            if (player.getInv().holding() == null) {
+                return;
+            }
+
+            final Vector3 pos =
+                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+            final int blockX = (int) (pos.x / TileType.TILE_SIZE);
+            final int blockY = (int) (pos.y / TileType.TILE_SIZE);
+
+            map.setTile(blockX, blockY, player.getInv().holding().getTileType());
+        }, EventType.MOUSE_TOUCHED, InputSetting.PLACE_BLOCK);
+
+        /*
+         * Move left
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            if (!player.dodging) {
+                player.moveX(-player.calculatedSpeed);
+                player.setFacing(FACING_LEFT);
+            }
+        }, EventType.KEY_PRESSED, InputSetting.MOVE_LEFT);
+
+        /*
+         * Move right
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            if (!player.dodging) {
+                player.moveX(player.calculatedSpeed);
+                player.setFacing(FACING_RIGHT);
+            }
+        }, EventType.KEY_PRESSED, InputSetting.MOVE_RIGHT);
+
+        /*
+         * Dodging
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            if (!player.dodging && player.dodgeCooldown == DODGE_COOLDOWN &&
+                player.stamina - player.dodgeStaminaUsage >= 0) {
+
+                player.dodging = true;
+                player.dodgeCooldown = 0;
+                player.invincible = true;
+                player.modifyStamina(-player.dodgeStaminaUsage);
+            }
+        }, EventType.KEY_DOWN, InputSetting.DODGE);
+
+        /*
+         * Jump and fly up
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            if (player.isFlying()) {
+                player.moveY(player.calculatedSpeed);
+            }
+            else if (player.onGround && !player.dodging) {
+                player.velocityY = JUMP_VELOCITY;
+            }
+        }, EventType.KEY_PRESSED, InputSetting.JUMP);
+
+        /*
+         * Fly down
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            if (player.isFlying()) {
+                player.moveY(-player.calculatedSpeed);
+            }
+        }, EventType.KEY_PRESSED, InputSetting.FLY_DOWN);
+
+        /*
+         * Attack
+         */
+        handler.registerListener(md -> {
+            final Player player = GameMain.inst().getGameMap().getPlayer();
+            final Weapon weapon = player.getWeapon();
+            if (!player.dodging && player.stamina - weapon.getStaminaUsage() >= 0 && weapon.isCooledDown()) {
+                weapon.attack(player);
+                player.modifyStamina(-weapon.getStaminaUsage());
+            }
+        }, EventType.KEY_PRESSED, InputSetting.ATTACK);
+
+        /*
+         * Debug input
+         */
+        handler.registerListener(md -> {
+            System.out.println("Zombie!");
+            final GameMap map = GameMain.inst().getGameMap();
+            final Player player = map.getPlayer();
+            map.addEnemy(new Zombie(player.pos.x, player.pos.y + player.getHeight() * 2));
+        }, EventType.KEY_DOWN, Input.Keys.Z);
+
+    }
+
     public Player(final float x, final float y) {
         super(x, y);
+
         this.weapon = new Gun();
         setInv(new CreativeInventory(this));
     }
 
     @Override
     public void update() {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !this.dodging) {
-            if (this.dodgeCooldown == DODGE_COOLDOWN && this.stamina - this.dodgeStaminaUsage >= 0) {
-                this.dodging = true;
-                this.dodgeCooldown = 0;
-                this.invincible = true;
-                modifyStamina(-this.dodgeStaminaUsage);
-            }
-        }
-
         if (this.dodging) {
             moveX(DODGE_SPEED * getFacing());
             this.dodgeTime += Gdx.graphics.getDeltaTime();
@@ -74,6 +229,7 @@ public class Player extends Entity {
         }
 
         this.weapon.cooldown();
+
         modifyStamina(this.staminaRegen * Gdx.graphics.getDeltaTime());
         if (this.dodgeCooldown < DODGE_COOLDOWN) {
             this.dodgeCooldown += Gdx.graphics.getDeltaTime();
@@ -82,60 +238,16 @@ public class Player extends Entity {
             this.dodgeCooldown = DODGE_COOLDOWN;
         }
 
-        final float speed = this.speed * HORIZONTAL_SPEED;
-
-        if (isFlying()) {
-
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                moveY(speed);
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                moveY(-speed);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
-                moveX(-speed);
-                setFacing(-1);
+        //only apply gravity when the player is not flying
+        if (!isFlying()) {
+            super.update();
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
-                moveX(speed);
-                setFacing(1);
-            }
-        }
-        else {
-            if (Gdx.input.isKeyPressed(Input.Keys.UP) && this.onGround && !this.dodging) {
-                this.velocityY = JUMP_VELOCITY;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !this.dodging) {
-                moveX(-speed);
-                setFacing(-1);
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !this.dodging) {
-                moveX(speed);
-                setFacing(1);
-            }
-            super.update();//Apply gravity
-        }
-
-
-        if (Gdx.input.isKeyPressed(Input.Keys.E) && !this.dodging &&
-            this.stamina - this.weapon.getStaminaUsage() >= 0 && this.weapon.isCooledDown()) {
-
-            this.weapon.attack(this);
-            modifyStamina(-this.weapon.getStaminaUsage());
-        }
-
-        //For testing purposes only
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
-            System.out.println("Zombie!");
-            this.gameMap.addEnemy(new Zombie(this.pos.x, this.pos.y + getHeight() * 2));
-        }
     }
 
     @Override
     public float getHorizontalSpeed() {
-        return HORIZONTAL_SPEED * this.speed;
+        return HORIZONTAL_SPEED * this.speedModifier;
     }
 
     @Override

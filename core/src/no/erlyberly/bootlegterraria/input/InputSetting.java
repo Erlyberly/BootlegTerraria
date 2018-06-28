@@ -5,36 +5,29 @@ import static com.badlogic.gdx.Input.Keys;
 
 public enum InputSetting {
 
-    MOVE_LEFT(Keys.RIGHT),
-    MOVE_RIGHT(Keys.LEFT),
+    MOVE_LEFT(Keys.LEFT),
+    MOVE_RIGHT(Keys.RIGHT),
     JUMP(Keys.UP),
+    //    FLY_UP(Keys.UP), same as jump
+    FLY_DOWN(Keys.DOWN),
     ATTACK(Keys.E),
-    ROLL(Keys.SHIFT_LEFT),
-    BREAK_BLOCK(MouseKeys.LEFT_MOUSE_BUTTON),
-    PLACE_BLOCK(MouseKeys.RIGHT_MOUSE_BUTTON)
+    DODGE(Keys.SHIFT_LEFT),
+    BREAK_BLOCK(Buttons.LEFT),
+    PLACE_BLOCK(Buttons.RIGHT)
     //
     ;
 
-    public class MouseKeys {
+    private Integer[] keys;
 
-        public static final int LEFT_MOUSE_BUTTON = -Buttons.LEFT;
-        public static final int RIGHT_MOUSE_BUTTON = -Buttons.RIGHT;
-        public static final int MIDDLE_MOUSE_BUTTON = -Buttons.MIDDLE;
-        public static final int FORWARD_MOUSE_BUTTON = -Buttons.FORWARD;
-        public static final int BACKWARD_MOUSE_BUTTON = -Buttons.BACK;
+    InputSetting(final Integer... defaultKeys) {
+        this.keys = defaultKeys;
     }
 
-    private int[] keys;
-
-    InputSetting(final int... defaultKey) {
-        this.keys = defaultKey;
-    }
-
-    public void setKeys(final int... newKeys) {
+    public void setKeys(final Integer... newKeys) {
         this.keys = newKeys;
     }
 
-    public int[] getKeys() {
+    public Integer[] getKeys() {
         return this.keys;
     }
 

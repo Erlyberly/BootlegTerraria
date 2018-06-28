@@ -24,6 +24,8 @@ public class GameMain extends Game {
 
     private static GameMain gameMainInstance;
 
+    private InputHandler inputHandler;
+
     public static Color backgroundColor = Color.BLACK;
 
     public static final boolean HEADLESS;
@@ -53,15 +55,15 @@ public class GameMain extends Game {
 //        camera.position.put(800f, 500f, 0); //Unlocked cam for debugging
         this.camera.update();
 
-
-        consoleHandler = new ConsoleHandler(); //must be last
-
+        consoleHandler = new ConsoleHandler();
 
         String map = System.getenv(MAP_ENV);
         if (map == null) {
-            consoleHandler.log("No environment map specified, loading default (" + DEFAULT_MAP + ")");
+            consoleHandler.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
             map = DEFAULT_MAP;
         }
+        this.inputHandler = new InputHandler();
+
         loadMap(map);
     }
 
@@ -71,7 +73,6 @@ public class GameMain extends Game {
         this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();
         this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
-        new InputHandler();
         consoleHandler.resetInputProcessing();
     }
 
@@ -88,6 +89,7 @@ public class GameMain extends Game {
         Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        this.inputHandler.update();
         this.camera.update();
         this.gameMap.update();
         this.gameMap.render(this.camera, this.hudCamera, this.batch);
@@ -117,5 +119,9 @@ public class GameMain extends Game {
 
     public static ConsoleHandler consHldr() {
         return consoleHandler;
+    }
+
+    public InputHandler getInputHandler() {
+        return this.inputHandler;
     }
 }

@@ -119,18 +119,18 @@ public class CommandHandler extends CommandExecutor {
     public void fly() {
         final Player p = GameMain.inst().getGameMap().getPlayer();
         p.setFlying(!p.isFlying());
-        p.speed += p.isFlying() ? 1 : -1;
+        p.speedModifier += p.isFlying() ? 1 : -1;
         GameMain.consHldr().logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
     }
 
     public void speed(final float speed) {
-        GameMain.inst().getGameMap().getPlayer().speed = speed;
+        GameMain.inst().getGameMap().getPlayer().speedModifier = speed;
         speed();
     }
 
     public void speed() {
-        GameMain.consHldr()
-                .logf("Flying speed: %.2f", LogLevel.SUCCESS, GameMain.inst().getGameMap().getPlayer().speed);
+        GameMain.consHldr().logf("Flying speedModifier: %.2f", LogLevel.SUCCESS,
+                                 GameMain.inst().getGameMap().getPlayer().speedModifier);
     }
 
     public void debugLight(final boolean debug) {
