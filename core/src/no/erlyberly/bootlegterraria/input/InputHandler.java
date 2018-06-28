@@ -27,12 +27,10 @@ public class InputHandler implements InputProcessor {
     private final Set<Integer> pressed;
 
     private final Map<Set<Integer>, EventRunnable> activeKeysPressed;
-    private final Map<Set<Integer>, EventRunnable> activeButtonsPressed;
 
     public InputHandler() {
         this.pressed = new HashSet<>();
         this.activeKeysPressed = new HashMap<>();
-        this.activeButtonsPressed = new HashMap<>();
         this.actionMap = new EnumMap<>(EventType.class);
         for (final EventType eventType : EventType.values()) {
             this.actionMap.put(eventType, new HashMap<>());
@@ -128,7 +126,6 @@ public class InputHandler implements InputProcessor {
         final GenericMetadata gm = new GenericMetadata();
 
         this.activeKeysPressed.values().forEach(runnable -> runnable.run(gm));
-        this.activeButtonsPressed.values().forEach(runnable -> runnable.run(gm));
     }
 
     @Override
@@ -170,8 +167,10 @@ public class InputHandler implements InputProcessor {
         final MouseMetadata mm = new MouseMetadata(screenX, screenY);
         fireEvent(EventType.MOUSE_DOWN, mm);
 
-        this.actionMap.get(EventType.MOUSE_TOUCHED).forEach((keys, runnable) -> {
-            if (this.pressed.containsAll(keys)) { this.activeButtonsPressed.put(keys, runnable); }
+        this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
+            if (this.pressed.containsAll(keys)) {
+                this.activeKeysPressed.put(keys, runnable);
+            }
         });
         return false;
     }
@@ -180,7 +179,7 @@ public class InputHandler implements InputProcessor {
     public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
         this.pressed.remove(button);
         fireEvent(EventType.MOUSE_UP, new MouseMetadata(screenX, screenY));
-        this.activeButtonsPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
+        this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
         return false;
     }
 

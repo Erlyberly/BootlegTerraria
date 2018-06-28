@@ -106,7 +106,7 @@ public class Player extends LivingEntity {
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             map.setTile(blockX, blockY, null);
-        }, EventType.MOUSE_TOUCHED, InputSetting.BREAK_BLOCK);
+        }, EventType.KEY_PRESSED, InputSetting.BREAK_BLOCK);
 
         /*
          * Place blocks
@@ -126,7 +126,7 @@ public class Player extends LivingEntity {
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             map.setTile(blockX, blockY, player.getInv().holding().getTileType());
-        }, EventType.MOUSE_TOUCHED, InputSetting.PLACE_BLOCK);
+        }, EventType.KEY_PRESSED, InputSetting.PLACE_BLOCK);
 
         /*
          * Move left

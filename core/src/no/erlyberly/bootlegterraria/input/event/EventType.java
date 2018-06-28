@@ -11,10 +11,6 @@ public enum EventType {
      * Triggered every frame when the given key combination is pressed
      */
     KEY_PRESSED(GenericMetadata.class),
-    /**
-     * Triggered every frame when the given key combination is pressed
-     */
-    MOUSE_TOUCHED(GenericMetadata.class),
     // Events from InputProcessor
     /**
      * @see com.badlogic.gdx.InputProcessor#keyDown(int)
