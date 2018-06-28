@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.input;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -17,8 +18,6 @@ import java.util.*;
  * @author kheba
  */
 public class InputHandler implements InputProcessor {
-
-    private static final boolean DEBUG_INPUT = true;
 
     //holds all actions for keyboard/mouse
     private final Map<EventType, Map<Set<Integer>, EventRunnable>> actionMap;
@@ -109,6 +108,11 @@ public class InputHandler implements InputProcessor {
      *     The type of event to fire
      * @param eventMetadata
      *     The metadata of the event
+     *
+     * @throws IllegalArgumentException
+     *     if the {@code eventMetadata} is of the wrong type with respect to the {@code eventType}
+     * @throws NullPointerException
+     *     If either {@code eventType} or {@code eventMetadata} is null
      */
     public void fireEvent(final EventType eventType, final EventMetadata eventMetadata) {
         Preconditions.checkNotNull(eventType, "The event type to fire cannot be null");
@@ -124,6 +128,12 @@ public class InputHandler implements InputProcessor {
         });
     }
 
+    /**
+     * Run all active events of the type {@link EventType#KEY_PRESSED}
+     * <p>
+     * this method is intended to be ran once every frame, preferably in {@link ApplicationListener#render()} before all
+     * other update methods
+     */
     public void update() {
         this.activeKeysPressed.values().forEach(runnable -> runnable.run(DEFAULT_METADATA));
     }

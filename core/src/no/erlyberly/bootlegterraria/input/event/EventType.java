@@ -3,7 +3,11 @@ package no.erlyberly.bootlegterraria.input.event;
 import com.badlogic.gdx.InputProcessor;
 import no.erlyberly.bootlegterraria.input.event.metadata.*;
 
+
 /**
+ * Hold all the different types of events that can be triggered by {@link InputProcessor}
+ * and {@link #KEY_PRESSED} which is triggered every frame the given key combination is pressed
+ *
  * @author kheba
  */
 public enum EventType {
