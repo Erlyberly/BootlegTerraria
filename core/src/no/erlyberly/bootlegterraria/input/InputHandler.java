@@ -130,7 +130,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean scrolled(final int amount) {
-        fireEvent(EventType.MOUSE_SCROLLED, new ScrolledMetadata(amount));
+        fireEvent(EventType.SCROLLED, new ScrolledMetadata(amount));
         return false;
     }
 
@@ -165,7 +165,7 @@ public class InputHandler implements InputProcessor {
     public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
         this.pressed.add(button);
         final MouseMetadata mm = new MouseMetadata(screenX, screenY);
-        fireEvent(EventType.MOUSE_DOWN, mm);
+        fireEvent(EventType.TOUCH_DOWN, mm);
 
         this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
             if (this.pressed.containsAll(keys)) {
@@ -178,14 +178,14 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
         this.pressed.remove(button);
-        fireEvent(EventType.MOUSE_UP, new MouseMetadata(screenX, screenY));
+        fireEvent(EventType.TOUCH_UP, new MouseMetadata(screenX, screenY));
         this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
         return false;
     }
 
     @Override
     public boolean touchDragged(final int screenX, final int screenY, final int pointer) {
-        fireEvent(EventType.MOUSE_DRAGGED, new MouseMetadata(screenX, screenY));
+        fireEvent(EventType.TOUCH_DRAGGED, new MouseMetadata(screenX, screenY));
         return false;
     }
 

@@ -71,7 +71,7 @@ public class Player extends LivingEntity {
             else if (scroll.amount > 0) {
                 GameMain.inst().getGameMap().getPlayer().getInv().prev();
             }
-        }, EventType.MOUSE_SCROLLED);
+        }, EventType.SCROLLED);
 
         /*
          * Debug the given tile
@@ -92,7 +92,7 @@ public class Player extends LivingEntity {
             else {
                 GameMain.consHldr().log("Not a tile");
             }
-        }, EventType.MOUSE_DOWN, Input.Keys.ALT_LEFT);
+        }, EventType.TOUCH_DOWN, Input.Keys.ALT_LEFT);
 
         /*
          * break blocks

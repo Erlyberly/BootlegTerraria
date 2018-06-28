@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.input.event;
 
+import com.badlogic.gdx.InputProcessor;
 import no.erlyberly.bootlegterraria.input.event.metadata.*;
 
 /**
@@ -13,35 +14,35 @@ public enum EventType {
     KEY_PRESSED(GenericMetadata.class),
     // Events from InputProcessor
     /**
-     * @see com.badlogic.gdx.InputProcessor#keyDown(int)
+     * @see InputProcessor#keyDown(int)
      */
     KEY_DOWN(KeyMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#keyUp(int)
+     * @see InputProcessor#keyUp(int)
      */
     KEY_UP(KeyMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#keyTyped(char)
+     * @see InputProcessor#keyTyped(char)
      */
     KEY_TYPED(TypedMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#scrolled(int)
+     * @see InputProcessor#scrolled(int)
      */
-    MOUSE_SCROLLED(ScrolledMetadata.class),
+    SCROLLED(ScrolledMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#touchDown(int, int, int, int)
+     * @see InputProcessor#touchDown(int, int, int, int)
      */
-    MOUSE_DOWN(MouseMetadata.class),
+    TOUCH_DOWN(MouseMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#touchUp(int, int, int, int)
+     * @see InputProcessor#touchUp(int, int, int, int)
      */
-    MOUSE_UP(MouseMetadata.class),
+    TOUCH_UP(MouseMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#touchDragged(int, int, int)
+     * @see InputProcessor#touchDragged(int, int, int)
      */
-    MOUSE_DRAGGED(MouseMetadata.class),
+    TOUCH_DRAGGED(MouseMetadata.class),
     /**
-     * @see com.badlogic.gdx.InputProcessor#mouseMoved(int, int)
+     * @see InputProcessor#mouseMoved(int, int)
      */
     MOUSE_MOVED(MouseMetadata.class),
     //
