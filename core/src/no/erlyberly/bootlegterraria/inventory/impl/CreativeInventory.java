@@ -54,7 +54,6 @@ public class CreativeInventory implements Inventory {
 
     @Override
     public void select(int index) {
-        System.out.println("index = [" + index + "]");
         if (index < 0) {
             index = TileType.TILE_TYPES + (index % TileType.TILE_TYPES);
         }

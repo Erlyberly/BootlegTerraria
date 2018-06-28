@@ -80,6 +80,7 @@ public class GameMain extends Game {
     public void dispose() {
         this.batch.dispose();
         this.gameMap.dispose();
+        SECONDARY_THREAD.shutdown();
     }
 
     @Override

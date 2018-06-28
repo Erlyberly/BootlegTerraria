@@ -123,12 +123,13 @@ public final class SortOrder {
         Preconditions.checkArgument(sorts.length > 0, "There must be at least one way to sort");
 
         //create a  comparator that is using all the comparators
-        final Comparator<TileStack> masterComp = (ts1, ts2) -> {
-            for (final Comparator<TileStack> comp : sorts) {
-                if (comp == null) {
+
+        this.comp = (ts1, ts2) -> {
+            for (final Comparator<TileStack> loopComp : sorts) {
+                if (loopComp == null) {
                     throw new IllegalArgumentException("None of the comparators can be null");
                 }
-                final int result = comp.compare(ts1, ts2);
+                final int result = loopComp.compare(ts1, ts2);
 
                 //if using this comparator is equal, use the next comparator
                 if (result == 0) {
@@ -139,8 +140,6 @@ public final class SortOrder {
             //everything is equal
             return 0;
         };
-
-        this.comp = masterComp;
 
         //reverse the comparator
         if (reverse) {

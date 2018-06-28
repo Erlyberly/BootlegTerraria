@@ -124,12 +124,12 @@ class LightInfoTest {
     void skylight() {
 
         final Vector2Int src00 = new Vector2Int(0, 0);
-        final Vector2Int src10 = new Vector2Int(1, 0);
+        final Vector2Int src11 = new Vector2Int(-1, -1);
         final LightInfo li = new LightInfo(src00);
 
         li.put(src00, LightLevel.LVL_8, true);
         li.put(src00, LightLevel.LVL_7, false);
-        li.put(src10, LightLevel.LVL_3, false); //test light
+        li.put(src11, LightLevel.LVL_3, false); //test light
 
         assertTrue(li.isSkylight());
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
