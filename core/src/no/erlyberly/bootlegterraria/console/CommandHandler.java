@@ -11,6 +11,8 @@ import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Sword;
+import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedInventory;
+import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
 import no.erlyberly.bootlegterraria.util.Util;
@@ -137,5 +139,24 @@ public class CommandHandler extends CommandExecutor {
         BlockLightMap.realLight = !debug;
         SimpleOrthogonalTiledMapRenderer.logLightEvents = debug;
         GameMain.consHldr().logf("Light debugging: " + debug, LogLevel.SUCCESS);
+    }
+
+    public void inv(final String invType) {
+        final Player player = GameMain.inst().getGameMap().getPlayer();
+        switch (invType.toLowerCase()) {
+            case "creative":
+            case "crea":
+            case "c":
+                player.setInv(new CreativeInventory(player));
+                break;
+            case "as":
+            case "autosort":
+                player.setInv(new AutoSortedInventory(16, player));
+                break;
+            default:
+                GameMain.consHldr().log("Unknown inventory type '" + invType + '\'', LogLevel.ERROR);
+                return;
+        }
+        GameMain.consHldr().log("New inventory " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
     }
 }
