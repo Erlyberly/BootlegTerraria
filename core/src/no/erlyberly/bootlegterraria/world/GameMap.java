@@ -217,54 +217,17 @@ public abstract class GameMap {
             this.addWaitingEntities = false;
         }
 
-        if (removeWaitingEntities) {
-            ArrayList<Entity> removeEntities = new ArrayList<Entity>();
-            for (Entity i : entities) {
+        if (this.removeWaitingEntities) {
+            final ArrayList<Entity> removeEntities = new ArrayList<>();
+            for (final Entity i : this.entities) {
                 if (i.isDestroyed()) {
                     removeEntities.add(i);
                 }
             }
-            for (Entity remove : removeEntities) {
-                entities.remove(remove);
+            for (final Entity remove : removeEntities) {
+                this.entities.remove(remove);
             }
-            removeWaitingEntities = false;
-        }
-
-        if (Gdx.input.isTouched() || Gdx.input.isButtonPressed(Input.Buttons.FORWARD)) {
-            final Vector3 pos =
-                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            final TileType type = getTileTypeByLocation(getBlockLayer(), pos.x, pos.y);
-
-            final int blockX = (int) (pos.x / TileType.TILE_SIZE);
-            final int blockY = (int) (pos.y / TileType.TILE_SIZE);
-
-
-            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
-                if (Gdx.input.justTouched()) {
-                    if (type != null) {
-                        GameMain.consHldr().log(
-                            "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
-                            " coord: (" + blockX + ", " + blockY + ")");
-                    }
-                    else {
-                        GameMain.consHldr().log("Not a tile");
-                    }
-                }
-            }
-            else {
-                TileType tt = null;
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && player.getInv().holding() != null) {
-                    tt = player.getInv().holding().getTileType();
-                }
-                else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-                    tt = null;
-                }
-                else {
-                    //invalid button pressed, do nothing
-                    return;
-                }
-                setTile(blockX, blockY, tt);
-            }
+            this.removeWaitingEntities = false;
         }
     }
 
