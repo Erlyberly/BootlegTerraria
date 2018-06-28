@@ -28,6 +28,8 @@ public class InputHandler implements InputProcessor {
 
     private final Map<Set<Integer>, EventRunnable> activeKeysPressed;
 
+    private final static GenericMetadata DEFAULT_METADATA = new GenericMetadata();
+
     public InputHandler() {
         this.pressed = new HashSet<>();
         this.activeKeysPressed = new HashMap<>();
@@ -123,9 +125,7 @@ public class InputHandler implements InputProcessor {
     }
 
     public void update() {
-        final GenericMetadata gm = new GenericMetadata();
-
-        this.activeKeysPressed.values().forEach(runnable -> runnable.run(gm));
+        this.activeKeysPressed.values().forEach(runnable -> runnable.run(DEFAULT_METADATA));
     }
 
     @Override
