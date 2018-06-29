@@ -55,14 +55,15 @@ public class TileStack implements Comparable<TileStack> {
     }
 
     /**
-     * Remove a set amount
+     * Remove a set amount. If the removed amount is greater than the amount currently in the stack the stack's size
+     * will be set to zero
      *
      * @param remove
      *     How many items to remove
      */
     public void remove(final int remove) {
         Preconditions.checkArgument(remove >= 0, "Amount removed must be greater than or equal to 0");
-        setAmount(this.amount - remove);
+        setAmount(Math.max(this.amount - remove, 0));
     }
 
     /**
