@@ -15,6 +15,8 @@ import no.erlyberly.bootlegterraria.input.event.metadata.*;
 import java.util.*;
 
 /**
+ * Handle input from keyboard and
+ *
  * @author kheba
  */
 public class InputHandler implements InputProcessor {
@@ -68,24 +70,11 @@ public class InputHandler implements InputProcessor {
 
             setKeys.forEach(keycode -> {
                 final String name;
-                switch (keycode) {
-                    case 0:
-                        name = "LEFT"; //Input.Buttons.LEFT
-                        break;
-                    case 1:
-                        name = "RIGHT"; //Input.Buttons.LEFT
-                        break;
-                    case 2:
-                        name = "MIDDLE"; //Input.Buttons.MIDDLE
-                        break;
-                    case 3:
-                        name = "BACK"; //Input.Buttons.BACK
-                        break;
-                    case 4:
-                        name = "FORWARD"; //Input.Buttons.FORWARD
-                        break;
-                    default:
-                        name = Input.Keys.toString(keycode);
+                if (keycode > 255) {
+                    name = MouseInput.toString(keycode);
+                }
+                else {
+                    name = Input.Keys.toString(keycode);
                 }
 
                 keyName.append(name);
@@ -94,7 +83,7 @@ public class InputHandler implements InputProcessor {
 
             keyName.append("]");
             GameMain.consHldr()
-                    .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)", LogLevel.ERROR,
+                    .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)%n", LogLevel.ERROR,
                           eventType.name(), keyName.toString());
         }
         eventMap.put(setKeys, action);
@@ -173,7 +162,8 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
-        this.pressed.add(button);
+        this.pressed.add(MouseInput.fromGdxButton(button));
+
         final MouseMetadata mm = new MouseMetadata(screenX, screenY);
         fireEvent(EventType.TOUCH_DOWN, mm);
 
@@ -187,7 +177,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
-        this.pressed.remove(button);
+        this.pressed.remove(MouseInput.fromGdxButton(button));
         fireEvent(EventType.TOUCH_UP, new MouseMetadata(screenX, screenY));
         this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
         return false;

@@ -1,6 +1,5 @@
 package no.erlyberly.bootlegterraria.input;
 
-import static com.badlogic.gdx.Input.Buttons;
 import static com.badlogic.gdx.Input.Keys;
 
 public enum InputSetting {
@@ -12,8 +11,8 @@ public enum InputSetting {
     FLY_DOWN(Keys.DOWN),
     ATTACK(Keys.E),
     DODGE(Keys.SHIFT_LEFT),
-    BREAK_BLOCK(Buttons.LEFT),
-    PLACE_BLOCK(Buttons.RIGHT)
+    BREAK_BLOCK(MouseInput.LEFT),
+    PLACE_BLOCK(MouseInput.RIGHT)
     //
     ;
 
