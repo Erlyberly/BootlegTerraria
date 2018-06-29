@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * An container that will auto sort the inventory when updated
+ * A container that will auto sort the inventory when updated
  *
  * @author kheba
  */

@@ -15,6 +15,13 @@ public class TileStack implements Comparable<TileStack> {
     private final TileType tt;
     private int amount;
 
+    /**
+     * @param tt
+     *     The type of tile this stack is made out of
+     *
+     * @throws NullPointerException
+     *     if {@code tt} is null
+     */
     public TileStack(final TileType tt) {
         this(tt, 1);
     }
@@ -24,6 +31,11 @@ public class TileStack implements Comparable<TileStack> {
      *     The type of tile this stack is made out of
      * @param amount
      *     How many items that's in this stack, must be zero or greater
+     *
+     * @throws NullPointerException
+     *     if {@code tt} is null
+     * @throws IllegalArgumentException
+     *     if {@code amount} is less than 0
      */
     public TileStack(final TileType tt, final int amount) {
         Preconditions.checkNotNull(tt, "The tile type cannot be null");
@@ -31,10 +43,16 @@ public class TileStack implements Comparable<TileStack> {
         setAmount(amount);
     }
 
+    /**
+     * @return The type of the stack this is
+     */
     public TileType getTileType() {
         return this.tt;
     }
 
+    /**
+     * @return How big this stack is, will always be 0 or greater
+     */
     public int getAmount() {
         return this.amount;
     }
@@ -44,12 +62,24 @@ public class TileStack implements Comparable<TileStack> {
      *
      * @param amount
      *     new amount, must be zero or greater
+     *
+     * @throws IllegalArgumentException
+     *     if the amount is less than 0
      */
     public void setAmount(final int amount) {
         Preconditions.checkArgument(amount >= 0, "The amount of a stack cannot be negative: " + amount);
         this.amount = amount;
     }
 
+    /**
+     * Add the given amount to the size of the stack
+     *
+     * @param add
+     *     How many items to add
+     *
+     * @throws IllegalArgumentException
+     *     if {@code add} is less than 0
+     */
     public void add(final int add) {
         Preconditions.checkArgument(add >= 0, "Amount added must be greater than or equal to 0");
         setAmount(this.amount + add);
@@ -61,6 +91,9 @@ public class TileStack implements Comparable<TileStack> {
      *
      * @param remove
      *     How many items to remove
+     *
+     * @throws IllegalArgumentException
+     *     if {@code remove} is less than 0
      */
     public void remove(final int remove) {
         Preconditions.checkArgument(remove >= 0, "Amount removed must be greater than or equal to 0");
@@ -94,6 +127,9 @@ public class TileStack implements Comparable<TileStack> {
         return stacks.toArray(new TileStack[0]);
     }
 
+    /**
+     * @return UI friendly name
+     */
     public String displayName() {
         return this.tt.toString();
     }

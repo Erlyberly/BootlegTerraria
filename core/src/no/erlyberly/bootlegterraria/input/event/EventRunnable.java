@@ -10,8 +10,6 @@ public interface EventRunnable {
     /**
      * @param metadata
      *     Metadata of this event
-     *
-     * @see Runnable
      */
     void run(EventMetadata metadata);
 }

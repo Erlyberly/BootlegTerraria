@@ -17,7 +17,6 @@ import java.util.List;
  * TODO implement a container that allow for invalid stacks (a sort of main storage)
  * TODO implement a chest (that can be opened, somehow)
  * TODO let some entities have inventories
- * TODO let the player switch between creative and survival
  *
  * @author kheba
  */
