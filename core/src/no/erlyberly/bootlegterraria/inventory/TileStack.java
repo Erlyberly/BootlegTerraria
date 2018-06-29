@@ -51,6 +51,7 @@ public class TileStack implements Comparable<TileStack> {
     }
 
     public void add(final int add) {
+        Preconditions.checkArgument(add >= 0, "Amount added must be greater than or equal to 0");
         setAmount(this.amount + add);
     }
 
