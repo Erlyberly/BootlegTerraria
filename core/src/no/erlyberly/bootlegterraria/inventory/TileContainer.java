@@ -1,6 +1,5 @@
 package no.erlyberly.bootlegterraria.inventory;
 
-import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.Arrays;
@@ -12,7 +11,7 @@ import java.util.List;
  * If the container can only hold valid stacks (checked with {@link TileStack#isValid()}) is up to the implementation.
  * <p>
  * However for {@link #get(int)} the returned TileStack <bold>MUST</bold> be a valid stacks (or null) if this is not the
- * desired use {@link #getUnsafe(int, boolean)} for invalid stacks
+ * desired use {@link #getValid(int, boolean)} for invalid stacks
  * <p>
  * TODO implement a container that allow for invalid stacks (a sort of main storage)
  * TODO implement a chest (that can be opened, somehow)
@@ -36,24 +35,24 @@ public interface TileContainer extends Iterable<Slot> {
      * @param tileType
      *     The tileType to match against
      *
-     * @return The index of the first tile where there are at least {@code tileStack.getAmount} tiles
-     *
-     * @throws NullPointerException
-     *     if the {@code tileType} is null
+     * @return The index of the first tile where there are at least {@link TileStack#getAmount()} tiles. If the input is
+     * null, this method is identical to {@link #firstEmpty()}
      */
     default int first(final TileType tileType) {
-        Preconditions.checkNotNull(tileType);
-        return first(new TileStack(tileType, 1));
+        if (tileType == null) {
+            return firstEmpty();
+        }
+        return first(new TileStack(tileType, 0));
     }
 
     /**
+     * x
+     *
      * @param tileStack
      *     The tileStack to match against
      *
-     * @return The index of the first tile where there are at least {@code tileStack.getAmount} tiles
-     *
-     * @throws NullPointerException
-     *     if the {@code tileStack} is null
+     * @return The index of the first tile where there are at least {@code tileStack.getAmount} tiles, return negative
+     * number if not found. If the input is null, this method is identical to {@link #firstEmpty()}
      */
     int first(TileStack tileStack);
 
@@ -61,10 +60,10 @@ public interface TileContainer extends Iterable<Slot> {
      * Add an item to the container
      *
      * @throws IllegalArgumentException
-     *     if one of the {@code tileStack}s is {@code null}
+     *     if one of the {@code tileStack}s is {@code null} or if amount is less than zero
      */
     default void add(final TileType tileType, final int amount) {
-        add(TileStack.stack(tileType, amount));
+        add(TileStack.validate(tileType, amount));
     }
 
     /**
@@ -112,7 +111,10 @@ public interface TileContainer extends Iterable<Slot> {
      * Remove tile stacks in the container that match the given element
      *
      * @param tileStack
-     *     The tile stack to remove
+     *     The tile validate to remove
+     *
+     * @throws IllegalArgumentException
+     *     if one of the {@code tileStack}s is {@code null}
      */
     void remove(TileStack tileStack);
 
@@ -125,7 +127,7 @@ public interface TileContainer extends Iterable<Slot> {
     void remove(final int index);
 
     /**
-     * Clear the container of all tiles
+     * Clear the container of all tile stacks
      */
     void clear();
 
@@ -139,10 +141,10 @@ public interface TileContainer extends Iterable<Slot> {
 
     /**
      * @return If this container has the given {@code tileStack}, {@code false} is returned if tiletype is {@code
-     * null}
+     * null} or if size is less than 0
      */
     default boolean contains(final TileType tileType, final int size) {
-        if (tileType == null) {
+        if (tileType == null || size < 0) {
             return false;
         }
         return contains(new TileStack(tileType, size));
@@ -150,32 +152,35 @@ public interface TileContainer extends Iterable<Slot> {
 
 
     /**
-     * @return If the container has an item with this
+     * @return If the container has an item of this TileType
      */
     boolean containsAny(TileType tileType);
 
     /**
+     * This method returns the {@link TileStack} as is at the given location, there will be no check
+     *
      * @return The {@code TileStack} at the given location, {@code null} if there is nothing there
      *
      * @throws IndexOutOfBoundsException
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
-    TileStack get(final int index);
+    TileStack getUnsafe(final int index);
 
     /**
-     * @param validate
-     *     If this method should return a valid stack or not
+     * @param index
+     *     The index of the item to get
      *
-     * @return A tile stack at a given location, it will pass {@link TileStack#isValid()} if {@code validate} is true.
+     * @return An array of valid stacks (will pass {@link TileStack#isValid()}) from the tile stack at the given
+     * location
      *
      * @throws IndexOutOfBoundsException
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
-    TileStack[] getUnsafe(int index, boolean validate);
+    TileStack[] getValid(int index);
 
     /**
-     * Overwrite a the given {@code tileStack} at {@code index}. If the given tile stack is {@code null}  it is the same
-     * as calling {@link #remove(int)}.
+     * Overwrite a the given {@code tileStack} at {@code index}. If the given tile validate is {@code null} it is the
+     * same as calling {@link #remove(int)}.
      *
      * @param index
      *     The index to place the {@code tileStack} at

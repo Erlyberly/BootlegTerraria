@@ -101,6 +101,21 @@ public class TileStack implements Comparable<TileStack> {
     }
 
     /**
+     * Split the given {@code tileStack} into valid stacks
+     *
+     * @param tileStack
+     *     The validate to split
+     *
+     * @return An array of valid TileStacks
+     */
+    public static TileStack[] validate(final TileStack tileStack) {
+        if (tileStack == null) {
+            return null;
+        }
+        return validate(tileStack.getTileType(), tileStack.getAmount());
+    }
+
+    /**
      * Split {@code size} {@link TileType}s into valid stacks
      *
      * @param tt
@@ -108,9 +123,13 @@ public class TileStack implements Comparable<TileStack> {
      * @param size
      *     How many of {@code tt} to split into stacks
      *
-     * @return An array of valid TileStacks
+     * @return An array of valid TileStacks, {@code null} if {@code tt} is {@code null} or if {@code size} is less
+     * than 0
      */
-    public static TileStack[] stack(final TileType tt, final int size) {
+    public static TileStack[] validate(final TileType tt, final int size) {
+        if (tt == null || size < 0) {
+            return null;
+        }
         final int ss = tt.getMaxStackSize();
         int currSize = size;
 

@@ -20,7 +20,7 @@ public class AutoSortedInventory extends AbstractInventory {
 
     @Override
     public TileStack holding() {
-        return this.inv.get(getSel());
+        return this.inv.getUnsafe(getSel());
     }
 
     @Override

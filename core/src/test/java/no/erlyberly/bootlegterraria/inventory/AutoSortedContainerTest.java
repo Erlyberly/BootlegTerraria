@@ -39,14 +39,14 @@ class AutoSortedContainerTest {
         cont.put(0, ts);
 
         assertEquals(ts, cont.getContent()[0]);
-        assertEquals(ts, cont.get(0));
+        assertEquals(ts, cont.getUnsafe(0));
 
         cont.put(2, ts);
         //make sure the container will be merged and sorted
         assertNull(cont.getContent()[1]);
-        assertNull(cont.get(1));
+        assertNull(cont.getUnsafe(1));
         assertNull(cont.getContent()[2]);
-        assertNull(cont.get(2));
+        assertNull(cont.getUnsafe(2));
     }
 
     @Test
@@ -79,16 +79,16 @@ class AutoSortedContainerTest {
 
         assertTrue(returned.isEmpty());
         assertEquals(tsDirt, cont.getContent()[0]);
-        assertEquals(tsDirt, cont.get(0));
+        assertEquals(tsDirt, cont.getUnsafe(0));
         assertEquals(amount, cont.getContent()[0].getAmount());
-        assertEquals(amount, cont.get(0).getAmount());
+        assertEquals(amount, cont.getUnsafe(0).getAmount());
 
         //ts' amount should be doubled
         final List<TileStack> returned2 = cont.add(tsDirt);
 
         assertTrue(returned2.isEmpty());
         assertEquals(tsDirt, cont.getContent()[0]);
-        assertEquals(tsDirt, cont.get(0));
+        assertEquals(tsDirt, cont.getUnsafe(0));
         assertEquals(amount * 2, tsDirt.getAmount());
 
         final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);

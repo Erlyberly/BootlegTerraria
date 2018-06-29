@@ -56,7 +56,7 @@ public class AutoSortedContainer implements TileContainer {
      * @param disallowInvalid
      *     if this container does not allow invalid {@link TileStack}s
      * @param sortOrder
-     *     The way to sort the stack each time it is modified
+     *     The way to sort the validate each time it is modified
      */
     public AutoSortedContainer(final int size, final boolean disallowInvalid, final SortOrder sortOrder) {
         Preconditions.checkArgument(size > 0, "Inventory size must be greater than zero");
@@ -85,16 +85,17 @@ public class AutoSortedContainer implements TileContainer {
 
     @Override
     public int first(final TileStack tileStack) {
-        Preconditions.checkNotNull(tileStack);
-
-        // if invalid stacks is not allows this cannot have a invalid stack
+        if (tileStack == null) {
+            return firstEmpty();
+        }
+        // if invalid stacks is not allows this cannot have a invalid validate
         if (this.disallowInvalid && !tileStack.isValid()) {
             return -1;
         }
         for (int i = 0; i < this.size; i++) {
-            final TileStack invTs = this.inv[i];
-            if (invTs != null && invTs.getTileType() == tileStack.getTileType() &&
-                invTs.getAmount() <= tileStack.getAmount()) {
+            final TileStack loopTs = this.inv[i];
+            if (loopTs != null && loopTs.getTileType() == tileStack.getTileType() &&
+                loopTs.getAmount() <= tileStack.getAmount()) {
                 return i;
             }
         }
@@ -133,11 +134,9 @@ public class AutoSortedContainer implements TileContainer {
                 }
             }
             if (!added) {
-//                System.out.println("adding " + ts + " to return list");
                 returnList.add(ts);
             }
         }
-
 
         sort();
         return returnList;
@@ -222,44 +221,25 @@ public class AutoSortedContainer implements TileContainer {
         return false;
     }
 
-    //this implementation does not allow invalid stacks so this can be safely overwritten
     @Override
-    public TileStack get(final int index) {
-
-        if (this.disallowInvalid) {
-            Preconditions.checkPositionIndex(index, this.size - 1);
-            return this.inv[index];
-        }
-
-        final TileStack tt = getUnsafe(index, true)[0];
-        if (tt != null && !tt.isValid()) {
-            throw new IllegalStateException("The returned stack was not valid");
-        }
-        return tt;
+    public TileStack getUnsafe(final int index) {
+        Preconditions.checkPositionIndex(index, this.size - 1);
+        return this.inv[index];
     }
 
     @Override
-    public TileStack[] getUnsafe(final int index, final boolean validate) {
+    public TileStack[] getValid(final int index) {
         Preconditions.checkPositionIndex(index, this.size - 1);
-        final TileStack ts = this.inv[index];
-        if (ts == null) {
-            return null;
-        }
-
-        if (validate) {
-            return TileStack.stack(ts.getTileType(), ts.getAmount());
-        }
-        return new TileStack[] {ts};
+        return TileStack.validate(this.inv[index]);
     }
 
     @Override
     public void put(final int index, final TileStack tileStack) {
-//        Preconditions.checkPositionIndex(index, this.size - 1);
-//        if (this.disallowInvalid && tileStack != null && !tileStack.isValid()) {
-//            throw new IllegalArgumentException("This container does not allow invalid stacks");
-//        }
-//        this.inv[index] = tileStack;
-//        sort();
+        Preconditions.checkPositionIndex(index, this.size - 1);
+        if (this.disallowInvalid && tileStack != null && !tileStack.isValid()) {
+            throw new IllegalArgumentException("This container does not allow invalid stacks");
+        }
+        this.inv[index] = null;
         add(tileStack);
     }
 
@@ -276,6 +256,8 @@ public class AutoSortedContainer implements TileContainer {
         return this.sortOrder;
     }
 
+
+    @SuppressWarnings("NullableProblems")
     @Override
     public Iterator<Slot> iterator() {
         return new Iterator<Slot>() {
