@@ -24,7 +24,7 @@ public class ConsoleHandler {
         this.console.setCommandExecutor(new CommandHandler(this));
         GameMain.inst().getInputMultiplexer().addProcessor(this.console.getInputProcessor());
 
-        this.console.log("INITIATING HACKING CONSOLE v0.96", LogLevel.ERROR);
+        this.console.log("INITIATING CONSOLE v0.0407018", LogLevel.ERROR);
         this.console
             .log("BOOTING SEQUENCE FINISHED IN " + ConsoleHandler.df.format(Math.random() * 4f), LogLevel.ERROR);
        

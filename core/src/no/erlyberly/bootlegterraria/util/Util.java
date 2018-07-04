@@ -1,7 +1,9 @@
 package no.erlyberly.bootlegterraria.util;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.GameMap;
@@ -117,5 +119,48 @@ public class Util {
             sets.add(set);
         }
         return sets;
+    }
+
+    public static String keysToString(final Integer[] keys) {
+        final StringBuilder keyName = new StringBuilder("[");
+
+        for (final int keycode : keys) {
+            final String name;
+            if (keycode > 255) {
+                name = MouseInput.toString(keycode);
+            }
+            else {
+                name = Input.Keys.toString(keycode);
+            }
+
+            keyName.append(name);
+            keyName.append("(").append(keycode).append(") ");
+        }
+
+        //remove the last space
+        keyName.setLength(keyName.length() - 1);
+        
+        return keyName.append("]").toString();
+    }
+
+    /**
+     * @param string
+     *     The string to convert to title case
+     *
+     * @return The title case version of the given string
+     */
+    public static String toTitleCase(final String string) {
+        final StringBuilder sb = new StringBuilder();
+
+        final String ACTIONABLE_DELIMITERS = " '-/";
+        boolean capNext = true;
+
+        for (char c : string.toCharArray()) {
+            c = (capNext) ? Character.toTitleCase(c) : Character.toLowerCase(c);
+            sb.append(c);
+            capNext = ACTIONABLE_DELIMITERS.indexOf((int) c) >= 0;
+        }
+
+        return sb.toString();
     }
 }

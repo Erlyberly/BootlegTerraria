@@ -65,11 +65,13 @@ public class CommandHandler extends CommandExecutor {
         GameMain.inst().loadMap(mapName);
     }
 
+    @ConsoleDoc(paramDescriptions = "Change gravity")
     public void gravity(final float newGravity) {
         GameMap.gravity = newGravity;
         this.console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
     }
 
+    @ConsoleDoc(description = "Switch weapon", paramDescriptions = {"Available weapon types are 'gun' and 'sword'"})
     public void wpn(final String weaponType) {
         final Player player = GameMain.inst().getGameMap().getPlayer();
 
@@ -122,6 +124,7 @@ public class CommandHandler extends CommandExecutor {
         }
     }
 
+    @ConsoleDoc(description = "Toggle flight")
     public void fly() {
         final Player p = GameMain.inst().getGameMap().getPlayer();
         p.setFlying(!p.isFlying());
@@ -129,11 +132,13 @@ public class CommandHandler extends CommandExecutor {
         GameMain.consHldr().logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
     }
 
+    @ConsoleDoc(description = "Set the speed modifier of the player")
     public void speed(final float speed) {
         GameMain.inst().getGameMap().getPlayer().speedModifier = speed;
         speed();
     }
 
+    @ConsoleDoc(description = "Display the current speed modifier of the player")
     public void speed() {
         GameMain.consHldr().logf("Flying speedModifier: %.2f", LogLevel.SUCCESS,
                                  GameMain.inst().getGameMap().getPlayer().speedModifier);

@@ -3,7 +3,9 @@ package no.erlyberly.bootlegterraria.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
+import no.erlyberly.bootlegterraria.storage.IInventory;
 
 /**
  * An entity that is alive, cannot be spawned inside a block and is affected by lighting
@@ -20,6 +22,7 @@ public abstract class LivingEntity extends Entity {
     private LightLevel ll;
     private Color oldColor;
     private boolean started;
+    private IInventory inv;
 
     /**
      * Spawn an entity at ({@code x}, {@code y})
@@ -66,5 +69,15 @@ public abstract class LivingEntity extends Entity {
         if (this.ll != null) {
             batch.setColor(this.oldColor);
         }
+    }
+
+    public IInventory getInv() {
+        return this.inv;
+    }
+
+    public void setInv(final IInventory inv) {
+        Preconditions.checkNotNull(inv);
+        Preconditions.checkArgument(inv.isHolder(this), "The owner of the storage must be this entity, or null");
+        this.inv = inv;
     }
 }

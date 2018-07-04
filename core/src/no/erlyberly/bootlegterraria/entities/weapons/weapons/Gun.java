@@ -14,7 +14,7 @@ public class Gun extends Weapon {
     }
 
     @Override
-    public void attack0(final Entity attacker) {
+    protected void attack0(final Entity attacker) {
         attacker.getGameMap().addEntity(
             new Bullet(attacker.getX() + (attacker.getWidth() / 3f * attacker.getFacing()), attacker.getY() + 16f,
                        attacker.getFacing()));

@@ -15,7 +15,8 @@ import no.erlyberly.bootlegterraria.input.InputSetting;
 import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
 import no.erlyberly.bootlegterraria.input.event.metadata.ScrolledMetadata;
-import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
+import no.erlyberly.bootlegterraria.storage.IInventory;
+import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -23,38 +24,32 @@ public class Player extends LivingEntity {
 
     private static final int HORIZONTAL_SPEED = 120;
     private static final int JUMP_VELOCITY = 400;
+    private static final int DEFAULT_MAX_HEALTH = 10000;
+    private static final int FACING_LEFT = -1;
+    private static final int FACING_RIGHT = 1;
     private static final float DODGE_TIME = 0.5f;
     private static final float DODGE_COOLDOWN = 1f;
     private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
-    private static final int DEFAULT_MAX_HEALTH = 10000;
-
-    public static final int FACING_LEFT = -1;
-    public static final int FACING_RIGHT = 1;
-
-    private Weapon weapon;
-
-    private int maxStamina = 10000; //Should be able to increase
-    private float stamina = this.maxStamina;
-    private final int staminaRegen = 2000;
-
-    private boolean invincible = false;
-
-    private boolean dodging = false;
-    private float dodgeTime = 0;
-    private float dodgeCooldown = 0;
-    private final float dodgeStaminaUsage = 3000;
-
 
     private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
     private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
 
-    private boolean flying; //can the player fly?
-
     public boolean god = false; //is the player in god mode?
     public float speedModifier = 1; //how fast is the player going (2 is twice as fast)
-    private final float calculatedSpeed = HORIZONTAL_SPEED * this.speedModifier;
+    public int staminaRegen = 2000;
+    public int maxStamina = 10000;
+    public float dodgeStaminaUsage = 3000;
 
-    private int hurtTimer; //For how long should the player be hurt?
+    private final float calculatedSpeed = HORIZONTAL_SPEED * this.speedModifier;
+    private float stamina = this.maxStamina; //player start with max stamina
+
+    private Weapon weapon;
+    private boolean invincible = false;
+    private boolean dodging = false;
+    private boolean flying = false; //can the player fly?
+    private float dodgeTime = 0f;
+    private float dodgeCooldown = 0f;
+    private int hurtTimer = 0; //For how long should the player be hurt?
 
     static {
 
@@ -65,11 +60,13 @@ public class Player extends LivingEntity {
          */
         handler.registerListener(metadata -> {
             final ScrolledMetadata scroll = (ScrolledMetadata) metadata;
+            final IInventory inv = GameMain.inst().getGameMap().getPlayer().getInv();
+
             if (scroll.amount < 0) {
-                GameMain.inst().getGameMap().getPlayer().getInv().next();
+                inv.next();
             }
             else if (scroll.amount > 0) {
-                GameMain.inst().getGameMap().getPlayer().getInv().prev();
+                inv.prev();
             }
         }, EventType.SCROLLED);
 

@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.living.Player;
-import no.erlyberly.bootlegterraria.inventory.Inventory;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -26,8 +25,6 @@ public abstract class Entity {
     private int facing;
 
     private final Rectangle entRect;
-    private Inventory inv;
-
 
     /**
      * Spawn an entity at ({@code x}, {@code y})
@@ -89,7 +86,7 @@ public abstract class Entity {
     /**
      * Move the entity horizontally
      *
-     * @param velocityY
+     * @param velocityX
      *     How much to move horizontally
      */
     public void moveX(final float velocityX) {
@@ -250,14 +247,4 @@ public abstract class Entity {
     public abstract float getDamage();
 
     public abstract boolean isFlying();
-
-    public Inventory getInv() {
-        return this.inv;
-    }
-
-    public void setInv(final Inventory inv) {
-        Preconditions.checkNotNull(inv);
-        Preconditions.checkArgument(inv.getHolder() == this, "The owner of the inventory must be this entity");
-        this.inv = inv;
-    }
 }

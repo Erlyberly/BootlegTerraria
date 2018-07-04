@@ -14,9 +14,9 @@ import com.badlogic.gdx.math.Vector3;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.living.Player;
-import no.erlyberly.bootlegterraria.inventory.TileStack;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
 
