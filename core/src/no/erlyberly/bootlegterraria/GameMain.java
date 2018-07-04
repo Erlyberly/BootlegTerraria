@@ -42,6 +42,9 @@ public class GameMain extends Game {
 
     private static final String ENV_AUTO_EXEC = "exec";
 
+    private InputMultiplexer inputMultiplexer;
+
+
     static {
         //suuuuuuuper hacky way of getting main's arg[] args
         final String headlessFlag = System.getProperty("sun.java.command", "");
@@ -52,6 +55,8 @@ public class GameMain extends Game {
     public void create() {
         gameMainInstance = this; //must be first
         this.batch = new SpriteBatch();
+
+        this.inputMultiplexer = new InputMultiplexer();
 
 
         this.camera = new OrthographicCamera();
@@ -162,5 +167,8 @@ public class GameMain extends Game {
 
     public InputHandler getInputHandler() {
         return this.inputHandler;
+    }
+    public InputMultiplexer getInputMultiplexer() {
+        return this.inputMultiplexer;
     }
 }
