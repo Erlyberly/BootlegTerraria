@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class TileStackTest {
             ts1.setAmount(tt.getMaxStackSize());
             assertTrue(ts1.isValid());
 
-            ts1.add(1);
+            ts1.give(1);
             assertFalse(ts1.isValid());
         }
     }

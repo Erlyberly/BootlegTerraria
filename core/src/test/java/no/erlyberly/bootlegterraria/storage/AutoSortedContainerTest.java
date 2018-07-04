@@ -1,6 +1,6 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
-import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedContainer;
+import no.erlyberly.bootlegterraria.storage.impl.AutoSortedContainer;
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
 
@@ -39,14 +39,14 @@ class AutoSortedContainerTest {
         cont.put(0, ts);
 
         assertEquals(ts, cont.getContent()[0]);
-        assertEquals(ts, cont.getUnsafe(0));
+        assertEquals(ts, cont.get(0));
 
         cont.put(2, ts);
         //make sure the container will be merged and sorted
         assertNull(cont.getContent()[1]);
-        assertNull(cont.getUnsafe(1));
+        assertNull(cont.get(1));
         assertNull(cont.getContent()[2]);
-        assertNull(cont.getUnsafe(2));
+        assertNull(cont.get(2));
     }
 
     @Test
@@ -79,16 +79,16 @@ class AutoSortedContainerTest {
 
         assertTrue(returned.isEmpty());
         assertEquals(tsDirt, cont.getContent()[0]);
-        assertEquals(tsDirt, cont.getUnsafe(0));
+        assertEquals(tsDirt, cont.get(0));
         assertEquals(amount, cont.getContent()[0].getAmount());
-        assertEquals(amount, cont.getUnsafe(0).getAmount());
+        assertEquals(amount, cont.get(0).getAmount());
 
         //ts' amount should be doubled
         final List<TileStack> returned2 = cont.add(tsDirt);
 
         assertTrue(returned2.isEmpty());
         assertEquals(tsDirt, cont.getContent()[0]);
-        assertEquals(tsDirt, cont.getUnsafe(0));
+        assertEquals(tsDirt, cont.get(0));
         assertEquals(amount * 2, tsDirt.getAmount());
 
         final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);
@@ -102,7 +102,7 @@ class AutoSortedContainerTest {
 
     @Test
     void containsTest() {
-        final AutoSortedContainer cont = new AutoSortedContainer(10, false);
+        final AutoSortedContainer cont = new AutoSortedContainer("", 10, false);
 
         final TileStack ts = new TileStack(TileType.DIRT, 25);
         cont.put(0, ts);
@@ -113,8 +113,8 @@ class AutoSortedContainerTest {
 
     @Test
     void iteratorTest() {
-        final AutoSortedContainer cont = new AutoSortedContainer(10, false);
-        final Iterator<Slot> itr = cont.iterator();
+        final AutoSortedContainer cont = new AutoSortedContainer("", 10, false);
+        final Iterator<ContainerSlot> itr = cont.iterator();
         for (int i = 0; i <= cont.getSize(); i++) {
             //make sure that has next is working
             if (i == cont.getSize()) {
@@ -125,7 +125,7 @@ class AutoSortedContainerTest {
                 assertTrue(itr.hasNext());
             }
 
-            final Slot slot = itr.next();
+            final ContainerSlot slot = itr.next();
             assertEquals(i, slot.getIndex());
         }
     }

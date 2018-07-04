@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static no.erlyberly.bootlegterraria.inventory.SortOrder.*;
+import static no.erlyberly.bootlegterraria.storage.SortOrder.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -10,16 +10,16 @@ import java.util.List;
  * <p>
  * If the container can only hold valid stacks (checked with {@link TileStack#isValid()}) is up to the implementation.
  * <p>
- * However for {@link #get(int)} the returned TileStack <bold>MUST</bold> be a valid stacks (or null) if this is not the
- * desired use {@link #getValid(int, boolean)} for invalid stacks
+ * However for {@link #getValid(int)} the returned TileStack <bold>MUST</bold> be a valid stacks (or null) if this is
+ * not the
+ * desired use {@link #get(int)} for invalid stacks
  * <p>
- * TODO implement a container that allow for invalid stacks (a sort of main storage)
  * TODO implement a chest (that can be opened, somehow)
  * TODO let some entities have inventories
  *
  * @author kheba
  */
-public interface TileContainer extends Iterable<Slot> {
+public interface IContainer extends Iterable<ContainerSlot> {
 
     /**
      * @return How many slots this container holds
@@ -164,7 +164,7 @@ public interface TileContainer extends Iterable<Slot> {
      * @throws IndexOutOfBoundsException
      *     if the index is less than 0 or greater than or equal to {@link #getSize()}
      */
-    TileStack getUnsafe(final int index);
+    TileStack get(final int index);
 
     /**
      * @param index
@@ -196,4 +196,5 @@ public interface TileContainer extends Iterable<Slot> {
      * @return The underlying array of the container
      */
     TileStack[] getContent();
+
 }

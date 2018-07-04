@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -80,7 +80,7 @@ public class TileStack implements Comparable<TileStack> {
      * @throws IllegalArgumentException
      *     if {@code add} is less than 0
      */
-    public void add(final int add) {
+    public void give(final int add) {
         Preconditions.checkArgument(add >= 0, "Amount added must be greater than or equal to 0");
         setAmount(this.amount + add);
     }
@@ -95,7 +95,7 @@ public class TileStack implements Comparable<TileStack> {
      * @throws IllegalArgumentException
      *     if {@code remove} is less than 0
      */
-    public void remove(final int remove) {
+    public void take(final int remove) {
         Preconditions.checkArgument(remove >= 0, "Amount removed must be greater than or equal to 0");
         setAmount(Math.max(this.amount - remove, 0));
     }

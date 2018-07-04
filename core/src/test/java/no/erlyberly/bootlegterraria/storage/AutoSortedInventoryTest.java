@@ -1,6 +1,6 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
-import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedInventory;
+import no.erlyberly.bootlegterraria.storage.impl.AutoSortedInventory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNull;

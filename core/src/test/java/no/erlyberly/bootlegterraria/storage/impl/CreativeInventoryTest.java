@@ -1,6 +1,6 @@
-package no.erlyberly.bootlegterraria.inventory.impl;
+package no.erlyberly.bootlegterraria.storage.impl;
 
-import no.erlyberly.bootlegterraria.inventory.TileStack;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
 

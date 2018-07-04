@@ -1,17 +1,16 @@
-package no.erlyberly.bootlegterraria.inventory.impl;
+package no.erlyberly.bootlegterraria.storage.impl;
 
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.inventory.AbstractInventory;
-import no.erlyberly.bootlegterraria.inventory.Inventory;
-import no.erlyberly.bootlegterraria.inventory.TileStack;
+import no.erlyberly.bootlegterraria.storage.AbstractInventory;
+import no.erlyberly.bootlegterraria.storage.IInventory;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 /**
- * A creative inventory where most of the methods from {@link AbstractInventory} is not supported. Only {@link
- * #holding()} is
- * implemented.
+ * A creative storage where most of the methods from {@link AbstractInventory} is not supported. Only {@link
+ * #holding()} is implemented.
  */
-public class CreativeInventory implements Inventory {
+public class CreativeInventory implements IInventory {
 
     private final Entity holder;
     private TileStack currHolding;

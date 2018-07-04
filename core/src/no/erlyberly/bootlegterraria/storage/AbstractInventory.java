@@ -1,12 +1,14 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import com.google.common.base.Preconditions;
 import no.erlyberly.bootlegterraria.entities.Entity;
 
 /**
+ * An abstracted storage that handles what item is selected
+ *
  * @author kheba
  */
-public abstract class AbstractInventory implements Inventory {
+public abstract class AbstractInventory implements IInventory {
 
     private final Entity holder;
     private int sel;

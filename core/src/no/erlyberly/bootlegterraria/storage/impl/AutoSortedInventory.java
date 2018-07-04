@@ -1,11 +1,11 @@
-package no.erlyberly.bootlegterraria.inventory.impl;
+package no.erlyberly.bootlegterraria.storage.impl;
 
 import no.erlyberly.bootlegterraria.entities.Entity;
-import no.erlyberly.bootlegterraria.inventory.AbstractInventory;
-import no.erlyberly.bootlegterraria.inventory.TileStack;
+import no.erlyberly.bootlegterraria.storage.AbstractInventory;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 
 /**
- * An inventory intended to be used by players
+ * An storage intended to be used by living entities
  *
  * @author kheba
  */
@@ -20,7 +20,7 @@ public class AutoSortedInventory extends AbstractInventory {
 
     @Override
     public TileStack holding() {
-        return this.inv.getUnsafe(getSel());
+        return this.inv.get(getSel());
     }
 
     @Override

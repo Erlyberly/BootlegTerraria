@@ -1,10 +1,10 @@
-package no.erlyberly.bootlegterraria.inventory.impl;
+package no.erlyberly.bootlegterraria.storage.impl;
 
 import com.google.common.base.Preconditions;
-import no.erlyberly.bootlegterraria.inventory.Slot;
-import no.erlyberly.bootlegterraria.inventory.SortOrder;
-import no.erlyberly.bootlegterraria.inventory.TileContainer;
-import no.erlyberly.bootlegterraria.inventory.TileStack;
+import no.erlyberly.bootlegterraria.storage.ContainerSlot;
+import no.erlyberly.bootlegterraria.storage.IContainer;
+import no.erlyberly.bootlegterraria.storage.SortOrder;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.ArrayList;
@@ -12,18 +12,34 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A container that will auto sort the inventory when updated
+ * A container that will auto sort the storage when updated
  *
  * @author kheba
  */
-public class AutoSortedContainer implements TileContainer {
+public class AutoSortedContainer implements IContainer {
 
+    //do not allow change of size as the implementation would be hard to do correctly
     private final int size;
+    //do not allow change of valid stacks as the implementation would be hard to do correctly
     private final boolean disallowInvalid;
+
+    //You can modify the sortOrder directly
+    private final SortOrder sortOrder;
 
     private final TileStack[] inv;
 
-    private final SortOrder sortOrder;
+    private String name;
+
+    /**
+     * A normal container that disallows invalid {@link TileStack}s and sorts first by name then by tile amount in an
+     * descending order, with the name 'Container'
+     *
+     * @param size
+     *     The size of the container
+     */
+    public AutoSortedContainer(final int size) {
+        this("Container", size);
+    }
 
     /**
      * A normal container that disallows invalid {@link TileStack}s and sorts first by name then by tile amount in an
@@ -32,9 +48,8 @@ public class AutoSortedContainer implements TileContainer {
      * @param size
      *     The size of the container
      */
-    public AutoSortedContainer(final int size) {
-        //noinspection unchecked
-        this(size, true);
+    public AutoSortedContainer(final String name, final int size) {
+        this(name, size, true);
     }
 
     /**
@@ -45,9 +60,8 @@ public class AutoSortedContainer implements TileContainer {
      * @param disallowInvalid
      *     if this container does not allow invalid {@link TileStack}s
      */
-    public AutoSortedContainer(final int size, final boolean disallowInvalid) {
-        //noinspection unchecked
-        this(size, disallowInvalid, new SortOrder(false, SortOrder.TT_NAME_ASC, SortOrder.AMOUNT_DESC));
+    public AutoSortedContainer(final String name, final int size, final boolean disallowInvalid) {
+        this(name, size, disallowInvalid, new SortOrder(false, SortOrder.TT_NAME_ASC, SortOrder.AMOUNT_DESC));
     }
 
     /**
@@ -58,13 +72,15 @@ public class AutoSortedContainer implements TileContainer {
      * @param sortOrder
      *     The way to sort the validate each time it is modified
      */
-    public AutoSortedContainer(final int size, final boolean disallowInvalid, final SortOrder sortOrder) {
+    public AutoSortedContainer(final String name, final int size, final boolean disallowInvalid,
+                               final SortOrder sortOrder) {
         Preconditions.checkArgument(size > 0, "Inventory size must be greater than zero");
         Preconditions.checkNotNull(sortOrder, "The sort order cannot be null");
 
         this.disallowInvalid = disallowInvalid;
         this.size = size;
         this.sortOrder = sortOrder;
+        this.name = name;
 
         this.inv = new TileStack[size];
     }
@@ -119,7 +135,7 @@ public class AutoSortedContainer implements TileContainer {
             for (int j = 0; j < this.size; j++) {
                 if (this.inv[j] != null && this.inv[j].getTileType() == ts.getTileType()) {
                     if (this.inv[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
-                        this.inv[j].add(ts.getAmount());
+                        this.inv[j].give(ts.getAmount());
                         added = true;
                         break;
                     }
@@ -207,7 +223,7 @@ public class AutoSortedContainer implements TileContainer {
         if (tileStack == null || (this.disallowInvalid && !tileStack.isValid())) {
             return false;
         }
-        for (final Slot slot : this) {
+        for (final ContainerSlot slot : this) {
             if (tileStack.equals(slot.getContent())) {
                 return true;
             }
@@ -222,7 +238,7 @@ public class AutoSortedContainer implements TileContainer {
     }
 
     @Override
-    public TileStack getUnsafe(final int index) {
+    public TileStack get(final int index) {
         Preconditions.checkPositionIndex(index, this.size - 1);
         return this.inv[index];
     }
@@ -259,8 +275,8 @@ public class AutoSortedContainer implements TileContainer {
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public Iterator<Slot> iterator() {
-        return new Iterator<Slot>() {
+    public Iterator<ContainerSlot> iterator() {
+        return new Iterator<ContainerSlot>() {
 
             int index = 0;
 
@@ -270,9 +286,19 @@ public class AutoSortedContainer implements TileContainer {
             }
 
             @Override
-            public Slot next() {
-                return new Slot(this.index, AutoSortedContainer.this.inv[this.index++]);
+            public ContainerSlot next() {
+                return new ContainerSlot(this.index, AutoSortedContainer.this.inv[this.index++]);
             }
         };
     }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+
 }

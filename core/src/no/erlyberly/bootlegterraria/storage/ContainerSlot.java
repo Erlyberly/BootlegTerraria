@@ -1,16 +1,16 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 /**
- * A slot in in an inventory
+ * A slot in in an container
  *
  * @author kheba
  */
-public class Slot {
+public class ContainerSlot {
 
     private final int index;
     private final TileStack content;
 
-    public Slot(final int index, final TileStack content) {
+    public ContainerSlot(final int index, final TileStack content) {
         this.index = index;
         this.content = content;
     }

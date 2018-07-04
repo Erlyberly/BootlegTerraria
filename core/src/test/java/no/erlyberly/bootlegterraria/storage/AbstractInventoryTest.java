@@ -1,4 +1,4 @@
-package no.erlyberly.bootlegterraria.inventory;
+package no.erlyberly.bootlegterraria.storage;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ class AbstractInventoryTest {
             assertEquals(i, inv.getSel());
             inv.next();
         }
-        //make sure the inventory is wrapped around correctly
+        //make sure the storage is wrapped around correctly
         assertEquals(0, inv.getSel());
     }
 
