@@ -30,6 +30,7 @@ public class GameMain extends Game {
     private static GameMain gameMainInstance;
 
     private InputHandler inputHandler;
+    private UIController uiController;
 
     public static Color backgroundColor = Color.BLACK;
 
@@ -124,6 +125,7 @@ public class GameMain extends Game {
         this.batch.dispose();
         this.gameMap.dispose();
         SECONDARY_THREAD.shutdown();
+        this.uiController.dispose();
     }
 
     @Override
@@ -137,7 +139,10 @@ public class GameMain extends Game {
         this.camera.update();
         this.gameMap.update();
         this.gameMap.render(this.camera, this.hudCamera, this.batch);
+
+        this.uiController.render();
         consoleHandler.draw();
+
     }
 
 
@@ -168,6 +173,11 @@ public class GameMain extends Game {
     public InputHandler getInputHandler() {
         return this.inputHandler;
     }
+
+    public UIController getUiController() {
+        return this.uiController;
+    }
+
     public InputMultiplexer getInputMultiplexer() {
         return this.inputMultiplexer;
     }
