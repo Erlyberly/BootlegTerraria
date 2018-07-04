@@ -30,6 +30,34 @@ public enum InputSetting {
         return this.keys;
     }
 
+    public EventType getEventType() {
+        return this.eventType;
+    }
+
+    /**
+     * A replacement for {@code Gdx.input.isKeyPressed(int)}
+     */
+    public boolean isKeyPressed() {
+        for (final int key : this.keys) {
+            if (!Gdx.input.isKeyPressed(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * A replacement for {@code Gdx.input.isKeyJustPressed(int)}
+     */
+    public boolean isKeyJustPressed() {
+        for (final int key : this.keys) {
+            if (!Gdx.input.isKeyJustPressed(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return name().replace("_", " ").toLowerCase();

@@ -347,7 +347,7 @@ public class Player extends LivingEntity {
 
         //""animation"" of the player, flips the sprite back and forth on a time scale put by
         // ANIMATION_DIRECTION_DURATION
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (InputSetting.MOVE_LEFT.isKeyPressed() || InputSetting.MOVE_RIGHT.isKeyPressed()) {
             this.animationTime += Gdx.graphics.getRawDeltaTime();
             if (ANIMATION_DIRECTION_DURATION >= this.animationTime) {
                 direction *= -1;
