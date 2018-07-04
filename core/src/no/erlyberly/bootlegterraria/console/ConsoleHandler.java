@@ -71,4 +71,8 @@ public class ConsoleHandler {
         Gdx.input.setInputProcessor(GameMain.inst().getInputHandler());
         this.console.resetInputProcessing();
     }
+
+    public void execCommand(final String command) {
+        this.console.execCommand(command);
+    }
 }

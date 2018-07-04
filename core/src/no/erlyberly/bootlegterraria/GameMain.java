@@ -2,15 +2,20 @@ package no.erlyberly.bootlegterraria;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.input.InputHandler;
+import no.erlyberly.bootlegterraria.render.ui.UIController;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
+
 
 public class GameMain extends Game {
 
@@ -31,9 +36,11 @@ public class GameMain extends Game {
     public static final boolean HEADLESS;
 
     private static final String HEADLESS_FLAG = "-headless";
-    private static final String MAP_ENV = "map";
+
+    private static final String ENV_MAP = "map";
     private static final String DEFAULT_MAP = "map.tmx";
 
+    private static final String ENV_AUTO_EXEC = "exec";
 
     static {
         //suuuuuuuper hacky way of getting main's arg[] args

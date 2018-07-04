@@ -1,8 +1,6 @@
 package no.erlyberly.bootlegterraria.input;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -11,6 +9,7 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.input.event.EventRunnable;
 import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.*;
+import no.erlyberly.bootlegterraria.util.Util;
 
 import java.util.*;
 
@@ -39,16 +38,59 @@ public class InputHandler implements InputProcessor {
             this.actionMap.put(eventType, new HashMap<>());
         }
 
-        Gdx.input.setInputProcessor(this);
-    }
-
-    public void registerListener(final EventRunnable action, final EventType eventType, final InputSetting setting) {
-        Preconditions.checkNotNull(setting);
-        registerListener(action, eventType, setting.getKeys());
+        GameMain.inst().getInputMultiplexer().addProcessor(this);
     }
 
     /**
-     * Register a listener that will run when the given key with(out) modifiers is set. If another action is registered
+     * @param eventType
+     *     The event type to replace this of
+     * @param oldKeys
+     *     The old keys
+     * @param newKeys
+     *     The new keys
+     */
+    public void rebindListener(final EventType eventType, final Integer[] oldKeys, final Integer[] newKeys) {
+        Preconditions.checkNotNull(eventType);
+        final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
+        final EventRunnable er = eventMap.remove(ImmutableSet.copyOf(oldKeys));
+        if (er != null) {
+            eventMap.put(ImmutableSet.copyOf(newKeys), er);
+        }
+        else {
+            GameMain.consHldr().logf("Failed to re-bind listener, eventType: %s keys: %s", LogLevel.ERROR, eventType,
+                                     Arrays.toString(oldKeys));
+        }
+    }
+
+    /**
+     * Unregister a listener with the given arguments
+     */
+    public EventRunnable unregisterListener(final EventType eventType, final Integer... keys) {
+        Preconditions.checkNotNull(eventType);
+        final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
+        final Set<Integer> setKeys = ImmutableSet.copyOf(keys);
+
+        //give a warning to make it easier to track down these kind of bugs
+        if (!eventMap.containsKey(setKeys)) {
+
+            GameMain.consHldr().logf(
+                "Could not unregister events with the keys %s on th event %s, as there is nothing registered%n",
+                LogLevel.ERROR, Util.keysToString(keys), eventType.name());
+        }
+        else {
+            return eventMap.remove(setKeys);
+        }
+        return null;
+    }
+
+    public void registerListener(final EventRunnable action, final InputSetting setting) {
+        Preconditions.checkNotNull(setting);
+        registerListener(action, setting.getEventType(), setting.getKeys());
+    }
+
+    /**
+     * Register a listener that will run when the given key with(out) modifiers is set. If another action is
+     * registered
      * to the same key combination it will be overwritten.
      * <p>
      * If no keys are specified then {@code action} will be triggered on all events
@@ -66,25 +108,10 @@ public class InputHandler implements InputProcessor {
 
         //give a warning to make it easier to track down these kind of bugs
         if (eventMap.containsKey(setKeys)) {
-            final StringBuilder keyName = new StringBuilder("[ ");
 
-            setKeys.forEach(keycode -> {
-                final String name;
-                if (keycode > 255) {
-                    name = MouseInput.toString(keycode);
-                }
-                else {
-                    name = Input.Keys.toString(keycode);
-                }
-
-                keyName.append(name);
-                keyName.append("(").append(keycode).append(") ");
-            });
-
-            keyName.append("]");
             GameMain.consHldr()
                     .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)%n", LogLevel.ERROR,
-                          eventType.name(), keyName.toString());
+                          eventType.name(), Util.keysToString(keys));
         }
         eventMap.put(setKeys, action);
 
@@ -120,7 +147,8 @@ public class InputHandler implements InputProcessor {
     /**
      * Run all active events of the type {@link EventType#KEY_PRESSED}
      * <p>
-     * this method is intended to be ran once every frame, preferably in {@link ApplicationListener#render()} before all
+     * this method is intended to be ran once every frame, preferably in {@link ApplicationListener#render()}
+     * before all
      * other update methods
      */
     public void update() {

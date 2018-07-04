@@ -1,6 +1,7 @@
 package no.erlyberly.bootlegterraria.input;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.ObjectIntMap;
 
 /**
  * @author kheba
@@ -8,11 +9,21 @@ import com.badlogic.gdx.Input;
 @SuppressWarnings("WeakerAccess")
 public class MouseInput {
 
-    public static final int LEFT = 256;
-    public static final int RIGHT = 257;
-    public static final int MIDDLE = 258;
-    public static final int BACK = 259;
-    public static final int FORWARD = 260;
+    public static final int LEFT_MB = 256;
+    public static final int RIGHT_MB = 257;
+    public static final int MIDDLE_MB = 258;
+    public static final int BACK_MB = 259;
+    public static final int FORWARD_MB = 260;
+
+    private static final ObjectIntMap<String> buttonNames;
+
+    static {
+        buttonNames = new ObjectIntMap<>(8);
+        for (int i = LEFT_MB; i <= FORWARD_MB; i++) {
+            final String name = toString(i);
+            if (name != null) { buttonNames.put(name, i); }
+        }
+    }
 
     /**
      * Convert a keycode from {@link com.badlogic.gdx.Input.Buttons} to this
@@ -20,20 +31,19 @@ public class MouseInput {
     public static int fromGdxButton(final int keycode) {
         switch (keycode) {
             case Input.Buttons.LEFT:
-                return LEFT;
+                return LEFT_MB;
             case Input.Buttons.RIGHT:
-                return RIGHT;
+                return RIGHT_MB;
             case Input.Buttons.MIDDLE:
-                return MIDDLE;
+                return MIDDLE_MB;
             case Input.Buttons.BACK:
-                return BACK;
+                return BACK_MB;
             case Input.Buttons.FORWARD:
-                return FORWARD;
+                return FORWARD_MB;
             default:
                 throw new IllegalArgumentException(
                     "Given keycode does not match any in Input.Buttons, keycode: " + keycode);
         }
-
     }
 
     public static String toString(final int keycode) {
@@ -45,20 +55,22 @@ public class MouseInput {
         }
         switch (keycode) {
             case 256:
-                return "Left";
+                return "LMB";
             case 257:
-                return "Right";
+                return "RMB";
             case 258:
-                return "Middle";
+                return "MMB";
             case 259:
-                return "Back";
+                return "BMB";
             case 260:
-                return "Forward";
+                return "FMB";
             default:
                 //key not found
                 return null;
         }
     }
 
-
+    public static int valueOf(final String button) {
+        return buttonNames.get(button, -1);
+    }
 }

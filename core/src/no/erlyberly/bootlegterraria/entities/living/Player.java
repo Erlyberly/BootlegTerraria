@@ -106,7 +106,7 @@ public class Player extends LivingEntity {
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             map.setTile(blockX, blockY, null);
-        }, EventType.KEY_PRESSED, InputSetting.BREAK_BLOCK);
+        }, InputSetting.BREAK_BLOCK);
 
         /*
          * Place blocks
@@ -126,7 +126,7 @@ public class Player extends LivingEntity {
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
             map.setTile(blockX, blockY, player.getInv().holding().getTileType());
-        }, EventType.KEY_PRESSED, InputSetting.PLACE_BLOCK);
+        }, InputSetting.PLACE_BLOCK);
 
         /*
          * Move left
@@ -137,7 +137,7 @@ public class Player extends LivingEntity {
                 player.moveX(-player.calculatedSpeed);
                 player.setFacing(FACING_LEFT);
             }
-        }, EventType.KEY_PRESSED, InputSetting.MOVE_LEFT);
+        }, InputSetting.MOVE_LEFT);
 
         /*
          * Move right
@@ -148,7 +148,7 @@ public class Player extends LivingEntity {
                 player.moveX(player.calculatedSpeed);
                 player.setFacing(FACING_RIGHT);
             }
-        }, EventType.KEY_PRESSED, InputSetting.MOVE_RIGHT);
+        }, InputSetting.MOVE_RIGHT);
 
         /*
          * Dodging
@@ -163,7 +163,7 @@ public class Player extends LivingEntity {
                 player.invincible = true;
                 player.modifyStamina(-player.dodgeStaminaUsage);
             }
-        }, EventType.KEY_DOWN, InputSetting.DODGE);
+        }, InputSetting.DODGE);
 
         /*
          * Jump and fly up
@@ -176,7 +176,7 @@ public class Player extends LivingEntity {
             else if (player.onGround && !player.dodging) {
                 player.velocityY = JUMP_VELOCITY;
             }
-        }, EventType.KEY_PRESSED, InputSetting.JUMP);
+        }, InputSetting.JUMP);
 
         /*
          * Fly down
@@ -186,7 +186,7 @@ public class Player extends LivingEntity {
             if (player.isFlying()) {
                 player.moveY(-player.calculatedSpeed);
             }
-        }, EventType.KEY_PRESSED, InputSetting.FLY_DOWN);
+        }, InputSetting.FLY_DOWN);
 
         /*
          * Attack
@@ -198,7 +198,7 @@ public class Player extends LivingEntity {
                 weapon.attack(player);
                 player.modifyStamina(-weapon.getStaminaUsage());
             }
-        }, EventType.KEY_PRESSED, InputSetting.ATTACK);
+        }, InputSetting.ATTACK);
 
         /*
          * Debug input

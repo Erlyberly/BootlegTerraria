@@ -1,24 +1,30 @@
 package no.erlyberly.bootlegterraria.input;
 
+import com.badlogic.gdx.Gdx;
+import no.erlyberly.bootlegterraria.input.event.EventType;
+import no.erlyberly.bootlegterraria.util.Util;
+
 import static com.badlogic.gdx.Input.Keys;
 
 public enum InputSetting {
 
-    MOVE_LEFT(Keys.LEFT),
-    MOVE_RIGHT(Keys.RIGHT),
-    JUMP(Keys.UP),
+    MOVE_LEFT(EventType.KEY_PRESSED, Keys.A),
+    MOVE_RIGHT(EventType.KEY_PRESSED, Keys.D),
+    JUMP(EventType.KEY_PRESSED, Keys.W),
     //    FLY_UP(Keys.UP), same as jump
-    FLY_DOWN(Keys.DOWN),
-    ATTACK(Keys.E),
-    DODGE(Keys.SHIFT_LEFT),
-    BREAK_BLOCK(MouseInput.LEFT),
-    PLACE_BLOCK(MouseInput.RIGHT)
+    FLY_DOWN(EventType.KEY_PRESSED, Keys.S),
+    ATTACK(EventType.KEY_PRESSED, Keys.E),
+    DODGE(EventType.KEY_DOWN, Keys.SHIFT_LEFT),
+    BREAK_BLOCK(EventType.KEY_PRESSED, MouseInput.LEFT_MB),
+    PLACE_BLOCK(EventType.KEY_PRESSED, MouseInput.RIGHT_MB)
     //
     ;
 
+    private final EventType eventType;
     private Integer[] keys;
 
-    InputSetting(final Integer... defaultKeys) {
+    InputSetting(final EventType eventType, final Integer... defaultKeys) {
+        this.eventType = eventType;
         this.keys = defaultKeys;
     }
 
@@ -60,6 +66,6 @@ public enum InputSetting {
 
     @Override
     public String toString() {
-        return name().replace("_", " ").toLowerCase();
+        return Util.toTitleCase(name().replace("_", " "));
     }
 }

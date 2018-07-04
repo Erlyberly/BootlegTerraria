@@ -1,6 +1,7 @@
 package no.erlyberly.bootlegterraria.console;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.LogLevel;
@@ -11,10 +12,13 @@ import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Sword;
-import no.erlyberly.bootlegterraria.inventory.impl.AutoSortedInventory;
-import no.erlyberly.bootlegterraria.inventory.impl.CreativeInventory;
+import no.erlyberly.bootlegterraria.input.InputHandler;
+import no.erlyberly.bootlegterraria.input.InputSetting;
+import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
+import no.erlyberly.bootlegterraria.storage.impl.AutoSortedInventory;
+import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -154,9 +158,44 @@ public class CommandHandler extends CommandExecutor {
                 player.setInv(new AutoSortedInventory(16, player));
                 break;
             default:
-                GameMain.consHldr().log("Unknown inventory type '" + invType + '\'', LogLevel.ERROR);
+                GameMain.consHldr().log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
                 return;
         }
-        GameMain.consHldr().log("New inventory " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
+        GameMain.consHldr().log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
+    }
+
+    public void bind(final String settingStr, final String keyStr) {
+        final InputSetting setting;
+        try {
+            setting = InputSetting.valueOf(settingStr.toUpperCase());
+        } catch (final IllegalArgumentException | NullPointerException e) {
+            GameMain.consHldr().logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
+            return;
+        }
+        Integer key;
+        key = Input.Keys.valueOf(Util.toTitleCase(keyStr));
+        if (key == -1) {
+            key = MouseInput.valueOf(keyStr.toUpperCase());
+        }
+        if (key == -1) {
+            GameMain.consHldr().logf("Could not find any input with the name of '%s'", LogLevel.ERROR, keyStr);
+            return;
+        }
+
+        final InputHandler inputHandler = GameMain.inst().getInputHandler();
+
+        inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[] {key});
+
+        //update keys
+        setting.setKeys(key);
+
+        GameMain.consHldr().log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+    }
+
+    @ConsoleDoc(description = "List all settings with their bindings")
+    public void binds() {
+        for (final InputSetting setting : InputSetting.values()) {
+            GameMain.consHldr().log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+        }
     }
 }
