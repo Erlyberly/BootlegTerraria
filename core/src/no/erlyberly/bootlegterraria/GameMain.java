@@ -64,23 +64,54 @@ public class GameMain extends Game {
 
         consoleHandler = new ConsoleHandler();
 
-        String map = System.getenv(MAP_ENV);
+        String map = System.getenv(ENV_MAP);
         if (map == null) {
             consoleHandler.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
             map = DEFAULT_MAP;
         }
+        this.uiController = new UIController();
         this.inputHandler = new InputHandler();
 
+
         loadMap(map);
+        Gdx.input.setInputProcessor(this.inputMultiplexer);
+
+        final String fileName = System.getenv(ENV_AUTO_EXEC);
+        if (fileName != null) {
+            //run all commands in auto execute file, if it exist
+            final FileHandle autoExec = Gdx.files.internal(fileName);
+            if (autoExec.exists() && !autoExec.isDirectory()) {
+                consoleHandler.log("Executing console commands from file '" + autoExec.name() + "'", LogLevel.SUCCESS);
+                final String[] cmds = autoExec.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
+
+                for (final String cmd : cmds) {
+                    consHldr().execCommand(cmd);
+                }
+                consoleHandler.log("Finished executing all auto execute commands");
+            }
+            else {
+                consoleHandler
+                    .log("Failed to execute given file \"" + autoExec.name() + "\", does it exist? is it a directory?",
+                         LogLevel.ERROR);
+            }
+        }
+        else {
+            consoleHandler.log("No auto executable file specified");
+        }
     }
 
+    /**
+     * Load a tmx map from /assets/
+     *
+     * @param map
+     *     The map to load, with file ending
+     */
     public void loadMap(final String map) {
         SECONDARY_THREAD.cancelTasks();
         consoleHandler.log("Loading map '" + map + '\'');
         this.gameMap = new TiledGameMap(map, false);
         this.gameMap.spawnPlayer();
         this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
-        consoleHandler.resetInputProcessing();
     }
 
     @Override
