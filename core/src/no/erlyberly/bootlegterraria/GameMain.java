@@ -2,12 +2,15 @@ package no.erlyberly.bootlegterraria;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.input.InputHandler;
+import no.erlyberly.bootlegterraria.input.InputSetting;
+import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.ui.UIController;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.Util;
@@ -37,6 +40,7 @@ public class GameMain extends Game {
     private static final String HEADLESS_FLAG = "headless";
     private static final String AUTO_EXEC_FLAG = "exec";
     private static final String MAP_FLAG = "map";
+    private static final String MOUSEPAD_FLAG = "laptop";
 
     private static final String DEFAULT_MAP = "map.tmx";
 
@@ -88,6 +92,13 @@ public class GameMain extends Game {
         }
         else {
             console.log("No auto executable file specified");
+        }
+
+        if (this.args.containsKey(MOUSEPAD_FLAG)) {
+            //bind place_block LMB l-shift
+            console.getConsole().execCommand(
+                "bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
+                Input.Keys.toString(Input.Keys.SHIFT_LEFT));
         }
     }
 
