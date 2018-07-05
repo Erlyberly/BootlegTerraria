@@ -1,0 +1,8 @@
+bind move_left left
+bind move_right right
+bind jump up
+bind fly_down down
+bind dodge l-shift
+bind attack e
+bind place_block RMB
+bind break_block LMB

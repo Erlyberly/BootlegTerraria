@@ -1,0 +1,5 @@
+//A line that starts with two / is a comment and wont be executed
+//Any command without it will be executed as if it was typed in the console
+bind jump space
+wpn sword
+gravity 4
