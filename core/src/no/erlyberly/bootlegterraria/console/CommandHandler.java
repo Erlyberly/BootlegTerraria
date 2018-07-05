@@ -144,12 +144,15 @@ public class CommandHandler extends CommandExecutor {
         GameMain.console.logf("Flying speedModifier: %.2f", LogLevel.SUCCESS, GameMain.map.getPlayer().speedModifier);
     }
 
+    @ConsoleDoc(description = "Show how the light really is ")
     public void debugLight(final boolean debug) {
         BlockLightMap.realLight = !debug;
         SimpleOrthogonalTiledMapRenderer.logLightEvents = debug;
         GameMain.console.logf("Light debugging: " + debug, LogLevel.SUCCESS);
     }
 
+    @ConsoleDoc(description = "Switch inventory of player",
+                paramDescriptions = {"The inventory to use, can be 'creative' or 'autosort'"})
     public void inv(final String invType) {
         final Player player = GameMain.map.getPlayer();
         switch (invType.toLowerCase()) {
@@ -194,11 +197,11 @@ public class CommandHandler extends CommandExecutor {
         final InputSetting setting;
         try {
             try {
-            setting = InputSetting.valueOf(settingStr.toUpperCase());
-        } catch (final IllegalArgumentException | NullPointerException e) {
-            GameMain.console.logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
-            return;
-        }
+                setting = InputSetting.valueOf(settingStr.toUpperCase());
+            } catch (final IllegalArgumentException | NullPointerException e) {
+                GameMain.console.logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
+                return;
+            }
             final Integer[] keys = new Integer[keyStr.length];
             for (int i = 0, length = keyStr.length; i < length; i++) {
                 final String key = keyStr[i];
@@ -206,22 +209,22 @@ public class CommandHandler extends CommandExecutor {
                 int keyInt = Input.Keys.valueOf(Util.toTitleCase(key));
                 if (keyInt == -1) {
                     keyInt = MouseInput.valueOf(key.toUpperCase());
-        }
+                }
                 if (keyInt == -1) {
                     GameMain.console.logf("Could not find any input with the name of '%s'", LogLevel.ERROR, key);
-            return;
-        }
+                    return;
+                }
                 keys[i] = keyInt;
             }
 
-        final InputHandler inputHandler = GameMain.input;
+            final InputHandler inputHandler = GameMain.input;
 
             inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), keys);
 
-        //update keys
+            //update keys
             setting.setKeys(keys);
 
-        GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+            GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -234,6 +237,8 @@ public class CommandHandler extends CommandExecutor {
         }
     }
 
+    @ConsoleDoc(description = "Execute all commands in the given file, each command is on a newline",
+                paramDescriptions = "The absolute path to the file to be executed")
     public void exec(final String absFile) {
         //run all commands in auto execute file, if it exist
         final FileHandle execFile = Gdx.files.absolute(absFile);

@@ -36,15 +36,20 @@ public class GameMain extends Game {
     public static ConsoleHandler console;
 
     private boolean headless;
-
-    private static final String HEADLESS_FLAG = "headless";
-    private static final String AUTO_EXEC_FLAG = "exec";
-    private static final String MAP_FLAG = "map";
-    private static final String MOUSEPAD_FLAG = "laptop";
-
     private static final String DEFAULT_MAP = "map.tmx";
 
+    //For the interpreter to see it as a flag a dash(-) must be at the start of the argument
+    //A start (*) means that a value is required, it is given as: -key=value
 
+    //To specify that this instance is headless NOTE: currently broken, do not use
+    private static final String HEADLESS_FLAG = "headless";
+    //Execute the given file*
+    private static final String AUTO_EXEC_FLAG = "exec";
+    //Specify what map to load on startup, if none DEFAULT_MAP is loaded*
+    private static final String MAP_FLAG = "map";
+    //Make it easier to play on a touch pad
+    private static final String MOUSEPAD_FLAG = "laptop";
+    
     public GameMain(final String[] args) {
         gameMainInstance = this;
         this.args = Util.interpreterArgs(args);
