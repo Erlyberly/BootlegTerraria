@@ -2,6 +2,7 @@ package no.erlyberly.bootlegterraria.console;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.LogLevel;
@@ -201,5 +202,30 @@ public class CommandHandler extends CommandExecutor {
         for (final InputSetting setting : InputSetting.values()) {
             GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
         }
+    }
+
+    public void exec(final String absFile) {
+        //run all commands in auto execute file, if it exist
+        final FileHandle execFile = Gdx.files.absolute(absFile);
+        if (execFile.exists() && !execFile.isDirectory()) {
+            this.console.log("Executing console commands from file '" + execFile.name() + "'", LogLevel.SUCCESS);
+            final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
+
+            for (final String cmd : cmds) {
+
+                //single line comment
+                if (cmd.startsWith("//")) {
+                    continue;
+                }
+                GameMain.console.getConsole().execCommand(cmd);
+            }
+            this.console.log("Finished executing all auto execute commands");
+        }
+        else {
+            this.console
+                .log("Failed to execute given file \"" + execFile.name() + "\", does it exist? is it a directory?",
+                     LogLevel.ERROR);
+        }
+
     }
 }

@@ -3,11 +3,9 @@ package no.erlyberly.bootlegterraria;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.render.ui.UIController;
@@ -82,31 +80,15 @@ public class GameMain extends Game {
         //check if this instance is headless
         this.headless = this.args.containsKey(HEADLESS_FLAG);
 
+
         // auto execute commands if specified
         final String fileName = this.args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
-            //run all commands in auto execute file, if it exist
-            final FileHandle autoExec = Gdx.files.internal(fileName);
-            if (autoExec.exists() && !autoExec.isDirectory()) {
-                console.log("Executing console commands from file '" + autoExec.name() + "'", LogLevel.SUCCESS);
-                final String[] cmds = autoExec.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
-
-                for (final String cmd : cmds) {
-                    console.getConsole().execCommand(cmd);
-                }
-                console.log("Finished executing all auto execute commands");
-            }
-            else {
-                console
-                    .log("Failed to execute given file \"" + autoExec.name() + "\", does it exist? is it a directory?",
-                         LogLevel.ERROR);
-            }
+            console.getConsole().execCommand("exec " + fileName);
         }
         else {
             console.log("No auto executable file specified");
         }
-
-
     }
 
     /**
