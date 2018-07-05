@@ -4,5 +4,5 @@ bind jump up
 bind fly_down down
 bind dodge l-shift
 bind attack e
-bind place_block RMB
-bind break_block LMB
+bind place_block LMB
+bind break_block RMB
