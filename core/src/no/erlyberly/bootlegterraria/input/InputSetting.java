@@ -13,8 +13,8 @@ public enum InputSetting {
     JUMP(EventType.KEY_PRESSED, Keys.W),
     //    FLY_UP(Keys.UP), same as jump
     FLY_DOWN(EventType.KEY_PRESSED, Keys.S),
-    ATTACK(EventType.KEY_PRESSED, Keys.E),
-    DODGE(EventType.KEY_DOWN, Keys.SHIFT_LEFT),
+    ATTACK(EventType.KEY_PRESSED, Keys.SPACE),
+    DODGE(EventType.KEY_DOWN, Keys.C),
     BREAK_BLOCK(EventType.KEY_PRESSED, MouseInput.LEFT_MB),
     PLACE_BLOCK(EventType.KEY_PRESSED, MouseInput.RIGHT_MB)
     //
