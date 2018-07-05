@@ -169,32 +169,62 @@ public class CommandHandler extends CommandExecutor {
         GameMain.console.log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
     }
 
-    public void bind(final String settingStr, final String keyStr) {
+    @ConsoleDoc(description = "Bind three keys to a setting",
+                paramDescriptions = {"The setting to bind to", "The first key you want to bind",
+                    "The second key you want to bind", "The third key you want to bind"})
+    public void bind(final String settingStr, final String key1, final String key2, final String key3) {
+        bind0(settingStr, key1, key2, key3);
+    }
+
+    @ConsoleDoc(description = "Bind two keys to a setting",
+                paramDescriptions = {"The setting to bind to", "The first key you want to bind",
+                    "The second key you want to bind"})
+    public void bind(final String settingStr, final String key1, final String key2) {
+        bind0(settingStr, key1, key2);
+    }
+
+    @ConsoleDoc(description = "Bind a key to a setting",
+                paramDescriptions = {"The setting to bind to", "The key you want to bind"})
+    public void bind(final String settingStr, final String key1) {
+        bind0(settingStr, key1);
+    }
+
+    //The console does not take arrays so this method must be internal
+    private void bind0(final String settingStr, final String... keyStr) {
         final InputSetting setting;
         try {
+            try {
             setting = InputSetting.valueOf(settingStr.toUpperCase());
         } catch (final IllegalArgumentException | NullPointerException e) {
             GameMain.console.logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
             return;
         }
-        Integer key;
-        key = Input.Keys.valueOf(Util.toTitleCase(keyStr));
-        if (key == -1) {
-            key = MouseInput.valueOf(keyStr.toUpperCase());
+            final Integer[] keys = new Integer[keyStr.length];
+            for (int i = 0, length = keyStr.length; i < length; i++) {
+                final String key = keyStr[i];
+
+                int keyInt = Input.Keys.valueOf(Util.toTitleCase(key));
+                if (keyInt == -1) {
+                    keyInt = MouseInput.valueOf(key.toUpperCase());
         }
-        if (key == -1) {
-            GameMain.console.logf("Could not find any input with the name of '%s'", LogLevel.ERROR, keyStr);
+                if (keyInt == -1) {
+                    GameMain.console.logf("Could not find any input with the name of '%s'", LogLevel.ERROR, key);
             return;
         }
+                keys[i] = keyInt;
+            }
 
         final InputHandler inputHandler = GameMain.input;
 
-        inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[] {key});
+            inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), keys);
 
         //update keys
-        setting.setKeys(key);
+            setting.setKeys(keys);
 
         GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @ConsoleDoc(description = "List all settings with their bindings")
