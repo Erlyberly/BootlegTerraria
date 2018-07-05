@@ -70,7 +70,7 @@ public class BlockLightMap implements LightMap {
                 li.put(pos, ll, skylight);
             }
             if (logLightEvents) {
-                GameMain.consHldr().log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
+                GameMain.console.log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
             }
         });
     }
@@ -120,7 +120,7 @@ public class BlockLightMap implements LightMap {
                 }
 
                 if (logLightEvents) {
-                    GameMain.consHldr().log("Removing light took " + (System.currentTimeMillis() - startTime) + " ms");
+                    GameMain.console.log("Removing light took " + (System.currentTimeMillis() - startTime) + " ms");
                 }
             });
         }
@@ -142,7 +142,7 @@ public class BlockLightMap implements LightMap {
 
             final int oldSkylight = this.skylight[blockX];
 
-            final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.inst().getGameMap().getBlockLayer();
+            final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.map.getBlockLayer();
 
             boolean skylightFound = false;
 
@@ -189,7 +189,7 @@ public class BlockLightMap implements LightMap {
                 addSkylight(blockX, newSkylight);
             }
             if (oldLogLightTime) {
-                GameMain.consHldr().log(
+                GameMain.console.log(
                     "Calculating skylight column " + blockX + " took " + (System.currentTimeMillis() - startTime) +
                     " ms");
             }
@@ -239,7 +239,7 @@ public class BlockLightMap implements LightMap {
                 }
             }
 
-            GameMain.consHldr().log(
+            GameMain.console.log(
                 "Finding skylight and light emitters took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
             final long startTimeSkylight = System.currentTimeMillis();
@@ -262,7 +262,7 @@ public class BlockLightMap implements LightMap {
             GameMain.SECONDARY_THREAD.execute(() -> {
                 logLightEvents = oldLogLight;
                 this.initialized = true;
-                GameMain.consHldr().log(
+                GameMain.console.log(
                     "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
                     "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
             });

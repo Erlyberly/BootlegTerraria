@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 
 public abstract class Entity {
 
-    protected GameMap gameMap = GameMain.inst().getGameMap();
+    protected GameMap gameMap = GameMain.map;
 
     protected Vector2 pos;
     protected float velocityY;

@@ -38,7 +38,7 @@ public class CommandHandler extends CommandExecutor {
     }
 
     public void god() {
-        final Player player = GameMain.inst().getGameMap().getPlayer();
+        final Player player = GameMain.map.getPlayer();
         player.god = !player.god;
         heal((byte) 3);
         this.console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
@@ -46,7 +46,7 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Heal player in different ways", paramDescriptions = {"\n0b01 - health\n0b10 - stamina"})
     public void heal(final byte type) {
-        final Player player = GameMain.inst().getGameMap().getPlayer();
+        final Player player = GameMain.map.getPlayer();
 
         if ((type & 1) != 0) { player.modifyHp(player.getMaxHealth()); }
         if ((type & 2) != 0) { player.setStamina(player.getMaxStamina()); }
@@ -73,7 +73,7 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Switch weapon", paramDescriptions = {"Available weapon types are 'gun' and 'sword'"})
     public void wpn(final String weaponType) {
-        final Player player = GameMain.inst().getGameMap().getPlayer();
+        final Player player = GameMain.map.getPlayer();
 
         final Weapon weapon;
 
@@ -96,7 +96,7 @@ public class CommandHandler extends CommandExecutor {
                 paramDescriptions = {"X coord of block", "Y coord of block", "TileID of new block"})
     public void setBlock(final int x, final int y, final int tileID) {
         final TileType tt = TileType.getTileTypeById(tileID);
-        GameMain.inst().getGameMap().setTile(x, y, tt);
+        GameMain.map.setTile(x, y, tt);
     }
 
     @HiddenCommand
@@ -107,11 +107,11 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
     public void tp(final int x, final int y) {
-        if (!Util.isBetween(0, x, (int) GameMain.inst().getGameMap().getWidth())) {
+        if (!Util.isBetween(0, x, (int) GameMain.map.getWidth())) {
             this.cmdH.logf("Cannot teleport player outside of map", LogLevel.ERROR);
             return;
         }
-        final GameMap gameMap = GameMain.inst().getGameMap();
+        final GameMap gameMap = GameMain.map;
         this.cmdH.logf("Trying to teleport player to (%d, %d)", x, y);
         final Vector2 v = gameMap.getPlayer().teleport(x, y);
 
@@ -126,32 +126,31 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Toggle flight")
     public void fly() {
-        final Player p = GameMain.inst().getGameMap().getPlayer();
+        final Player p = GameMain.map.getPlayer();
         p.setFlying(!p.isFlying());
         p.speedModifier += p.isFlying() ? 1 : -1;
-        GameMain.consHldr().logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
+        GameMain.console.logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
     }
 
     @ConsoleDoc(description = "Set the speed modifier of the player")
     public void speed(final float speed) {
-        GameMain.inst().getGameMap().getPlayer().speedModifier = speed;
+        GameMain.map.getPlayer().speedModifier = speed;
         speed();
     }
 
     @ConsoleDoc(description = "Display the current speed modifier of the player")
     public void speed() {
-        GameMain.consHldr().logf("Flying speedModifier: %.2f", LogLevel.SUCCESS,
-                                 GameMain.inst().getGameMap().getPlayer().speedModifier);
+        GameMain.console.logf("Flying speedModifier: %.2f", LogLevel.SUCCESS, GameMain.map.getPlayer().speedModifier);
     }
 
     public void debugLight(final boolean debug) {
         BlockLightMap.realLight = !debug;
         SimpleOrthogonalTiledMapRenderer.logLightEvents = debug;
-        GameMain.consHldr().logf("Light debugging: " + debug, LogLevel.SUCCESS);
+        GameMain.console.logf("Light debugging: " + debug, LogLevel.SUCCESS);
     }
 
     public void inv(final String invType) {
-        final Player player = GameMain.inst().getGameMap().getPlayer();
+        final Player player = GameMain.map.getPlayer();
         switch (invType.toLowerCase()) {
             case "creative":
             case "crea":
@@ -163,10 +162,10 @@ public class CommandHandler extends CommandExecutor {
                 player.setInv(new AutoSortedInventory(16, player));
                 break;
             default:
-                GameMain.consHldr().log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
+                GameMain.console.log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
                 return;
         }
-        GameMain.consHldr().log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
+        GameMain.console.log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
     }
 
     public void bind(final String settingStr, final String keyStr) {
@@ -174,7 +173,7 @@ public class CommandHandler extends CommandExecutor {
         try {
             setting = InputSetting.valueOf(settingStr.toUpperCase());
         } catch (final IllegalArgumentException | NullPointerException e) {
-            GameMain.consHldr().logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
+            GameMain.console.logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
             return;
         }
         Integer key;
@@ -183,24 +182,24 @@ public class CommandHandler extends CommandExecutor {
             key = MouseInput.valueOf(keyStr.toUpperCase());
         }
         if (key == -1) {
-            GameMain.consHldr().logf("Could not find any input with the name of '%s'", LogLevel.ERROR, keyStr);
+            GameMain.console.logf("Could not find any input with the name of '%s'", LogLevel.ERROR, keyStr);
             return;
         }
 
-        final InputHandler inputHandler = GameMain.inst().getInputHandler();
+        final InputHandler inputHandler = GameMain.input;
 
         inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[] {key});
 
         //update keys
         setting.setKeys(key);
 
-        GameMain.consHldr().log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+        GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
     }
 
     @ConsoleDoc(description = "List all settings with their bindings")
     public void binds() {
         for (final InputSetting setting : InputSetting.values()) {
-            GameMain.consHldr().log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
+            GameMain.console.log(setting.toString() + " - " + Util.keysToString(setting.getKeys()));
         }
     }
 }

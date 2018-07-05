@@ -22,12 +22,12 @@ public class ConsoleHandler {
         this.console =
             new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
         this.console.setCommandExecutor(new CommandHandler(this));
-        GameMain.inst().getInputMultiplexer().addProcessor(this.console.getInputProcessor());
+        GameMain.inputMultiplexer.addProcessor(this.console.getInputProcessor());
 
         this.console.log("INITIATING CONSOLE v0.0407018", LogLevel.ERROR);
         this.console
             .log("BOOTING SEQUENCE FINISHED IN " + ConsoleHandler.df.format(Math.random() * 4f), LogLevel.ERROR);
-       
+
     }
 
     public void draw() {
@@ -35,11 +35,7 @@ public class ConsoleHandler {
             this.console.draw();
         } catch (final Exception ignore) {}
     }
-
-    public boolean isConsoleVisible() {
-        return this.console.isVisible();
-    }
-
+    
     public void log(final String msg) {
         log(msg, LogLevel.DEFAULT);
     }
@@ -68,14 +64,7 @@ public class ConsoleHandler {
         this.console.log(String.format(msg, objs), level);
     }
 
-    public void resetInputProcessing() {
-//        Gdx.input.setInputProcessor(GameMain.inst().getInputHandler());
-
-
-        this.console.resetInputProcessing();
-    }
-
-    public void execCommand(final String command) {
-        this.console.execCommand(command);
+    public Console getConsole() {
+        return this.console;
     }
 }

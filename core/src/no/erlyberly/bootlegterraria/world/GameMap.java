@@ -138,8 +138,7 @@ public abstract class GameMap {
         this.font.draw(batch, (int) this.player.getStamina() + " / " + this.player.getMaxStamina(),
                        this.barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / staminaBarModifier);
 
-        final Vector3 mousePos =
-            GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        final Vector3 mousePos = GameMain.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
         final int blockX = (int) (mousePos.x / TileType.TILE_SIZE);
         final int blockY = (int) (mousePos.y / TileType.TILE_SIZE);

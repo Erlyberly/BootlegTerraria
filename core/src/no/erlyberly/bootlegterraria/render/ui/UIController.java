@@ -16,7 +16,7 @@ public class UIController implements Disposable {
 
     public UIController() {
         this.stage = new Stage();
-        GameMain.inst().getInputMultiplexer().addProcessor(this.stage);
+        GameMain.inputMultiplexer.addProcessor(this.stage);
 
         this.table = new Table();
         this.table.setDebug(true);

@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,8 +46,8 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
         //get the width of the map
         final MapProperties prop = map.getProperties();
-        GameMain.backgroundColor = Util.convert(prop.get("backgroundcolor", "#FFFF0000", String.class));
-
+        final Color bgColor = Util.convert(prop.get("backgroundcolor", "#FFFF0000", String.class));
+        Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
         this.light = new BlockLightMap(gameMap);
     }
 

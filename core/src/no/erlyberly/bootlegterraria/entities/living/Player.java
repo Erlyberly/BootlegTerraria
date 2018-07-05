@@ -10,7 +10,6 @@ import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.LivingEntity;
 import no.erlyberly.bootlegterraria.entities.weapons.Weapon;
 import no.erlyberly.bootlegterraria.entities.weapons.weapons.Gun;
-import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.input.InputSetting;
 import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
@@ -52,15 +51,12 @@ public class Player extends LivingEntity {
     private int hurtTimer = 0; //For how long should the player be hurt?
 
     static {
-
-        final InputHandler handler = GameMain.inst().getInputHandler();
-
         /*
          * handle the scrolling to change selected block
          */
-        handler.registerListener(metadata -> {
+        GameMain.input.registerListener(metadata -> {
             final ScrolledMetadata scroll = (ScrolledMetadata) metadata;
-            final IInventory inv = GameMain.inst().getGameMap().getPlayer().getInv();
+            final IInventory inv = GameMain.map.getPlayer().getInv();
 
             if (scroll.amount < 0) {
                 inv.next();
@@ -73,31 +69,30 @@ public class Player extends LivingEntity {
         /*
          * Debug the given tile
          */
-        handler.registerListener(metadata -> {
+        GameMain.input.registerListener(metadata -> {
             final MouseMetadata mMeta = (MouseMetadata) metadata;
-            final GameMap map = GameMain.inst().getGameMap();
+            final GameMap map = GameMain.map;
             final TileType type = map.getTileTypeByLocation(map.getBlockLayer(), mMeta.screenX, mMeta.screenY);
 
             final int blockX = (int) (mMeta.screenX / TileType.TILE_SIZE);
             final int blockY = (int) (mMeta.screenY / TileType.TILE_SIZE);
 
             if (type != null) {
-                GameMain.consHldr().log(
+                GameMain.console.log(
                     "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
                     " coord: (" + blockX + ", " + blockY + ")");
             }
             else {
-                GameMain.consHldr().log("Not a tile");
+                GameMain.console.log("Not a tile");
             }
         }, EventType.TOUCH_DOWN, Input.Keys.ALT_LEFT);
 
         /*
          * break blocks
          */
-        handler.registerListener(metadata -> {
-            final GameMap map = GameMain.inst().getGameMap();
-            final Vector3 pos =
-                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        GameMain.input.registerListener(metadata -> {
+            final GameMap map = GameMain.map;
+            final Vector3 pos = GameMain.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
             final int blockX = (int) (pos.x / TileType.TILE_SIZE);
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
@@ -108,16 +103,15 @@ public class Player extends LivingEntity {
         /*
          * Place blocks
          */
-        handler.registerListener(metadata -> {
-            final GameMap map = GameMain.inst().getGameMap();
+        GameMain.input.registerListener(metadata -> {
+            final GameMap map = GameMain.map;
             final Player player = map.getPlayer();
 
             if (player.getInv().holding() == null) {
                 return;
             }
 
-            final Vector3 pos =
-                GameMain.inst().getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            final Vector3 pos = GameMain.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
             final int blockX = (int) (pos.x / TileType.TILE_SIZE);
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
@@ -128,8 +122,8 @@ public class Player extends LivingEntity {
         /*
          * Move left
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             if (!player.dodging) {
                 player.moveX(-player.calculatedSpeed);
                 player.setFacing(FACING_LEFT);
@@ -139,8 +133,8 @@ public class Player extends LivingEntity {
         /*
          * Move right
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             if (!player.dodging) {
                 player.moveX(player.calculatedSpeed);
                 player.setFacing(FACING_RIGHT);
@@ -150,8 +144,8 @@ public class Player extends LivingEntity {
         /*
          * Dodging
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             if (!player.dodging && player.dodgeCooldown == DODGE_COOLDOWN &&
                 player.stamina - player.dodgeStaminaUsage >= 0) {
 
@@ -165,8 +159,8 @@ public class Player extends LivingEntity {
         /*
          * Jump and fly up
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             if (player.isFlying()) {
                 player.moveY(player.calculatedSpeed);
             }
@@ -178,8 +172,8 @@ public class Player extends LivingEntity {
         /*
          * Fly down
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             if (player.isFlying()) {
                 player.moveY(-player.calculatedSpeed);
             }
@@ -188,8 +182,8 @@ public class Player extends LivingEntity {
         /*
          * Attack
          */
-        handler.registerListener(md -> {
-            final Player player = GameMain.inst().getGameMap().getPlayer();
+        GameMain.input.registerListener(md -> {
+            final Player player = GameMain.map.getPlayer();
             final Weapon weapon = player.getWeapon();
             if (!player.dodging && player.stamina - weapon.getStaminaUsage() >= 0 && weapon.isCooledDown()) {
                 weapon.attack(player);
@@ -200,9 +194,9 @@ public class Player extends LivingEntity {
         /*
          * Debug input
          */
-        handler.registerListener(md -> {
+        GameMain.input.registerListener(md -> {
             System.out.println("Zombie!");
-            final GameMap map = GameMain.inst().getGameMap();
+            final GameMap map = GameMain.map;
             final Player player = map.getPlayer();
             map.addEnemy(new Zombie(player.pos.x, player.pos.y + player.getHeight() * 2));
         }, EventType.KEY_DOWN, Input.Keys.Z);

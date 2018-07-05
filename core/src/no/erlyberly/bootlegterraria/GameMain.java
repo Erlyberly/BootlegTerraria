@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +13,6 @@ import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.render.ui.UIController;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.Util;
-import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
 import java.util.Map;
@@ -25,18 +23,16 @@ public class GameMain extends Game {
     public static final CancellableThreadScheduler SECONDARY_THREAD = new CancellableThreadScheduler();
     private final Map<String, String> args;
 
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private OrthographicCamera hudCamera;
-    private TiledGameMap gameMap;
-    private InputMultiplexer inputMultiplexer;
-    private InputHandler inputHandler;
-    private UIController uiController;
-
+    private static SpriteBatch batch;
     private static GameMain gameMainInstance;
-    private static ConsoleHandler consoleHandler;
 
-    public static Color backgroundColor = Color.BLACK;
+    public static OrthographicCamera camera;
+    public static OrthographicCamera hudCamera;
+    public static TiledGameMap map;
+    public static InputMultiplexer inputMultiplexer;
+    public static InputHandler input;
+    public static UIController ui;
+    public static ConsoleHandler console;
 
     private boolean headless;
 
@@ -55,30 +51,30 @@ public class GameMain extends Game {
     @Override
     public void create() {
         gameMainInstance = this; //must be first
-        this.batch = new SpriteBatch();
+        batch = new SpriteBatch();
 
-        this.inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer = new InputMultiplexer();
 
 
-        this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        this.hudCamera = new OrthographicCamera();
-        this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 //        camera.position.put(800f, 500f, 0); //Unlocked cam for debugging
-        this.camera.update();
+        camera.update();
 
-        consoleHandler = new ConsoleHandler();
-        this.uiController = new UIController();
-        this.inputHandler = new InputHandler();
+        console = new ConsoleHandler();
+        ui = new UIController();
+        input = new InputHandler();
 
 
-        Gdx.input.setInputProcessor(this.inputMultiplexer);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         //load map specified or default
         String map = this.args.get(MAP_FLAG);
         if (map == null) {
-            consoleHandler.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
+            console.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
             map = DEFAULT_MAP;
         }
         loadMap(map);
@@ -92,22 +88,22 @@ public class GameMain extends Game {
             //run all commands in auto execute file, if it exist
             final FileHandle autoExec = Gdx.files.internal(fileName);
             if (autoExec.exists() && !autoExec.isDirectory()) {
-                consoleHandler.log("Executing console commands from file '" + autoExec.name() + "'", LogLevel.SUCCESS);
+                console.log("Executing console commands from file '" + autoExec.name() + "'", LogLevel.SUCCESS);
                 final String[] cmds = autoExec.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
 
                 for (final String cmd : cmds) {
-                    consHldr().execCommand(cmd);
+                    console.getConsole().execCommand(cmd);
                 }
-                consoleHandler.log("Finished executing all auto execute commands");
+                console.log("Finished executing all auto execute commands");
             }
             else {
-                consoleHandler
+                console
                     .log("Failed to execute given file \"" + autoExec.name() + "\", does it exist? is it a directory?",
                          LogLevel.ERROR);
             }
         }
         else {
-            consoleHandler.log("No auto executable file specified");
+            console.log("No auto executable file specified");
         }
 
 
@@ -121,72 +117,37 @@ public class GameMain extends Game {
      */
     public void loadMap(final String map) {
         SECONDARY_THREAD.cancelTasks();
-        consoleHandler.log("Loading map '" + map + '\'');
-        this.gameMap = new TiledGameMap(map, false);
-        this.gameMap.spawnPlayer();
-        this.camera.position.set(this.gameMap.getPlayer().getPos(), 0);
+        console.log("Loading map '" + map + '\'');
+        GameMain.map = new TiledGameMap(map, false);
+        GameMain.map.spawnPlayer();
+        camera.position.set(GameMain.map.getPlayer().getPos(), 0);
     }
 
     @Override
     public void dispose() {
-        this.batch.dispose();
-        this.gameMap.dispose();
+        batch.dispose();
+        map.dispose();
         SECONDARY_THREAD.shutdown();
-        this.uiController.dispose();
+        ui.dispose();
     }
 
     @Override
     public void render() {
-        this.batch.setProjectionMatrix(this.camera.combined);
-
-        Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+        batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        this.inputHandler.update();
-        this.camera.update();
-        this.gameMap.update();
-        this.gameMap.render(this.camera, this.hudCamera, this.batch);
+        input.update();
+        camera.update();
+        map.update();
+        map.render(camera, hudCamera, batch);
 
-        this.uiController.render();
-        consoleHandler.draw();
-
+        ui.render();
+        console.draw();
     }
 
 
     public static GameMain inst() {
         return gameMainInstance;
-    }
-
-    public GameMap getGameMap() {
-        return this.gameMap;
-    }
-
-    public OrthographicCamera getCamera() {
-        return this.camera;
-    }
-
-    public OrthographicCamera getHudCamera() {
-        return this.hudCamera;
-    }
-
-    public SpriteBatch getBatch() {
-        return this.batch;
-    }
-
-    public static ConsoleHandler consHldr() {
-        return consoleHandler;
-    }
-
-    public InputHandler getInputHandler() {
-        return this.inputHandler;
-    }
-
-    public UIController getUiController() {
-        return this.uiController;
-    }
-
-    public InputMultiplexer getInputMultiplexer() {
-        return this.inputMultiplexer;
     }
 
     public boolean isHeadless() {

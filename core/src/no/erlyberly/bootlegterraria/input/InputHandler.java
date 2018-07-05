@@ -38,7 +38,7 @@ public class InputHandler implements InputProcessor {
             this.actionMap.put(eventType, new HashMap<>());
         }
 
-        GameMain.inst().getInputMultiplexer().addProcessor(this);
+        GameMain.inputMultiplexer.addProcessor(this);
     }
 
     /**
@@ -57,8 +57,8 @@ public class InputHandler implements InputProcessor {
             eventMap.put(ImmutableSet.copyOf(newKeys), er);
         }
         else {
-            GameMain.consHldr().logf("Failed to re-bind listener, eventType: %s keys: %s", LogLevel.ERROR, eventType,
-                                     Arrays.toString(oldKeys));
+            GameMain.console.logf("Failed to re-bind listener, eventType: %s keys: %s", LogLevel.ERROR, eventType,
+                                  Arrays.toString(oldKeys));
         }
     }
 
@@ -73,9 +73,9 @@ public class InputHandler implements InputProcessor {
         //give a warning to make it easier to track down these kind of bugs
         if (!eventMap.containsKey(setKeys)) {
 
-            GameMain.consHldr().logf(
-                "Could not unregister events with the keys %s on th event %s, as there is nothing registered%n",
-                LogLevel.ERROR, Util.keysToString(keys), eventType.name());
+            GameMain.console
+                .logf("Could not unregister events with the keys %s on th event %s, as there is nothing registered%n",
+                      LogLevel.ERROR, Util.keysToString(keys), eventType.name());
         }
         else {
             return eventMap.remove(setKeys);
@@ -109,9 +109,9 @@ public class InputHandler implements InputProcessor {
         //give a warning to make it easier to track down these kind of bugs
         if (eventMap.containsKey(setKeys)) {
 
-            GameMain.consHldr()
-                    .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)%n", LogLevel.ERROR,
-                          eventType.name(), Util.keysToString(keys));
+            GameMain.console
+                .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)%n", LogLevel.ERROR,
+                      eventType.name(), Util.keysToString(keys));
         }
         eventMap.put(setKeys, action);
 
