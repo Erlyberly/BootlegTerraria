@@ -13,43 +13,43 @@ import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.render.ui.UIController;
 import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
+import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
+
+import java.util.Map;
 
 
 public class GameMain extends Game {
 
     public static final CancellableThreadScheduler SECONDARY_THREAD = new CancellableThreadScheduler();
+    private final Map<String, String> args;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private TiledGameMap gameMap;
-    private static ConsoleHandler consoleHandler;
-
-    private static GameMain gameMainInstance;
-
+    private InputMultiplexer inputMultiplexer;
     private InputHandler inputHandler;
     private UIController uiController;
 
+    private static GameMain gameMainInstance;
+    private static ConsoleHandler consoleHandler;
+
     public static Color backgroundColor = Color.BLACK;
 
-    public static final boolean HEADLESS;
+    private boolean headless;
 
-    private static final String HEADLESS_FLAG = "-headless";
+    private static final String HEADLESS_FLAG = "headless";
+    private static final String AUTO_EXEC_FLAG = "exec";
+    private static final String MAP_FLAG = "map";
 
-    private static final String ENV_MAP = "map";
     private static final String DEFAULT_MAP = "map.tmx";
 
-    private static final String ENV_AUTO_EXEC = "exec";
 
-    private InputMultiplexer inputMultiplexer;
-
-
-    static {
-        //suuuuuuuper hacky way of getting main's arg[] args
-        final String headlessFlag = System.getProperty("sun.java.command", "");
-        HEADLESS = headlessFlag.contains(HEADLESS_FLAG);
+    public GameMain(final String[] args) {
+        gameMainInstance = this;
+        this.args = Util.interpreterArgs(args);
     }
 
     @Override
@@ -69,20 +69,25 @@ public class GameMain extends Game {
         this.camera.update();
 
         consoleHandler = new ConsoleHandler();
-
-        String map = System.getenv(ENV_MAP);
-        if (map == null) {
-            consoleHandler.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
-            map = DEFAULT_MAP;
-        }
         this.uiController = new UIController();
         this.inputHandler = new InputHandler();
 
 
-        loadMap(map);
         Gdx.input.setInputProcessor(this.inputMultiplexer);
 
-        final String fileName = System.getenv(ENV_AUTO_EXEC);
+        //load map specified or default
+        String map = this.args.get(MAP_FLAG);
+        if (map == null) {
+            consoleHandler.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
+            map = DEFAULT_MAP;
+        }
+        loadMap(map);
+
+        //check if this instance is headless
+        this.headless = this.args.containsKey(HEADLESS_FLAG);
+
+        // auto execute commands if specified
+        final String fileName = this.args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
             //run all commands in auto execute file, if it exist
             final FileHandle autoExec = Gdx.files.internal(fileName);
@@ -104,10 +109,12 @@ public class GameMain extends Game {
         else {
             consoleHandler.log("No auto executable file specified");
         }
+
+
     }
 
     /**
-     * Load a tmx map from /assets/
+     * Load an internal .tmx map
      *
      * @param map
      *     The map to load, with file ending
@@ -180,5 +187,9 @@ public class GameMain extends Game {
 
     public InputMultiplexer getInputMultiplexer() {
         return this.inputMultiplexer;
+    }
+
+    public boolean isHeadless() {
+        return this.headless;
     }
 }

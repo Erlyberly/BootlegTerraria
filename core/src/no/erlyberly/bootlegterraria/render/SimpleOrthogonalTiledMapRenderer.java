@@ -30,7 +30,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private static final TextureRegion BLACK_TEXTURE;
 
     static {
-        if (!GameMain.HEADLESS) {
+        if (!GameMain.inst().isHeadless()) {
             final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.RGB888);
             pixmap.setColor(Color.BLACK);
             pixmap.fill();

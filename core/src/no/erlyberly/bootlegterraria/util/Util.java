@@ -8,10 +8,7 @@ import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Util {
 
@@ -139,7 +136,7 @@ public class Util {
 
         //remove the last space
         keyName.setLength(keyName.length() - 1);
-        
+
         return keyName.append("]").toString();
     }
 
@@ -162,5 +159,35 @@ public class Util {
         }
 
         return sb.toString();
+    }
+
+    public static Map<String, String> interpreterArgs(final String[] args) {
+        final HashMap<String, String> argsMap = new HashMap<>();
+
+        for (final String arg : args) {
+            if (!arg.startsWith("-")) {
+                System.err.printf("Unknown argument '%s'", arg);
+            }
+            else {
+                //we only care about the first equals sign, the rest is a part of the value
+                final int equal = arg.indexOf('=');
+
+                //if there is no equal sign there is no value
+                if (equal == -1) {
+                    //do not include the dash
+                    argsMap.put(arg.substring(1), null);
+                }
+                else {
+                    //find the key and value from the index of the first equal sign, but do not include it in the
+                    // key or value
+                    final String key = arg.substring(1, equal);
+                    final String val = arg.substring(equal + 1, arg.length());
+                    argsMap.put(key, val);
+                }
+            }
+        }
+//        System.out.println("argsMap.keySet() = " + argsMap.keySet());
+//        System.out.println("argsMap.values() = " + argsMap.values());
+        return argsMap;
     }
 }

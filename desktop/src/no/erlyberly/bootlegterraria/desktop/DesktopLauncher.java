@@ -8,8 +8,8 @@ import no.erlyberly.bootlegterraria.util.GameInfo;
 
 public class DesktopLauncher {
 
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+    public static void main(final String[] arg) {
+        final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
         config.width = GameInfo.WIDTH;
         config.height = GameInfo.HEIGHT;
@@ -20,6 +20,6 @@ public class DesktopLauncher {
         config.resizable = false; //it's not you, it's the lines
         config.title = "Bootleg Terraria";
         config.addIcon("ErlyBerly_TheGreat_icon.png", Files.FileType.Internal);
-        new LwjglApplication(new GameMain(), config);
+        new LwjglApplication(new GameMain(arg), config);
     }
 }
