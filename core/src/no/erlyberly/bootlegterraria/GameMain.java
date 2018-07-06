@@ -116,6 +116,7 @@ public class GameMain extends Game {
     public static void loadMap(final String map) {
         SECONDARY_THREAD.cancelTasks();
         console.log("Loading map '" + map + '\'');
+        if (GameMain.map != null) { GameMain.map.dispose(); }
         GameMain.map = new TiledGameMap(map, headless);
         GameMain.map.spawnPlayer();
         camera.position.set(GameMain.map.getPlayer().getPos(), 0);

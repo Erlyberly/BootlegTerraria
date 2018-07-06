@@ -130,6 +130,7 @@ public class TiledGameMap extends GameMap implements Loadable {
     @Override
     public void dispose() {
         this.tiledMap.dispose();
+        this.tiledMapRenderer.dispose();
     }
 
     @Override
