@@ -144,6 +144,14 @@ public class InputHandler implements InputProcessor {
                                     eventType.getMetadataName() + " but got " +
                                     eventMetadata.getClass().getSimpleName());
 
+        if (eventType == EventType.TOUCH_DOWN || eventType == EventType.KEY_DOWN) {
+            this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
+                if (this.pressed.containsAll(keys)) { this.activeKeysPressed.put(keys, runnable); }
+            });
+        }
+        else if (eventType == EventType.TOUCH_UP || eventType == EventType.KEY_UP) {
+            this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
+        }
         //run all runnables if the key combination is held
         this.actionMap.get(eventType).forEach((keys, runnable) -> {
             if (this.pressed.containsAll(keys)) { runnable.run(eventMetadata); }
@@ -171,11 +179,6 @@ public class InputHandler implements InputProcessor {
     public boolean keyDown(final int keycode) {
         this.pressed.add(keycode);
         fireEvent(EventType.KEY_DOWN, new KeyMetadata(keycode));
-
-        this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
-            if (this.pressed.containsAll(keys)) { this.activeKeysPressed.put(keys, runnable); }
-        });
-
         return false;
     }
 
@@ -183,8 +186,6 @@ public class InputHandler implements InputProcessor {
     public boolean keyUp(final int keycode) {
         this.pressed.remove(keycode);
         fireEvent(EventType.KEY_UP, new KeyMetadata(keycode));
-
-        this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
         return false;
     }
 
@@ -197,15 +198,7 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
         this.pressed.add(MouseInput.fromGdxButton(button));
-
-        final MouseMetadata mm = new MouseMetadata(screenX, screenY);
-        fireEvent(EventType.TOUCH_DOWN, mm);
-
-        this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
-            if (this.pressed.containsAll(keys)) {
-                this.activeKeysPressed.put(keys, runnable);
-            }
-        });
+        fireEvent(EventType.TOUCH_DOWN, new MouseMetadata(screenX, screenY));
         return false;
     }
 
@@ -213,7 +206,6 @@ public class InputHandler implements InputProcessor {
     public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
         this.pressed.remove(MouseInput.fromGdxButton(button));
         fireEvent(EventType.TOUCH_UP, new MouseMetadata(screenX, screenY));
-        this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
         return false;
     }
 
