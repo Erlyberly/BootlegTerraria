@@ -81,7 +81,7 @@ public class InputHandler implements InputProcessor {
         if (!eventMap.containsKey(setKeys)) {
 
             GameMain.console
-                .logf("Could not unregister events with the keys %s on th event %s, as there is nothing registered%n",
+                .logf("Could not unregister events with the keys %s on th event %s, as there is nothing registered",
                       LogLevel.ERROR, Util.keysToString(keys), eventType.name());
         }
         else {

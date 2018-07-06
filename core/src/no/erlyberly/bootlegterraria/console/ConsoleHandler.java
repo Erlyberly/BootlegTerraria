@@ -42,10 +42,10 @@ public class ConsoleHandler extends GUIConsole {
 
     public void logf(final String msg, final LogLevel level, final Object... objs) {
         if (level == LogLevel.ERROR) {
-            System.err.printf(msg, objs);
+            System.err.printf(msg + "\n", objs);
         }
         else {
-            System.out.printf(msg, objs);
+            System.out.printf(msg + "\n", objs);
         }
         super.log(String.format(msg, objs), level);
     }
