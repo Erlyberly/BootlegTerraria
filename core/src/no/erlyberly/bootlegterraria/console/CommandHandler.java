@@ -219,7 +219,10 @@ public class CommandHandler extends CommandExecutor {
 
             final InputHandler inputHandler = GameMain.input;
 
-            inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), keys);
+            final boolean success = inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), keys);
+            if (!success) {
+                return;
+            }
 
             //update keys
             setting.setKeys(keys);

@@ -49,17 +49,24 @@ public class InputHandler implements InputProcessor {
      * @param newKeys
      *     The new keys
      */
-    public void rebindListener(final EventType eventType, final Integer[] oldKeys, final Integer[] newKeys) {
+    public boolean rebindListener(final EventType eventType, final Integer[] oldKeys, final Integer[] newKeys) {
         Preconditions.checkNotNull(eventType);
         final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
         final EventRunnable er = eventMap.remove(ImmutableSet.copyOf(oldKeys));
         if (er != null) {
+            if (eventMap.containsKey(ImmutableSet.copyOf(newKeys))) {
+                GameMain.console
+                    .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s), no rebind done",
+                          LogLevel.ERROR, eventType.name(), Util.keysToString(newKeys));
+                return false;
+            }
             eventMap.put(ImmutableSet.copyOf(newKeys), er);
         }
         else {
             GameMain.console.logf("Failed to re-bind listener, eventType: %s keys: %s", LogLevel.ERROR, eventType,
                                   Arrays.toString(oldKeys));
         }
+        return true;
     }
 
     /**
@@ -106,12 +113,11 @@ public class InputHandler implements InputProcessor {
         final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
         final Set<Integer> setKeys = ImmutableSet.copyOf(keys);
 
-        //give a warning to make it easier to track down these kind of bugs
         if (eventMap.containsKey(setKeys)) {
-
             GameMain.console
-                .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s)%n", LogLevel.ERROR,
-                      eventType.name(), Util.keysToString(keys));
+                .logf("Failed to register listener as another action is mapped to the same eventType(%s) and keys(%s)",
+                      LogLevel.ERROR, eventType.name(), Util.keysToString(keys));
+            return;
         }
         eventMap.put(setKeys, action);
 
