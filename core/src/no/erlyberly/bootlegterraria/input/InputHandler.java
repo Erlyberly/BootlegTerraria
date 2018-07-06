@@ -143,6 +143,10 @@ public class InputHandler implements InputProcessor {
                                     "Wrong metadata class given for the event, expected " +
                                     eventType.getMetadataName() + " but got " +
                                     eventMetadata.getClass().getSimpleName());
+        //do not allow any input when the console is visible (as they've already got the keyboard locked down)
+        if (GameMain.console.isVisible()) {
+            return;
+        }
 
         if (eventType == EventType.TOUCH_DOWN || eventType == EventType.KEY_DOWN) {
             this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
