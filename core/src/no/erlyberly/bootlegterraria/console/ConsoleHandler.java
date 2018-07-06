@@ -19,13 +19,6 @@ public class ConsoleHandler extends GUIConsole {
     }
 
     @Override
-    public void draw() {
-        try {
-            super.draw();
-        } catch (final Exception ignore) {}
-    }
-
-    @Override
     public void log(final String msg, final LogLevel level) {
         if (level == LogLevel.ERROR) {
             System.err.println(msg);
