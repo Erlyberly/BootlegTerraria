@@ -63,7 +63,7 @@ public class CommandHandler extends CommandExecutor {
         if (!mapName.toLowerCase().endsWith(".tmx")) {
             mapName += ".tmx";
         }
-        GameMain.inst().loadMap(mapName);
+        GameMain.loadMap(mapName);
     }
 
     @ConsoleDoc(paramDescriptions = "Change gravity")
@@ -252,9 +252,9 @@ public class CommandHandler extends CommandExecutor {
                 if (cmd.startsWith("//")) {
                     continue;
                 }
-                GameMain.console.getConsole().execCommand(cmd);
+                GameMain.console.execCommand(cmd);
             }
-            this.console.log("Finished executing all auto execute commands");
+            this.console.log("Finished executing all commands from file", LogLevel.SUCCESS);
         }
         else {
             this.console

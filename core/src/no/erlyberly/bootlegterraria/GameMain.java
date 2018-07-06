@@ -35,8 +35,10 @@ public class GameMain extends Game {
     public static UIController ui;
     public static ConsoleHandler console;
 
-    private boolean headless;
+    private static boolean headless;
+
     private static final String DEFAULT_MAP = "map.tmx";
+    public static final String VERSION_FILE = "version";
 
     //For the interpreter to see it as a flag a dash(-) must be at the start of the argument
     //A start (*) means that a value is required, it is given as: -key=value
@@ -47,8 +49,13 @@ public class GameMain extends Game {
     private static final String AUTO_EXEC_FLAG = "exec";
     //Specify what map to load on startup, if none DEFAULT_MAP is loaded*
     private static final String MAP_FLAG = "map";
-    //Make it easier to play on a touch pad
+    //Make it easier to play on a laptop
     private static final String MOUSEPAD_FLAG = "laptop";
+    //save current commit to 'version' file in assets
+    private static final String SAVE_COMMIT_ID_FLAG = "saveID";
+    //exit after create()
+    private static final String EXIT_FLAG = "exit";
+
     public GameMain() {
         this.args = new HashMap<>();
     }
@@ -104,6 +111,15 @@ public class GameMain extends Game {
             console.execCommand(
                 "bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
                 Input.Keys.toString(Input.Keys.SHIFT_LEFT));
+        }
+
+        if (this.args.containsKey(SAVE_COMMIT_ID_FLAG)) {
+            final String commit = Util.getLastGitCommitID(true);
+            Gdx.files.absolute(VERSION_FILE).writeString(commit, false);
+        }
+
+        if (this.args.containsKey(EXIT_FLAG)) {
+            System.exit(0);
         }
     }
 

@@ -1,13 +1,18 @@
 package no.erlyberly.bootlegterraria.util;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.util.aabb.AABB2D;
 import no.erlyberly.bootlegterraria.world.GameMap;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Util {
@@ -189,5 +194,34 @@ public class Util {
 //        System.out.println("argsMap.keySet() = " + argsMap.keySet());
 //        System.out.println("argsMap.values() = " + argsMap.values());
         return argsMap;
+    }
+
+    /**
+     * @return The latest commit ID in the current repo
+     */
+    public static String getLastGitCommitID(final boolean full) {
+        final String command = "git log --format=\"%H\" -n 1";
+
+        try {
+            final Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = reader.readLine();
+            if (line == null) {
+                try {
+                    line = Gdx.files.internal(GameMain.VERSION_FILE).readString();
+                } catch (final Exception e) {
+                    return "UNKNOWN";
+                }
+            }
+            if (!full) {
+                line = line.substring(0, 6);
+            }
+            return line.toUpperCase();
+
+        } catch (final IOException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

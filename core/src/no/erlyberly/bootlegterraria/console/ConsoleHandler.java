@@ -15,7 +15,7 @@ public class ConsoleHandler extends GUIConsole {
         setCommandExecutor(new CommandHandler(this));
         GameMain.inputMultiplexer.addProcessor(getInputProcessor());
 
-        log("INITIATING CONSOLE v" + Util.getLastGitCommitID(false), LogLevel.ERROR);
+        log("INITIATING v#" + Util.getLastGitCommitID(false), LogLevel.SUCCESS);
     }
 
     @Override
