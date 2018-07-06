@@ -16,6 +16,7 @@ import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -49,7 +50,10 @@ public class GameMain extends Game {
     private static final String MAP_FLAG = "map";
     //Make it easier to play on a touch pad
     private static final String MOUSEPAD_FLAG = "laptop";
-    
+    public GameMain() {
+        this.args = new HashMap<>();
+    }
+
     public GameMain(final String[] args) {
         gameMainInstance = this;
         this.args = Util.interpreterArgs(args);
