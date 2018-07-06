@@ -26,7 +26,6 @@ public class GameMain extends Game {
     private final Map<String, String> args;
 
     private static SpriteBatch batch;
-    private static GameMain gameMainInstance;
 
     public static OrthographicCamera camera;
     public static OrthographicCamera hudCamera;
@@ -55,17 +54,14 @@ public class GameMain extends Game {
     }
 
     public GameMain(final String[] args) {
-        gameMainInstance = this;
         this.args = Util.interpreterArgs(args);
     }
 
     @Override
     public void create() {
-        gameMainInstance = this; //must be first
         batch = new SpriteBatch();
 
         inputMultiplexer = new InputMultiplexer();
-
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -91,13 +87,13 @@ public class GameMain extends Game {
         loadMap(map);
 
         //check if this instance is headless
-        this.headless = this.args.containsKey(HEADLESS_FLAG);
+        headless = this.args.containsKey(HEADLESS_FLAG);
 
 
         // auto execute commands if specified
         final String fileName = this.args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
-            console.getConsole().execCommand("exec " + fileName);
+            console.execCommand("exec " + fileName);
         }
         else {
             console.log("No auto executable file specified");
@@ -105,7 +101,7 @@ public class GameMain extends Game {
 
         if (this.args.containsKey(MOUSEPAD_FLAG)) {
             //bind place_block LMB l-shift
-            console.getConsole().execCommand(
+            console.execCommand(
                 "bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
                 Input.Keys.toString(Input.Keys.SHIFT_LEFT));
         }
@@ -117,10 +113,10 @@ public class GameMain extends Game {
      * @param map
      *     The map to load, with file ending
      */
-    public void loadMap(final String map) {
+    public static void loadMap(final String map) {
         SECONDARY_THREAD.cancelTasks();
         console.log("Loading map '" + map + '\'');
-        GameMain.map = new TiledGameMap(map, false);
+        GameMain.map = new TiledGameMap(map, headless);
         GameMain.map.spawnPlayer();
         camera.position.set(GameMain.map.getPlayer().getPos(), 0);
     }
@@ -147,12 +143,7 @@ public class GameMain extends Game {
         console.draw();
     }
 
-
-    public static GameMain inst() {
-        return gameMainInstance;
-    }
-
-    public boolean isHeadless() {
-        return this.headless;
+    public static boolean isHeadless() {
+        return headless;
     }
 }

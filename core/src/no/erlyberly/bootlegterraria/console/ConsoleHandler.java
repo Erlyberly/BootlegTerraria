@@ -3,43 +3,29 @@ package no.erlyberly.bootlegterraria.console;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.strongjoshua.console.Console;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
+import no.erlyberly.bootlegterraria.util.Util;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
-public class ConsoleHandler {
-
-    private final Console console;
-
-    private static final DecimalFormat df = new DecimalFormat("#.###", DecimalFormatSymbols.getInstance(Locale.US));
+public class ConsoleHandler extends GUIConsole {
 
     public ConsoleHandler() {
-        this.console =
-            new GUIConsole(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
-        this.console.setCommandExecutor(new CommandHandler(this));
-        GameMain.inputMultiplexer.addProcessor(this.console.getInputProcessor());
+        super(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
+        setCommandExecutor(new CommandHandler(this));
+        GameMain.inputMultiplexer.addProcessor(getInputProcessor());
 
-        this.console.log("INITIATING CONSOLE v0.0407018", LogLevel.ERROR);
-        this.console
-            .log("BOOTING SEQUENCE FINISHED IN " + ConsoleHandler.df.format(Math.random() * 4f), LogLevel.ERROR);
-
+        log("INITIATING CONSOLE v" + Util.getLastGitCommitID(false), LogLevel.ERROR);
     }
 
+    @Override
     public void draw() {
         try {
-            this.console.draw();
+            super.draw();
         } catch (final Exception ignore) {}
     }
-    
-    public void log(final String msg) {
-        log(msg, LogLevel.DEFAULT);
-    }
 
+    @Override
     public void log(final String msg, final LogLevel level) {
         if (level == LogLevel.ERROR) {
             System.err.println(msg);
@@ -47,7 +33,7 @@ public class ConsoleHandler {
         else {
             System.out.println(msg);
         }
-        this.console.log(msg, level);
+        super.log(msg, level);
     }
 
     public void logf(final String msg, final Object... objs) {
@@ -61,10 +47,6 @@ public class ConsoleHandler {
         else {
             System.out.printf(msg, objs);
         }
-        this.console.log(String.format(msg, objs), level);
-    }
-
-    public Console getConsole() {
-        return this.console;
+        super.log(String.format(msg, objs), level);
     }
 }
