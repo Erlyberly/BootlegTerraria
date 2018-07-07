@@ -4,5 +4,7 @@ bind jump up
 bind fly_down down
 bind dodge l-shift
 bind attack e
-bind place_block LMB
+//rebind to an unused button so there is no binding issues
+bind place_block MMB
 bind break_block RMB
+bind place_block LMB
