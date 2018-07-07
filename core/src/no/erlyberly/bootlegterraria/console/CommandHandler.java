@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.console;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
@@ -244,8 +245,17 @@ public class CommandHandler extends CommandExecutor {
                 paramDescriptions = "The absolute path to the file to be executed")
     public void exec(final String absFile) {
         //run all commands in auto execute file, if it exist
-        final FileHandle execFile = Gdx.files.absolute(absFile);
-        if (execFile.exists() && !execFile.isDirectory()) {
+        FileHandle execFile = null;
+
+        for (final Files.FileType type : Files.FileType.values()) {
+            execFile = Gdx.files.getFileHandle(absFile, type);
+            if (execFile.exists() && !execFile.isDirectory()) {
+                GameMain.console.logf("Found given file '%s' using the FileType '%s'", absFile, type);
+                break;
+            }
+        }
+
+        if (execFile != null && execFile.exists() && !execFile.isDirectory()) {
             this.console.log("Executing console commands from file '" + execFile.name() + "'", LogLevel.SUCCESS);
             final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
 
