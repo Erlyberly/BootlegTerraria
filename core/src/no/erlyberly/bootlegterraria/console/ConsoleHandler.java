@@ -16,7 +16,7 @@ public class ConsoleHandler extends GUIConsole {
         GameMain.inputMultiplexer.addProcessor(getInputProcessor());
         this.logToSystem = true;
 
-        log("INITIATING v#" + Util.getLastGitCommitID(false), LogLevel.SUCCESS);
+        log("INITIATING #" + Util.getLastGitCommitID(false), LogLevel.SUCCESS);
     }
 
     public void logf(final String msg, final Object... objs) {
