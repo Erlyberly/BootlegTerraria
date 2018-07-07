@@ -55,15 +55,15 @@ public class InputHandler implements InputProcessor {
         final EventRunnable er = eventMap.remove(ImmutableSet.copyOf(oldKeys));
         if (er != null) {
             if (eventMap.containsKey(ImmutableSet.copyOf(newKeys))) {
-                GameMain.console
-                    .logf("Multiple actions are mapped to the same eventType(%s) and keys(%s), no rebind done",
-                          LogLevel.ERROR, eventType.name(), Util.keysToString(newKeys));
+                GameMain.console.logf(LogLevel.ERROR,
+                                      "Multiple actions are mapped to the same eventType(%s) and keys(%s), no rebind " +
+                                      "done", eventType.name(), Util.keysToString(newKeys));
                 return false;
             }
             eventMap.put(ImmutableSet.copyOf(newKeys), er);
         }
         else {
-            GameMain.console.logf("Failed to re-bind listener, eventType: %s keys: %s", LogLevel.ERROR, eventType,
+            GameMain.console.logf(LogLevel.ERROR, "Failed to re-bind listener, eventType: %s keys: %s", eventType,
                                   Arrays.toString(oldKeys));
         }
         return true;
@@ -80,9 +80,9 @@ public class InputHandler implements InputProcessor {
         //give a warning to make it easier to track down these kind of bugs
         if (!eventMap.containsKey(setKeys)) {
 
-            GameMain.console
-                .logf("Could not unregister events with the keys %s on th event %s, as there is nothing registered",
-                      LogLevel.ERROR, Util.keysToString(keys), eventType.name());
+            GameMain.console.logf(LogLevel.ERROR,
+                                  "Could not unregister events with the keys %s on th event %s, as there is nothing " +
+                                  "registered", Util.keysToString(keys), eventType.name());
         }
         else {
             return eventMap.remove(setKeys);
@@ -114,9 +114,9 @@ public class InputHandler implements InputProcessor {
         final Set<Integer> setKeys = ImmutableSet.copyOf(keys);
 
         if (eventMap.containsKey(setKeys)) {
-            GameMain.console
-                .logf("Failed to register listener as another action is mapped to the same eventType(%s) and keys(%s)",
-                      LogLevel.ERROR, eventType.name(), Util.keysToString(keys));
+            GameMain.console.logf(LogLevel.ERROR,
+                                  "Failed to register listener as another action is mapped to the same eventType(%s) " +
+                                  "and keys(%s)", eventType.name(), Util.keysToString(keys));
             return;
         }
         eventMap.put(setKeys, action);

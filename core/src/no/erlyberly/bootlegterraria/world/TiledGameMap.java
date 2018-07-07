@@ -70,7 +70,7 @@ public class TiledGameMap extends GameMap implements Loadable {
         try {
             this.tiledMap = new TmxMapLoader().load(map);
         } catch (final Exception e) {
-            GameMain.console.logf("Failed to load map '%s'", LogLevel.ERROR, map);
+            GameMain.console.logf(LogLevel.ERROR, "Failed to load map '%s'", map);
             throw new IllegalArgumentException("Invalid map");
         }
 

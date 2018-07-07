@@ -110,7 +110,7 @@ public class CommandHandler extends CommandExecutor {
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
     public void tp(final int x, final int y) {
         if (!Util.isBetween(0, x, (int) GameMain.map.getWidth())) {
-            this.cmdH.logf("Cannot teleport player outside of map", LogLevel.ERROR);
+            this.cmdH.log("Cannot teleport player outside of map", LogLevel.ERROR);
             return;
         }
         final GameMap gameMap = GameMain.map;
@@ -119,7 +119,7 @@ public class CommandHandler extends CommandExecutor {
 
         if (!v.equals(new Vector2(x, y))) {
             this.cmdH.log("Failed to teleport player to original coordinate.");
-            this.cmdH.logf("Player teleported to (%.0f, %.0f)", LogLevel.SUCCESS, v.x, v.y);
+            this.cmdH.logf(LogLevel.SUCCESS, "Player teleported to (%.0f, %.0f)", v.x, v.y);
         }
         else {
             this.cmdH.log("Successfully teleported player", LogLevel.SUCCESS);
@@ -131,7 +131,7 @@ public class CommandHandler extends CommandExecutor {
         final Player p = GameMain.map.getPlayer();
         p.setFlying(!p.isFlying());
         p.speedModifier += p.isFlying() ? 1 : -1;
-        GameMain.console.logf("Flight status: %b", LogLevel.SUCCESS, p.isFlying());
+        GameMain.console.logf(LogLevel.SUCCESS, "Flight status: %b", p.isFlying());
     }
 
     @ConsoleDoc(description = "Set the speed modifier of the player")
@@ -142,14 +142,14 @@ public class CommandHandler extends CommandExecutor {
 
     @ConsoleDoc(description = "Display the current speed modifier of the player")
     public void speed() {
-        GameMain.console.logf("Flying speedModifier: %.2f", LogLevel.SUCCESS, GameMain.map.getPlayer().speedModifier);
+        GameMain.console.logf(LogLevel.SUCCESS, "Flying speedModifier: %.2f", GameMain.map.getPlayer().speedModifier);
     }
 
     @ConsoleDoc(description = "Show how the light really is ")
     public void debugLight(final boolean debug) {
         BlockLightMap.realLight = !debug;
         SimpleOrthogonalTiledMapRenderer.logLightEvents = debug;
-        GameMain.console.logf("Light debugging: " + debug, LogLevel.SUCCESS);
+        GameMain.console.log("Light debugging: " + debug, LogLevel.SUCCESS);
     }
 
     @ConsoleDoc(description = "Switch inventory of player",
@@ -200,7 +200,7 @@ public class CommandHandler extends CommandExecutor {
             try {
                 setting = InputSetting.valueOf(settingStr.toUpperCase());
             } catch (final IllegalArgumentException | NullPointerException e) {
-                GameMain.console.logf("No setting found with the name '%s'", LogLevel.ERROR, settingStr);
+                GameMain.console.logf(LogLevel.ERROR, "No setting found with the name '%s'", settingStr);
                 return;
             }
             final Integer[] keys = new Integer[keyStr.length];
@@ -212,7 +212,7 @@ public class CommandHandler extends CommandExecutor {
                     keyInt = MouseInput.valueOf(key.toUpperCase());
                 }
                 if (keyInt == -1) {
-                    GameMain.console.logf("Could not find any input with the name of '%s'", LogLevel.ERROR, key);
+                    GameMain.console.logf(LogLevel.ERROR, "Could not find any input with the name of '%s'", key);
                     return;
                 }
                 keys[i] = keyInt;

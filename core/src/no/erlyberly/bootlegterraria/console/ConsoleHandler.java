@@ -20,10 +20,10 @@ public class ConsoleHandler extends GUIConsole {
     }
 
     public void logf(final String msg, final Object... objs) {
-        logf(msg, LogLevel.DEFAULT, objs);
+        logf(LogLevel.DEFAULT, msg, objs);
     }
 
-    public void logf(final String msg, final LogLevel level, final Object... objs) {
+    public void logf(final LogLevel level, final String msg, final Object... objs) {
         super.log(String.format(msg, objs), level);
     }
 }
