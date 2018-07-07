@@ -100,6 +100,7 @@ public class GameMain extends Game {
         // auto execute commands if specified
         final String fileName = this.args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
+            console.log("Auto executing " + fileName);
             console.execCommand("exec " + fileName);
         }
         else {
