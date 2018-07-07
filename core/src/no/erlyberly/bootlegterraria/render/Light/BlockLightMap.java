@@ -262,8 +262,9 @@ public class BlockLightMap implements LightMap {
             GameMain.SECONDARY_THREAD.execute(() -> {
                 logLightEvents = oldLogLight;
                 this.initialized = true;
+                GameMain.console
+                    .log("Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms");
                 GameMain.console.log(
-                    "Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms\n" +
                     "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
             });
         });

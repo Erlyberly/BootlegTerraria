@@ -14,19 +14,9 @@ public class ConsoleHandler extends GUIConsole {
         super(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
         setCommandExecutor(new CommandHandler(this));
         GameMain.inputMultiplexer.addProcessor(getInputProcessor());
+        this.logToSystem = true;
 
         log("INITIATING v#" + Util.getLastGitCommitID(false), LogLevel.SUCCESS);
-    }
-
-    @Override
-    public void log(final String msg, final LogLevel level) {
-        if (level == LogLevel.ERROR) {
-            System.err.println(msg);
-        }
-        else {
-            System.out.println(msg);
-        }
-        super.log(msg, level);
     }
 
     public void logf(final String msg, final Object... objs) {
@@ -34,12 +24,6 @@ public class ConsoleHandler extends GUIConsole {
     }
 
     public void logf(final String msg, final LogLevel level, final Object... objs) {
-        if (level == LogLevel.ERROR) {
-            System.err.printf(msg + "\n", objs);
-        }
-        else {
-            System.out.printf(msg + "\n", objs);
-        }
         super.log(String.format(msg, objs), level);
     }
 }
