@@ -33,12 +33,12 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public float getWidth() {
-        return TileType.TILE_SIZE;
+        return TileType.TILE_SIZE / 1.5f;
     }
 
     @Override
     public float getHeight() {
-        return TileType.TILE_SIZE * 0.9f;
+        return TileType.TILE_SIZE / 2f;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public boolean isFlying() {
-        return false;
+        return true;
     }
 
     @Override
