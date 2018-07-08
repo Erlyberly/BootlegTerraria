@@ -248,13 +248,14 @@ public class CommandHandler extends CommandExecutor {
         FileHandle execFile = null;
 
         for (final Files.FileType type : Files.FileType.values()) {
+            try {
             execFile = Gdx.files.getFileHandle(absFile, type);
             if (execFile.exists() && !execFile.isDirectory()) {
                 GameMain.console.logf("Found given file '%s' using the FileType '%s'", absFile, type);
                 break;
             }
+            } catch (final GdxRuntimeException ignore) { }
         }
-
         if (execFile != null && execFile.exists() && !execFile.isDirectory()) {
             this.console.log("Executing console commands from file '" + execFile.name() + "'", LogLevel.SUCCESS);
             final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
