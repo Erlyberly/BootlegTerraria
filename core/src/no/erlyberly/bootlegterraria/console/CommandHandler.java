@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.strongjoshua.console.CommandExecutor;
 import com.strongjoshua.console.LogLevel;
 import com.strongjoshua.console.annotation.ConsoleDoc;
@@ -249,11 +250,11 @@ public class CommandHandler extends CommandExecutor {
 
         for (final Files.FileType type : Files.FileType.values()) {
             try {
-            execFile = Gdx.files.getFileHandle(absFile, type);
-            if (execFile.exists() && !execFile.isDirectory()) {
-                GameMain.console.logf("Found given file '%s' using the FileType '%s'", absFile, type);
-                break;
-            }
+                execFile = Gdx.files.getFileHandle(absFile, type);
+                if (execFile.exists() && !execFile.isDirectory()) {
+                    GameMain.console.logf("Found given file '%s' using the FileType '%s'", absFile, type);
+                    break;
+                }
             } catch (final GdxRuntimeException ignore) { }
         }
         if (execFile != null && execFile.exists() && !execFile.isDirectory()) {
@@ -261,7 +262,6 @@ public class CommandHandler extends CommandExecutor {
             final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
 
             for (final String cmd : cmds) {
-                this.console.log("cmd: " + cmd);
                 //single line comment
                 int comment = cmd.indexOf("//");
                 if (comment == 0) {
