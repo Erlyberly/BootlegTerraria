@@ -260,20 +260,22 @@ public class CommandHandler extends CommandExecutor {
             final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
 
             for (final String cmd : cmds) {
-
+                this.console.log("cmd: " + cmd);
                 //single line comment
-                if (cmd.startsWith("//")) {
+                int comment = cmd.indexOf("//");
+                if (comment == 0) {
                     continue;
                 }
-                GameMain.console.execCommand(cmd);
+                if (comment == -1) {
+                    comment = cmd.length();
+                }
+                GameMain.console.execCommand(cmd.substring(0, comment));
             }
             this.console.log("Finished executing all commands from file", LogLevel.SUCCESS);
         }
         else {
-            this.console
-                .log("Failed to execute given file \"" + execFile.name() + "\", does it exist? is it a directory?",
-                     LogLevel.ERROR);
+            this.console.log("Failed to execute given file \"" + (execFile == null ? "???" : execFile.name()) +
+                             "\", does it exist? is it a directory?", LogLevel.ERROR);
         }
-
     }
 }
