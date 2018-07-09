@@ -43,6 +43,11 @@ public class CreativeInventory implements IInventory {
     }
 
     @Override
+    public boolean isOpen() {
+        return false;
+    }
+
+    @Override
     public int getSel() {
         return this.curr;
     }

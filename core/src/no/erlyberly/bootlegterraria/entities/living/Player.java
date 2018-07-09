@@ -15,7 +15,7 @@ import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
 import no.erlyberly.bootlegterraria.input.event.metadata.ScrolledMetadata;
 import no.erlyberly.bootlegterraria.storage.IInventory;
-import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
+import no.erlyberly.bootlegterraria.storage.impl.Inventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -201,13 +201,19 @@ public class Player extends LivingEntity {
             map.addEnemy(new Zombie(player.pos.x, player.pos.y + player.getHeight() * 2));
         }, EventType.KEY_DOWN, Input.Keys.Z);
 
+        GameMain.input.registerListener(md -> {
+            final IInventory inv = GameMain.map.getPlayer().getInv();
+            if (inv.isOpen()) { inv.close(); }
+            else { inv.open(); }
+        }, InputSetting.INVENTORY);
+
     }
 
     public Player(final float x, final float y) {
         super(x, y);
 
         this.weapon = new Gun();
-        setInv(new CreativeInventory(this));
+        setInv(new Inventory(this, 40));
     }
 
     @Override

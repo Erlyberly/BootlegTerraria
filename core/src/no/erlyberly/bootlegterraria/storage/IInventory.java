@@ -27,6 +27,8 @@ public interface IInventory {
      */
     int getSize();
 
+    boolean isOpen();
+
     /**
      * Select the {@code index}-th item
      */

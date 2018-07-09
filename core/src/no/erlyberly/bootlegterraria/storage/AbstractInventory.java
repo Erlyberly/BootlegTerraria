@@ -51,6 +51,14 @@ public abstract class AbstractInventory implements IInventory {
     }
 
     @Override
+    public boolean isOpen() {
+        if (this.actor == null) {
+            return false;
+        }
+        return this.actor.isVisible();
+    }
+
+    @Override
     public void select(final int index) {
         this.sel = Preconditions.checkPositionIndex(index, getSize() - 1);
     }

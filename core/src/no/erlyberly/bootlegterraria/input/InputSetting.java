@@ -16,7 +16,9 @@ public enum InputSetting {
     ATTACK(EventType.KEY_PRESSED, Keys.SPACE),
     DODGE(EventType.KEY_DOWN, Keys.C),
     BREAK_BLOCK(EventType.KEY_PRESSED, MouseInput.LEFT_MB),
-    PLACE_BLOCK(EventType.KEY_PRESSED, MouseInput.RIGHT_MB)
+    PLACE_BLOCK(EventType.KEY_PRESSED, MouseInput.RIGHT_MB),
+    INVENTORY(EventType.KEY_DOWN, Keys.TAB)
+
     //
     ;
 
