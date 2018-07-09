@@ -300,4 +300,15 @@ public class CommandHandler extends CommandExecutor {
             e.printStackTrace();
         }
     }
+
+    public void give(final String tileType, final int amount) {
+        final TileType tt;
+        try {
+            tt = TileType.valueOf(tileType.toUpperCase());
+        } catch (final IllegalArgumentException e) {
+            GameMain.console.logf(LogLevel.ERROR, "Unknown tileType '%s'", tileType);
+            return;
+        }
+        GameMain.map.getPlayer().getInv().getContainer().add(tt, amount);
+    }
 }
