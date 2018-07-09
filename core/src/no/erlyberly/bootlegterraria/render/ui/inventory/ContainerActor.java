@@ -10,18 +10,18 @@ import no.erlyberly.bootlegterraria.storage.IContainer;
 
 /**
  * @author kheba
+ * //TODO resize to a propper size
+ * //TODO display how many there is in each stack
  */
 public class ContainerActor extends Window {
 
     private final IContainer container;
-    private final Skin skin;
-    SlotActor[] slots;
-    boolean update = false;
+    private final SlotActor[] slots;
+    private boolean update = false;
 
     public ContainerActor(final IContainer container, final DragAndDrop dragAndDrop, final Skin skin) {
         super(container.getName(), skin);
         this.container = container;
-        this.skin = skin;
         setResizable(false);
         setMovable(false);
 
@@ -32,6 +32,7 @@ public class ContainerActor extends Window {
         getTitleTable().add(closeButton).height(getPadTop());
 
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth(), Gdx.graphics.getHeight() / 2);
+
         defaults().space(8);
         row().fill().expandX();
 
@@ -42,6 +43,10 @@ public class ContainerActor extends Window {
             this.slots[cslot.getIndex()] = slotActor;
             dragAndDrop.addSource(new SlotSource(slotActor));
             dragAndDrop.addTarget(new SlotTarget(slotActor));
+
+
+//            slotActor.setScale(4);
+//            slotActor.align(Align.center);
 
             add(slotActor);
 
