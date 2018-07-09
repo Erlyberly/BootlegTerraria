@@ -120,6 +120,7 @@ public class GameMain extends Game {
         }
 
         if (this.args.containsKey(EXIT_FLAG)) {
+            //force a clean exit
             System.exit(0);
         }
     }
@@ -159,6 +160,12 @@ public class GameMain extends Game {
 
         ui.render();
         console.draw();
+    }
+
+    @Override
+    public void resize(final int width, final int height) {
+        super.resize(width, height);
+        ui.resize(width, height);
     }
 
     public static boolean isHeadless() {

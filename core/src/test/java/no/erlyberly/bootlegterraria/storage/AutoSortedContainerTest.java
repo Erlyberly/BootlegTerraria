@@ -16,6 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class AutoSortedContainerTest {
 
+    private void testGet(final TileStack expected, final int index, final AutoSortedContainer cont) {
+        assertEquals(expected, cont.getContent()[index]);
+        assertEquals(expected, cont.get(index));
+    }
+
     @Test
     void constructor() {
         assertThrows(IllegalArgumentException.class, () -> new AutoSortedContainer(0));
@@ -38,15 +43,12 @@ class AutoSortedContainerTest {
         final TileStack ts = new TileStack(TileType.DIRT, 1);
         cont.put(0, ts);
 
-        assertEquals(ts, cont.getContent()[0]);
-        assertEquals(ts, cont.get(0));
+        testGet(ts, 0, cont);
 
         cont.put(2, ts);
         //make sure the container will be merged and sorted
-        assertNull(cont.getContent()[1]);
-        assertNull(cont.get(1));
-        assertNull(cont.getContent()[2]);
-        assertNull(cont.get(2));
+        testGet(null, 1, cont);
+        testGet(null, 2, cont);
     }
 
     @Test
@@ -65,7 +67,24 @@ class AutoSortedContainerTest {
     @Test
     void firstTest() {
         final AutoSortedContainer cont = new AutoSortedContainer(10);
-//        assertEquals(null,cont.fir);
+//       testGet(ts, 0, cont);
+    }
+
+    @Test
+    void addTest2() {
+        final AutoSortedContainer cont = new AutoSortedContainer("test", 40, true,
+                                                                 new SortOrder(false, SortOrder.TT_NAME_DESC,
+                                                                               SortOrder.AMOUNT_DESC));
+
+        final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);
+        final TileStack tsTorch = new TileStack(TileType.TORCH, 2);
+
+        cont.add(tsCloud, tsTorch);
+
+//        System.out.println("cont.getContent() = " + Arrays.toString(cont.getContent()));
+
+        testGet(tsCloud, 0, cont);
+        testGet(tsTorch, 1, cont);
     }
 
     @Test
@@ -93,7 +112,7 @@ class AutoSortedContainerTest {
 
         final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);
 
-        //ts' amount should be doubled
+        //returned3 should return the added element
         final List<TileStack> returned3 = cont.add(tsCloud);
 
         assertFalse(returned3.isEmpty());

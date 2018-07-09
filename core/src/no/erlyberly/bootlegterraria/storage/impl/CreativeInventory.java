@@ -2,6 +2,7 @@ package no.erlyberly.bootlegterraria.storage.impl;
 
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.storage.AbstractInventory;
+import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.IInventory;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -52,6 +53,17 @@ public class CreativeInventory implements IInventory {
     }
 
     @Override
+    public void open() {}
+
+    @Override
+    public void close() {}
+
+    @Override
+    public IContainer getContainer() {
+        return null;
+    }
+
+    @Override
     public void select(int index) {
         if (index < 0) {
             index = TileType.TILE_TYPES + (index % TileType.TILE_TYPES);
@@ -60,4 +72,6 @@ public class CreativeInventory implements IInventory {
         final TileType tt = TileType.getTileTypeById(this.curr + 1);
         this.currHolding = new TileStack(tt, 1);
     }
+
+
 }

@@ -28,6 +28,11 @@ class AbstractInventoryTest {
         public int getSize() {
             return this.size;
         }
+
+        @Override
+        public IContainer getContainer() {
+            return null;
+        }
     }
 
     @Test

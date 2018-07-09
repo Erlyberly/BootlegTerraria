@@ -22,6 +22,17 @@ import java.util.List;
 public interface IContainer extends Iterable<ContainerSlot> {
 
     /**
+     * @return The name of the container
+     */
+    String getName();
+
+    /**
+     * @param name
+     *     The new name of the container
+     */
+    void setName(String name);
+
+    /**
      * @return How many slots this container holds
      */
     int getSize();
@@ -196,5 +207,10 @@ public interface IContainer extends Iterable<ContainerSlot> {
      * @return The underlying array of the container
      */
     TileStack[] getContent();
+
+    /**
+     * Update the GUI of the displayed container.
+     */
+    void updateContainer();
 
 }

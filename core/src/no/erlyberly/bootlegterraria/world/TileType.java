@@ -1,7 +1,9 @@
 package no.erlyberly.bootlegterraria.world;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.google.common.base.Preconditions;
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 
 import java.util.HashMap;
@@ -136,5 +138,9 @@ public enum TileType {
 
     public int getMaxStackSize() {
         return this.stackSize;
+    }
+
+    public TextureRegion getTextureRegion() {
+        return GameMain.map.getTileSets().getTile(this.id).getTextureRegion();
     }
 }

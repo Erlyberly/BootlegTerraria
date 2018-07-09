@@ -20,8 +20,9 @@ import no.erlyberly.bootlegterraria.input.InputSetting;
 import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
-import no.erlyberly.bootlegterraria.storage.impl.AutoSortedInventory;
+import no.erlyberly.bootlegterraria.storage.impl.Container;
 import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
+import no.erlyberly.bootlegterraria.storage.impl.Inventory;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -165,7 +166,19 @@ public class CommandHandler extends CommandExecutor {
                 break;
             case "as":
             case "autosort":
-                player.setInv(new AutoSortedInventory(16, player));
+                player.setInv(new Inventory(player, 40));
+
+                player.getInv().getContainer().add(TileType.TORCH, 2);
+                player.getInv().getContainer().add(TileType.CLOUD, 1);
+                player.getInv().getContainer().add(TileType.DIRT, 3);
+                break;
+            case "container":
+            case "cont":
+                player.setInv(new Inventory(player, new Container("Inventory", 40)));
+
+                player.getInv().getContainer().add(TileType.LAVA, 7);
+                player.getInv().getContainer().add(TileType.LEAVES, 4);
+                player.getInv().getContainer().add(TileType.GRASS, 1);
                 break;
             default:
                 GameMain.console.log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
@@ -245,7 +258,6 @@ public class CommandHandler extends CommandExecutor {
     @ConsoleDoc(description = "Execute all commands in the given file, each command is on a newline",
                 paramDescriptions = "The absolute path to the file to be executed")
     public void exec(final String absFile) {
-        //run all commands in auto execute file, if it exist
         FileHandle execFile = null;
 
         for (final Files.FileType type : Files.FileType.values()) {
@@ -277,6 +289,15 @@ public class CommandHandler extends CommandExecutor {
         else {
             this.console.log("Failed to execute given file \"" + (execFile == null ? "???" : execFile.name()) +
                              "\", does it exist? is it a directory?", LogLevel.ERROR);
+        }
+    }
+
+    public void openInv(final boolean open) {
+        try {
+            if (open) { GameMain.map.getPlayer().getInv().open(); }
+            else { GameMain.map.getPlayer().getInv().close(); }
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
     }
 }

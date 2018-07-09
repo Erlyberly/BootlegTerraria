@@ -53,4 +53,19 @@ public interface IInventory {
     default boolean isHolder(final Entity entity) {
         return getHolder() == null || getHolder().equals(entity);
     }
+
+    /**
+     * Open a GUI of this inventory
+     */
+    void open();
+
+    /**
+     * Close the GUI of this inventory
+     */
+    void close();
+
+    /**
+     * @return The container of this inventory
+     */
+    IContainer getContainer();
 }

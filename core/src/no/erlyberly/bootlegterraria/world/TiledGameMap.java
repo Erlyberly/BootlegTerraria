@@ -6,11 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.strongjoshua.console.LogLevel;
@@ -261,5 +258,9 @@ public class TiledGameMap extends GameMap implements Loadable {
     @Override
     public boolean isInitialized() {
         return this.tiledMapRenderer.isInitialized();
+    }
+
+    public TiledMapTileSets getTileSets() {
+        return this.tiledMap.getTileSets();
     }
 }

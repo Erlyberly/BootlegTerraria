@@ -1,6 +1,6 @@
 package no.erlyberly.bootlegterraria.storage;
 
-import no.erlyberly.bootlegterraria.storage.impl.AutoSortedInventory;
+import no.erlyberly.bootlegterraria.storage.impl.Inventory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * @author kheba
  */
-class AutoSortedInventoryTest {
+class InventoryTest {
 
 
     @Test
     void holding() {
-        final AutoSortedInventory asi = new AutoSortedInventory(10, null);
+        final Inventory asi = new Inventory(null, 10);
         assertNull(asi.holding()); //hold nothing when first initialized
 
     }
