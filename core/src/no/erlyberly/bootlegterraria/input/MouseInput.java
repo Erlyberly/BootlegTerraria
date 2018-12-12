@@ -18,7 +18,7 @@ public class MouseInput {
     private static final ObjectIntMap<String> buttonNames;
 
     static {
-        buttonNames = new ObjectIntMap<>(8);
+        buttonNames = new ObjectIntMap<>(5);
         for (int i = LEFT_MB; i <= FORWARD_MB; i++) {
             final String name = toString(i);
             if (name != null) { buttonNames.put(name, i); }

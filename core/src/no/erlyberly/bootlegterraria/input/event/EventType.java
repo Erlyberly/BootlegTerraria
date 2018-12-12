@@ -63,10 +63,9 @@ public enum EventType {
      * @return If the given instance of eventMetadata is correct for this type of event
      */
     public boolean isCorrectMetadata(final EventMetadata metadata) {
-        return metadata.getClass() == this.metadataClass;
+        return metadata.getClass() == metadataClass;
     }
 
     public String getMetadataName() {
-        return this.metadataClass.getSimpleName();
-    }
-}
+        return metadataClass.getSimpleName();
+    }}

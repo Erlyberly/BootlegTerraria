@@ -14,7 +14,7 @@ import no.erlyberly.bootlegterraria.util.Util;
 import java.util.*;
 
 /**
- * Handle input from keyboard and
+ * Handle input from keyboard and mouse
  *
  * @author kheba
  */
@@ -42,15 +42,22 @@ public class InputHandler implements InputProcessor {
     }
 
     /**
+     * Bind an event from one set of keys to another
+     *
      * @param eventType
      *     The event type to replace this of
      * @param oldKeys
      *     The old keys
      * @param newKeys
      *     The new keys
+     *
+     * @return if the re-binding was successful
      */
     public boolean rebindListener(final EventType eventType, final Integer[] oldKeys, final Integer[] newKeys) {
         Preconditions.checkNotNull(eventType);
+        if (Arrays.equals(oldKeys, newKeys)) {
+            return false;
+        }
         final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
         final EventRunnable er = eventMap.remove(ImmutableSet.copyOf(oldKeys));
         if (er != null) {
@@ -65,6 +72,7 @@ public class InputHandler implements InputProcessor {
         else {
             GameMain.console.logf(LogLevel.ERROR, "Failed to re-bind listener, eventType: %s keys: %s", eventType,
                                   Arrays.toString(oldKeys));
+            return false;
         }
         return true;
     }

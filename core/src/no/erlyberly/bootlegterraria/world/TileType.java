@@ -17,7 +17,8 @@ public enum TileType {
     STONE(5, "Stone"),
     TORCH(6, "Torch", LightLevel.LVL_7, 0, 256),
     LOG(7, "Log"),
-    LEAVES(8, "Leaves"),;
+    LEAVES(8, "Leaves"),
+    ;
 
     public static final float TILE_SIZE = 16;
     public static final int TILE_TYPES = TileType.values().length;
@@ -105,42 +106,42 @@ public enum TileType {
     }
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
     public boolean isSolid() {
-        return this.viscosity > 0;
+        return viscosity > 0;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public int getDps() {
-        return this.dps;
+        return dps;
     }
 
     public LightLevel getLuminosity() {
-        return this.luminosity;
+        return luminosity;
     }
 
     /**
      * @return Wherever this tile emits lights onto other blocks
      */
     public boolean isEmittingLight() {
-        return this.luminosity != LightLevel.LVL_0 && this.luminosity != LightLevel.LVL_1;
+        return luminosity != LightLevel.LVL_0 && luminosity != LightLevel.LVL_1;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 
     public int getMaxStackSize() {
-        return this.stackSize;
+        return stackSize;
     }
 
     public TextureRegion getTextureRegion() {
-        return GameMain.map.getTileSets().getTile(this.id).getTextureRegion();
+        return GameMain.map.getTileSets().getTile(id).getTextureRegion();
     }
 }

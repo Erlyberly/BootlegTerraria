@@ -57,7 +57,7 @@ public class GameMain extends Game {
     private static final String EXIT_FLAG = "exit";
 
     public GameMain() {
-        this.args = new HashMap<>();
+        args = new HashMap<>();
     }
 
     public GameMain(final String[] args) {
@@ -71,7 +71,7 @@ public class GameMain extends Game {
         inputMultiplexer = new InputMultiplexer();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -86,7 +86,7 @@ public class GameMain extends Game {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         //load map specified or default
-        String map = this.args.get(MAP_FLAG);
+        String map = args.get(MAP_FLAG);
         if (map == null) {
             console.log("No environment map specified, loading default map (" + DEFAULT_MAP + ")");
             map = DEFAULT_MAP;
@@ -94,11 +94,11 @@ public class GameMain extends Game {
         loadMap(map);
 
         //check if this instance is headless
-        headless = this.args.containsKey(HEADLESS_FLAG);
+        headless = args.containsKey(HEADLESS_FLAG);
 
 
         // auto execute commands if specified
-        final String fileName = this.args.get(AUTO_EXEC_FLAG);
+        final String fileName = args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
             console.log("Auto executing " + fileName);
             console.execCommand("exec " + fileName);
@@ -107,19 +107,19 @@ public class GameMain extends Game {
             console.log("No auto executable file specified");
         }
 
-        if (this.args.containsKey(MOUSEPAD_FLAG)) {
+        if (args.containsKey(MOUSEPAD_FLAG)) {
             //bind place_block LMB l-shift
             console.execCommand(
                 "bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
                 Input.Keys.toString(Input.Keys.SHIFT_LEFT));
         }
 
-        if (this.args.containsKey(SAVE_COMMIT_ID_FLAG)) {
+        if (args.containsKey(SAVE_COMMIT_ID_FLAG)) {
             final String commit = Util.getLastGitCommitID(true);
             Gdx.files.absolute(VERSION_FILE).writeString(commit, false);
         }
 
-        if (this.args.containsKey(EXIT_FLAG)) {
+        if (args.containsKey(EXIT_FLAG)) {
             //force a clean exit
             System.exit(0);
         }

@@ -163,6 +163,7 @@ public class CommandHandler extends CommandExecutor {
             case "crea":
             case "c":
                 player.setInv(new CreativeInventory(player));
+
                 break;
             case "as":
             case "autosort":
