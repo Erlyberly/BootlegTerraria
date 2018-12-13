@@ -20,18 +20,23 @@ public class Container implements IContainer {
     private String name;
     private final int size;
 
-    private final TileStack[] cont;
+    final TileStack[] cont;
     private ContainerActor actor;
+    private boolean disallowInvalid;
 
     public Container(final int size) {
         this("Container", size);
     }
 
     public Container(final String name, final int size) {
+        this(name, size, true);
+    }
+
+    public Container(final String name, final int size, boolean disallowInvalid) {
 
         this.name = name;
         this.size = size;
-
+        this.disallowInvalid = disallowInvalid;
         cont = new TileStack[size];
     }
 
@@ -64,28 +69,36 @@ public class Container implements IContainer {
         if (tileStack == null) {
             return firstEmpty();
         }
-        for (int i = 0; i < size; i++) {
-            if (cont[i] != null && cont[i].equals(tileStack)) { return i; }
+        // if invalid stacks is not allows this cannot have a invalid validate
+        if (disallowInvalid && !tileStack.isValid()) {
+            return -1;
+        }
+        for (int i = 0; i < getSize(); i++) {
+            final TileStack loopTs = cont[i];
+            if (loopTs != null && loopTs.getTileType() == tileStack.getTileType() &&
+                loopTs.getAmount() <= tileStack.getAmount()) {
+                return i;
+            }
         }
         return -1;
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public List<TileStack> add(final List<TileStack> tileStackList) {
-        Preconditions.checkNotNull(tileStackList, "Cannot add a null list");
+    public List<TileStack> add(final List<TileStack> tileStacks) {
+        Preconditions.checkNotNull(tileStacks, "Cannot add a null list");
 
-        final List<TileStack> returnList = new ArrayList<>(tileStackList.size());
+        final List<TileStack> returnList = new ArrayList<>(tileStacks.size());
 
-        for (int i = 0, size1 = tileStackList.size(); i < size1; i++) {
-            final TileStack ts = tileStackList.get(i);
-            if (ts == null) {
-                throw new IllegalArgumentException("Element nr " + i + " is null");
+        for (int i = 0, size1 = tileStacks.size(); i < size1; i++) {
+            final TileStack ts = tileStacks.get(i);
+            if (ts == null || (disallowInvalid && !ts.isValid())) {
+                throw new IllegalArgumentException("Element nr " + i + " is either null or invalid (" + ts + ")");
             }
 
             boolean added = false;
 
-            for (int j = 0; j < size; j++) {
+            for (int j = 0; j < getSize(); j++) {
                 if (cont[j] != null && cont[j].getTileType() == ts.getTileType()) {
                     if (cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
                         cont[j].give(ts.getAmount());
@@ -146,6 +159,9 @@ public class Container implements IContainer {
     @Override
     public void remove(final TileStack tileStack) {
         Preconditions.checkNotNull(tileStack, "cannot remove a null element");
+        if (disallowInvalid && !tileStack.isValid()) {
+            return;
+        }
         for (int i = 0, length = cont.length; i < length; i++) {
             if (tileStack.equals(cont[i])) {
                 cont[i] = null;
@@ -156,6 +172,7 @@ public class Container implements IContainer {
 
     @Override
     public void remove(final int index) {
+        Preconditions.checkPositionIndex(index, size - 1);
         cont[index] = null;
         updateContainer();
     }
@@ -170,9 +187,18 @@ public class Container implements IContainer {
 
     @Override
     public boolean contains(final TileStack tileStack) {
+        if (tileStack == null || (disallowInvalid && !tileStack.isValid())) {
+            return false;
+        }
+        for (final ContainerSlot slot : this) {
+            if (tileStack.equals(slot.getContent())) {
+                return true;
+            }
+        }
         return false;
     }
 
+    //TODO implement
     @Override
     public boolean containsAny(final TileType tileType) {
         return false;
@@ -180,18 +206,24 @@ public class Container implements IContainer {
 
     @Override
     public TileStack get(final int index) {
+        Preconditions.checkPositionIndex(index, size - 1);
         return cont[index];
     }
 
     @Override
     public TileStack[] getValid(final int index) {
+        Preconditions.checkPositionIndex(index, size - 1);
         return TileStack.validate(get(index));
     }
 
     @Override
     public void put(final int index, final TileStack tileStack) {
-        cont[index] = tileStack;
-        updateContainer();
+        Preconditions.checkPositionIndex(index, size - 1);
+        if (disallowInvalid && tileStack != null && !tileStack.isValid()) {
+            throw new IllegalArgumentException("This container does not allow invalid stacks");
+        }
+        cont[index] = null;
+        add(tileStack);
     }
 
     @Override
