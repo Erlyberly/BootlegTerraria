@@ -19,21 +19,21 @@ public class CancellableThreadScheduler {
     private final Set<ScheduledFuture> tasks;
 
     public CancellableThreadScheduler() {
-        this.executorService = Executors.newSingleThreadScheduledExecutor();
-        this.tasks = Collections.newSetFromMap(new WeakHashMap<>());
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        tasks = Collections.newSetFromMap(new WeakHashMap<>());
     }
 
     /**
      * Cancel all future and running tasks
      */
     public void cancelTasks() {
-        for (final ScheduledFuture sf : this.tasks) {
+        for (final ScheduledFuture sf : tasks) {
             sf.cancel(true);
         }
     }
 
     public int size() {
-        return this.tasks.size();
+        return tasks.size();
     }
 
     /**
@@ -43,7 +43,7 @@ public class CancellableThreadScheduler {
      *     What to do
      */
     public void execute(final Runnable runnable) {
-        this.tasks.add(this.executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
+        tasks.add(executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -55,13 +55,13 @@ public class CancellableThreadScheduler {
      *     How many milliseconds to wait before running the task
      */
     public void schedule(final Runnable runnable, final long ms) {
-        this.tasks.add(this.executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
+        tasks.add(executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
     }
 
     /**
      * Shut down the thread
      */
     public void shutdown() {
-        this.executorService.shutdown();
+        executorService.shutdown();
     }
 }

@@ -27,26 +27,26 @@ public enum InputSetting {
 
     InputSetting(final EventType eventType, final Integer... defaultKeys) {
         this.eventType = eventType;
-        this.keys = defaultKeys;
+        keys = defaultKeys;
     }
 
     public void setKeys(final Integer... newKeys) {
-        this.keys = newKeys;
+        keys = newKeys;
     }
 
     public Integer[] getKeys() {
-        return this.keys;
+        return keys;
     }
 
     public EventType getEventType() {
-        return this.eventType;
+        return eventType;
     }
 
     /**
      * A replacement for {@code Gdx.input.isKeyPressed(int)}
      */
     public boolean isKeyPressed() {
-        for (final int key : this.keys) {
+        for (final int key : keys) {
             if (!Gdx.input.isKeyPressed(key)) {
                 return false;
             }
@@ -58,7 +58,7 @@ public enum InputSetting {
      * A replacement for {@code Gdx.input.isKeyJustPressed(int)}
      */
     public boolean isKeyJustPressed() {
-        for (final int key : this.keys) {
+        for (final int key : keys) {
             if (!Gdx.input.isKeyJustPressed(key)) {
                 return false;
             }

@@ -52,39 +52,39 @@ public class TiledGameMap extends GameMap implements Loadable {
     public TiledGameMap(final String map, final boolean headless) {
         super(map, headless);
         if (headless) {
-            this.tiledMap = new TiledMap();
-            this.tiledMapRenderer = null;
-            this.blockLayer = null;
-            this.spawn = new Vector2Int(0, 0);
+            tiledMap = new TiledMap();
+            tiledMapRenderer = null;
+            blockLayer = null;
+            spawn = new Vector2Int(0, 0);
 
-            this.mapWidth = 10;
-            this.mapHeight = 10;
+            mapWidth = 10;
+            mapHeight = 10;
 
-            this.tileWidth = 16;
-            this.tileHeight = 16;
+            tileWidth = 16;
+            tileHeight = 16;
             return;
         }
         try {
-            this.tiledMap = new TmxMapLoader().load(map);
+            tiledMap = new TmxMapLoader().load(map);
         } catch (final Exception e) {
             GameMain.console.logf(LogLevel.ERROR, "Failed to load map '%s'", map);
             throw new IllegalArgumentException("Invalid map");
         }
 
-        final MapProperties mapProperties = this.tiledMap.getProperties();
+        final MapProperties mapProperties = tiledMap.getProperties();
 
-        this.tileWidth = mapProperties.get(TILE_WIDTH_MAP_STRING, int.class);
-        this.tileHeight = mapProperties.get(TILE_HEIGHT_MAP_STRING, int.class);
+        tileWidth = mapProperties.get(TILE_WIDTH_MAP_STRING, int.class);
+        tileHeight = mapProperties.get(TILE_HEIGHT_MAP_STRING, int.class);
 
-        this.mapWidth = mapProperties.get(WIDTH_MAP_STRING, int.class);
-        this.mapHeight = mapProperties.get(HEIGHT_MAP_STRING, int.class);
+        mapWidth = mapProperties.get(WIDTH_MAP_STRING, int.class);
+        mapHeight = mapProperties.get(HEIGHT_MAP_STRING, int.class);
 
         final int spawnX = mapProperties.get(SPAWN_X_MAP_STRING, 0, int.class);
         final int spawnY = mapProperties.get(SPAWN_Y_MAP_STRING, 0, int.class);
-        this.spawn = blockToPixel(spawnX, spawnY);
+        spawn = blockToPixel(spawnX, spawnY);
 
 
-        final MapLayer blockLayer = this.tiledMap.getLayers().get(BLOCK_LAYER_NAME_STRING);
+        final MapLayer blockLayer = tiledMap.getLayers().get(BLOCK_LAYER_NAME_STRING);
         if (!(blockLayer instanceof TiledMapTileLayer)) {
             throw new IllegalArgumentException(
                 "Map " + map + " does not has a tile layer named '" + BLOCK_LAYER_NAME_STRING + "'");
@@ -100,7 +100,7 @@ public class TiledGameMap extends GameMap implements Loadable {
 //        this.backgroundLayer = (TiledMapTileLayer) backgroundLayer;
 
 
-        this.tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(this.tiledMap, this);
+        tiledMapRenderer = new SimpleOrthogonalTiledMapRenderer(tiledMap, this);
     }
 
     @Override
@@ -108,26 +108,26 @@ public class TiledGameMap extends GameMap implements Loadable {
 
         if (isInitialized()) {
             batch.setProjectionMatrix(camera.combined);
-            this.tiledMapRenderer.setView(camera);
-            this.tiledMapRenderer.render();
+            tiledMapRenderer.setView(camera);
+            tiledMapRenderer.render();
             super.render(camera, hudCamera, batch);
         }
         else {
             batch.setProjectionMatrix(hudCamera.combined);
             batch.begin();
             final int size = Gdx.graphics.getHeight();
-            batch.draw(this.loadingSplashScreen, (Gdx.graphics.getWidth() - size) / 2, 0, size, size);
-            this.font.getData().scale(1);
-            this.font.draw(batch, "LOADING...", Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 5);
-            this.font.getData().scale(-1);
+            batch.draw(loadingSplashScreen, (Gdx.graphics.getWidth() - size) / 2, 0, size, size);
+            font.getData().scale(1);
+            font.draw(batch, "LOADING...", Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 5);
+            font.getData().scale(-1);
             batch.end();
         }
     }
 
     @Override
     public void dispose() {
-        this.tiledMap.dispose();
-        this.tiledMapRenderer.dispose();
+        tiledMap.dispose();
+        tiledMapRenderer.dispose();
     }
 
     @Override
@@ -150,23 +150,22 @@ public class TiledGameMap extends GameMap implements Loadable {
 
     @Override
     public Vector2Int getSpawn() {
-        return this.spawn;
+        return spawn;
     }
 
     @Override
     public void spawnPlayer() {
-        setPlayer(new Player(this.spawn.x, this.spawn.y));
+        setPlayer(new Player(spawn.x, spawn.y));
     }
 
     private boolean overlapPlayer(final int blockX, final int blockY) {
-        final Rectangle br =
-            new Rectangle(blockX * this.tileWidth, blockY * this.tileWidth, this.tileWidth, this.tileHeight);
+        final Rectangle br = new Rectangle(blockX * tileWidth, blockY * tileWidth, tileWidth, tileHeight);
         return Intersector.overlaps(getPlayer().toRect(), br);
     }
 
     @Override
     public void setTile(final int blockX, final int blockY, final TileType tt) {
-        final TileType oldID = TileType.getTileTypeByCell(this.blockLayer.getCell(blockX, blockY));
+        final TileType oldID = TileType.getTileTypeByCell(blockLayer.getCell(blockX, blockY));
         //do no change the block if
         //there is no block at the given location
         //the location is outside the map
@@ -178,15 +177,15 @@ public class TiledGameMap extends GameMap implements Loadable {
 
         Cell cell = null;
         if (tt != null) {
-            cell = new Cell().setTile(this.tiledMap.getTileSets().getTile(tt.getId()));
+            cell = new Cell().setTile(tiledMap.getTileSets().getTile(tt.getId()));
         }
 
-        this.blockLayer.setCell(blockX, blockY, cell);
+        blockLayer.setCell(blockX, blockY, cell);
 
         //Only update light when the block below the skylight is changed or if tile that emit light is placed or
         final LightLevel ll = (tt == null) ? LightLevel.LVL_0 : tt.getLuminosity();
         final boolean isEmittingLight = tt != null && tt.isEmittingLight();
-        final LightMap lightMap = this.tiledMapRenderer.getLight();
+        final LightMap lightMap = tiledMapRenderer.getLight();
 
         lightMap.calculateSkylight(blockX);
         if (isEmittingLight) {
@@ -199,28 +198,28 @@ public class TiledGameMap extends GameMap implements Loadable {
 
     @Override
     public float getWidth() {
-        return this.mapWidth;
+        return mapWidth;
     }
 
     @Override
     public float getHeight() {
-        return this.mapHeight;
+        return mapHeight;
     }
 
     @Override
     public float getTileWidth() {
-        return this.tileWidth;
+        return tileWidth;
     }
 
     @Override
     public float getTileHeight() {
-        return this.tileHeight;
+        return tileHeight;
     }
 
 
     @Override
     public TiledMapTileLayer getBlockLayer() {
-        return this.blockLayer;
+        return blockLayer;
     }
 
     @Override
@@ -231,7 +230,7 @@ public class TiledGameMap extends GameMap implements Loadable {
 
     @Override
     public Map getMap() {
-        return this.tiledMap;
+        return tiledMap;
     }
 
     @Override
@@ -239,7 +238,7 @@ public class TiledGameMap extends GameMap implements Loadable {
         if (!Util.isBetween(0, blockX, (int) getWidth())) {
             throw new IllegalArgumentException("No info about the outside of the map, x = " + blockX);
         }
-        return this.tiledMapRenderer.getLight().getSkylightAt(blockX);
+        return tiledMapRenderer.getLight().getSkylightAt(blockX);
     }
 
     @Override
@@ -247,20 +246,20 @@ public class TiledGameMap extends GameMap implements Loadable {
         if (isOutsideMap(pos.x, pos.y)) {
             return null;
         }
-        return this.tiledMapRenderer.getLight().lightAt(pos);
+        return tiledMapRenderer.getLight().lightAt(pos);
     }
 
     @Override
     public LightMap getLightMap() {
-        return this.tiledMapRenderer.getLight();
+        return tiledMapRenderer.getLight();
     }
 
     @Override
     public boolean isInitialized() {
-        return this.tiledMapRenderer.isInitialized();
+        return tiledMapRenderer.isInitialized();
     }
 
     public TiledMapTileSets getTileSets() {
-        return this.tiledMap.getTileSets();
+        return tiledMap.getTileSets();
     }
 }

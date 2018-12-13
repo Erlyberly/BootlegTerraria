@@ -16,6 +16,7 @@ import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
+import no.erlyberly.bootlegterraria.render.ui.UIMessage;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
@@ -50,14 +51,14 @@ public abstract class GameMap {
     Texture loadingSplashScreen;
     UIMessage uiMessage;
 
+
     GameMap(final String fileName, final boolean headless) {
         this.fileName = fileName;
-        this.enemies = new ArrayList<>();
-        this.addEnimies = new ArrayList<>();
-        this.entities = new ArrayList<>();
-        this.addEntities = new ArrayList<>();
+        enemies = new ArrayList<>();
+        addEnimies = new ArrayList<>();
+        entities = new ArrayList<>();
+        addEntities = new ArrayList<>();
         uiMessage = new UIMessage(this);
-
 
         if (!headless) {
 
@@ -67,52 +68,51 @@ public abstract class GameMap {
                 new FreeTypeFontGenerator.FreeTypeFontParameter();
             parameter.size = 20;
             parameter.minFilter = Texture.TextureFilter.Linear;
-            this.font = generator.generateFont(parameter);
+            font = generator.generateFont(parameter);
             generator.dispose();
 
-            this.hpBar = new Texture("hp_fill.png");
-            this.barOutline = new Texture("bar_outline.png");
-            this.staminaBar = new Texture("stamina_fill.png");
-            this.loadingSplashScreen = new Texture("goodlogic.png");
+            hpBar = new Texture("hp_fill.png");
+            barOutline = new Texture("bar_outline.png");
+            staminaBar = new Texture("stamina_fill.png");
+            loadingSplashScreen = new Texture("goodlogic.png");
         }
+        else { font = null; }
     }
 
     public void addEnemy(final Entity entity) {
-        this.addEnimies.add(entity);
-        this.addWaitingEnimies = true;
+        addEnimies.add(entity);
+        addWaitingEnimies = true;
     }
 
     public void removeEnemy() {
-        this.removeWaitingEnimies = true;
+        removeWaitingEnimies = true;
     }
 
     public void addEntity(final Entity entity) {
-        this.addEntities.add(entity);
-        this.addWaitingEntities = true;
+        addEntities.add(entity);
+        addWaitingEntities = true;
     }
 
     public void removeEntity() {
-        this.removeWaitingEntities = true;
+        removeWaitingEntities = true;
     }
 
     public void render(final OrthographicCamera camera, final OrthographicCamera hudCamera, final SpriteBatch batch) {
         batch.begin();
 
-        this.player.render(batch);
+        player.render(batch);
 
-        for (final Entity enimies : this.enemies) {
+        for (final Entity enimies : enemies) {
             enimies.render(batch);
         }
 
-        for (final Entity entities : this.entities) {
+        for (final Entity entities : entities) {
             entities.render(batch);
         }
 
         final Vector3 position = camera.position;
-        position.x +=
-            (this.player.getX() - position.x) * cameraLerp * this.player.speedModifier * Gdx.graphics.getDeltaTime();
-        position.y +=
-            (this.player.getY() - position.y) * cameraLerp * this.player.speedModifier * Gdx.graphics.getDeltaTime();
+        position.x += (player.getX() - position.x) * cameraLerp * player.speedModifier * Gdx.graphics.getDeltaTime();
+        position.y += (player.getY() - position.y) * cameraLerp * player.speedModifier * Gdx.graphics.getDeltaTime();
 
 //        camera.position.x = player.getX();
 //        camera.position.y = player.getY();
@@ -122,23 +122,22 @@ public abstract class GameMap {
         final float hpBarModifier = 1.03f;
 
         //hp bar
-        batch.draw(this.hpBar, 6f, GameInfo.HEIGHT / hpBarModifier,
-                   ((this.player.getHealth() / this.player.getMaxHealth()) * this.hpBar.getWidth()),
-                   this.hpBar.getHeight());
-        batch.draw(this.barOutline, 5f, GameInfo.HEIGHT / hpBarModifier);
-        this.font.draw(batch, (int) this.player.getHealth() + " / " + (int) this.player.getMaxHealth(),
-                       this.barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / hpBarModifier);
+        batch.draw(hpBar, 6f, GameInfo.HEIGHT / hpBarModifier,
+                   ((player.getHealth() / player.getMaxHealth()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / hpBarModifier);
+        font.draw(batch, (int) player.getHealth() + " / " + (int) player.getMaxHealth(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / hpBarModifier);
 
         final float staminaBarModifier = 1.055f;
 
         //stamina bar
-        final float staminaPercent = this.player.getStamina() / (float) this.player.getMaxStamina();
+        final float staminaPercent = player.getStamina() / (float) player.getMaxStamina();
 
-        batch.draw(this.staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * this.hpBar.getWidth(),
-                   this.hpBar.getHeight());
-        batch.draw(this.barOutline, 5f, GameInfo.HEIGHT / staminaBarModifier);
-        this.font.draw(batch, (int) this.player.getStamina() + " / " + this.player.getMaxStamina(),
-                       this.barOutline.getWidth() + 10f, 12f + GameInfo.HEIGHT / staminaBarModifier);
+        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * hpBar.getWidth(),
+                   hpBar.getHeight());
+        batch.draw(barOutline, 5f, GameInfo.HEIGHT / staminaBarModifier);
+        font.draw(batch, (int) player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
+                  12f + GameInfo.HEIGHT / staminaBarModifier);
 
         final Vector3 mousePos = GameMain.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
@@ -150,7 +149,7 @@ public abstract class GameMap {
         final String tile = getTileTypeByCoordinate(getBlockLayer(), blockX, blockY) + "";
         final String skylight = (blockX >= 0 && blockX < getWidth()) ? getSkylightAt(blockX) + "" : "??";
 
-        final TileStack holding = this.player.getInv().holding();
+        final TileStack holding = player.getInv().holding();
         final String selBlk;
         if (holding == null) {
             selBlk = "None";
@@ -161,18 +160,18 @@ public abstract class GameMap {
         }
 
         final String[] msgs = {//
-            "Equipped : " + this.player.getWeapon().getName(), //
+            "Equipped : " + player.getWeapon().getName(), //
             "FPS : " + Gdx.graphics.getFramesPerSecond(), //
-            "Sel Blk : " + selBlk + " {sel=" + this.player.getInv().getSel() + "}", //
+            "Sel Blk : " + selBlk + " {sel=" + player.getInv().getSel() + "}", //
             //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
             String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
                           skylight), //
-            String.format("Blk @ Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)), //
-            String.format("World : Name %s width %.0f height %.0f", this.fileName, getWidth(), getHeight()), //
+            String.format("Blk@Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)), //
+            String.format("World : Name %s width %.0f height %.0f", fileName, getWidth(), getHeight()), //
         };
 
         for (int i = 0; i < msgs.length; i++) {
-            this.font.draw(batch, msgs[i], 7f, GameInfo.HEIGHT / (1.07f + 0.030f * i));
+            font.draw(batch, msgs[i], 7f, GameInfo.HEIGHT / (1.07f + 0.030f * i));
         }
 
         uiMessage.draw(batch);
@@ -186,59 +185,40 @@ public abstract class GameMap {
         checkEntityEnemyCollision();
         checkPlayerEnemyCollision();
 
-        this.player.update();
+        player.update();
 
-        for (final Entity entity : this.enemies) {
+        for (final Entity entity : enemies) {
             entity.update();
         }
 
-        for (final Entity entity : this.entities) {
+        for (final Entity entity : entities) {
             entity.update();
         }
 
-        if (this.addWaitingEnimies) {
-            this.enemies.addAll(this.addEnimies);
-            this.addEnimies.clear();
-            this.addWaitingEnimies = false;
+        if (addWaitingEntities) {
+            entities.addAll(addEntities);
+            addEntities.clear();
+            addWaitingEntities = false;
         }
 
-        if (this.removeWaitingEnimies) {
-            final ArrayList<Entity> removeEnemies = new ArrayList<>();
-            for (final Entity i : this.enemies) {
-                if (i.isDestroyed()) {
-                    removeEnemies.add(i);
-                }
-            }
-            for (final Entity remove : removeEnemies) {
-                this.enemies.remove(remove);
-            }
-            this.removeWaitingEnimies = false;
-        }
-
-        if (this.addWaitingEntities) {
-            this.entities.addAll(this.addEntities);
-            this.addEntities.clear();
-            this.addWaitingEntities = false;
-        }
-
-        if (this.removeWaitingEntities) {
+        if (removeWaitingEntities) {
             final ArrayList<Entity> removeEntities = new ArrayList<>();
-            for (final Entity i : this.entities) {
+            for (final Entity i : entities) {
                 if (i.isDestroyed()) {
                     removeEntities.add(i);
                 }
             }
             for (final Entity remove : removeEntities) {
-                this.entities.remove(remove);
+                entities.remove(remove);
             }
-            this.removeWaitingEntities = false;
+            removeWaitingEntities = false;
         }
     }
 
     public abstract void dispose();
 
     public TileType getTileTypeByLocation(final MapLayer layer, final float x, final float y) {
-        return this.getTileTypeByCoordinate(layer, (int) (x / TileType.TILE_SIZE), (int) (y / TileType.TILE_SIZE));
+        return getTileTypeByCoordinate(layer, (int) (x / TileType.TILE_SIZE), (int) (y / TileType.TILE_SIZE));
     }
 
     public abstract TileType getTileTypeByCoordinate(MapLayer layer, int col, int row);
@@ -274,8 +254,8 @@ public abstract class GameMap {
             for (int col = (int) (x / TileType.TILE_SIZE); col < ceil((x + width) / TileType.TILE_SIZE); col++) {
                 final TileType type = getTileTypeByCoordinate(getBlockLayer(), col, row);
                 if (type != null && type.isSolid()) {
-                    if (type.getDps() != 0 && !this.player.isInvincible()) {
-                        this.player.modifyHp(-type.getDps() * Gdx.graphics.getDeltaTime());
+                    if (type.getDps() != 0 && !player.isInvincible()) {
+                        player.modifyHp(-type.getDps() * Gdx.graphics.getDeltaTime());
                     }
                     return true;
                 }
@@ -288,9 +268,9 @@ public abstract class GameMap {
      * Check if there is a collision between living and enemies
      */
     public void checkEntityEnemyCollision() {
-        for (final Entity entity : this.entities) {
+        for (final Entity entity : entities) {
             final Rectangle entRect = entity.toRect();
-            for (final Entity enemy : this.enemies) {
+            for (final Entity enemy : enemies) {
                 if (Intersector.overlaps(entRect, enemy.toRect())) {
                     enemy.modifyHp(-entity.getDamage() * Gdx.graphics.getDeltaTime());
                     enemy.moveX(enemy.getHorizontalSpeed() * -enemy.getFacing());
@@ -316,11 +296,11 @@ public abstract class GameMap {
     }
 
     public void checkPlayerEnemyCollision() {
-        final Rectangle playerRect = this.player.toRect();
+        final Rectangle playerRect = player.toRect();
 
-        for (final Entity enemy : this.enemies) {
-            if (!this.player.isInvincible() && Intersector.overlaps(enemy.toRect(), playerRect)) {
-                this.player.modifyHp(-enemy.getDamage() * Gdx.graphics.getDeltaTime());
+        for (final Entity enemy : enemies) {
+            if (!player.isInvincible() && Intersector.overlaps(enemy.toRect(), playerRect)) {
+                player.modifyHp(-enemy.getDamage() * Gdx.graphics.getDeltaTime());
             }
         }
     }
@@ -343,7 +323,7 @@ public abstract class GameMap {
     }
 
     public Player getPlayer() {
-        return this.player;
+        return player;
     }
 
     public void setPlayer(final Player player) {

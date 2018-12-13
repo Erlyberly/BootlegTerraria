@@ -14,7 +14,7 @@ public class SlotTarget extends Target {
 
     public SlotTarget(final SlotActor actor) {
         super(actor);
-        this.targetSlot = actor.getSlot();
+        targetSlot = actor.getSlot();
         getActor().setColor(Color.LIGHT_GRAY);
     }
 

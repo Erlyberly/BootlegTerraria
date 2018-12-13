@@ -17,11 +17,11 @@ public class AABB1D extends AABB<AABB1D> {
 
     @Override
     public boolean overlap(final AABB1D other) {
-        return this.max >= other.min && other.max >= this.min;
+        return max >= other.min && other.max >= min;
     }
 
     @Override
     public String toString() {
-        return "AABB1D{" + "min=" + this.min + ", max=" + this.max + '}';
+        return "AABB1D{" + "min=" + min + ", max=" + max + '}';
     }
 }

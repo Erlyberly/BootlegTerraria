@@ -20,18 +20,18 @@ public class HidingClickListener extends ClickListener {
 
     @Override
     public void enter(final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
-        final Window window = (Window) this.actor;
+        final Window window = (Window) actor;
         window.setMovable(false);
     }
 
     @Override
     public void exit(final InputEvent event, final float x, final float y, final int pointer, final Actor toActor) {
-        final Window window = (Window) this.actor;
+        final Window window = (Window) actor;
         window.setMovable(true);
     }
 
     @Override
     public void clicked(final InputEvent event, final float x, final float y) {
-        this.actor.setVisible(false);
+        actor.setVisible(false);
     }
 }

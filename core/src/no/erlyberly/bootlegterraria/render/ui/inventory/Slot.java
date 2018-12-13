@@ -23,23 +23,23 @@ public class Slot {
     }
 
     public ContainerActor getContainerActor() {
-        return this.actor;
+        return actor;
     }
 
     public int getIndex() {
-        return this.index;
+        return index;
     }
 
     public boolean isEmpty() {
-        return this.stack == null;
+        return stack == null;
     }
 
     public TileStack getStack() {
-        return this.stack;
+        return stack;
     }
 
 
     public void updateStack() {
-        this.stack = this.actor.getContainer().get(this.index);
+        stack = actor.getContainer().get(index);
     }
 }

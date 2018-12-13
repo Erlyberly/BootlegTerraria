@@ -36,37 +36,37 @@ public abstract class Entity {
      */
     protected Entity(final float x, final float y) {
 
-        this.pos = new Vector2(x, y);
+        pos = new Vector2(x, y);
 
-        this.health = getMaxHealth();
-        this.velocityY = 0;
-        this.onGround = false;
-        this.destroyed = false;
-        this.facing = 1;
-        this.entRect = new Rectangle(x, y, getWidth(), getHeight());
+        health = getMaxHealth();
+        velocityY = 0;
+        onGround = false;
+        destroyed = false;
+        facing = 1;
+        entRect = new Rectangle(x, y, getWidth(), getHeight());
     }
 
     public void update() {
-        this.velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
-                          Gdx.graphics.getDeltaTime();
-        final float newY = this.pos.y + this.velocityY * Gdx.graphics.getDeltaTime();
+        velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
+                     Gdx.graphics.getDeltaTime();
+        final float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
 
         //check for damage from tiles
         if (this instanceof Player) {
-            this.gameMap.checkPlayerMapCollisionDamage(this.pos.x, newY, getWidth(), getHeight());
+            gameMap.checkPlayerMapCollisionDamage(pos.x, newY, getWidth(), getHeight());
         }
 
         //check for collision with the map
-        if (this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
-            if (this.velocityY < 0) {
-                this.pos.y = (float) Math.floor(this.pos.y);
-                this.onGround = true;
+        if (gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
+            if (velocityY < 0) {
+                pos.y = (float) Math.floor(pos.y);
+                onGround = true;
             }
-            this.velocityY = 0;
+            velocityY = 0;
         }
         else {
-            this.pos.y = newY;
-            this.onGround = false;
+            pos.y = newY;
+            onGround = false;
         }
     }
 
@@ -77,9 +77,9 @@ public abstract class Entity {
      *     How much to move vertically
      */
     public void moveY(final float velocityY) {
-        final float newY = this.pos.y + velocityY * Gdx.graphics.getDeltaTime();
-        if (!this.gameMap.checkMapCollision(this.pos.x, newY, getWidth(), getHeight())) {
-            this.pos.y = newY;
+        final float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
+        if (!gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
+            pos.y = newY;
         }
     }
 
@@ -90,9 +90,9 @@ public abstract class Entity {
      *     How much to move horizontally
      */
     public void moveX(final float velocityX) {
-        final float newX = this.pos.x + velocityX * Gdx.graphics.getDeltaTime();
-        if (!this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight())) {
-            this.pos.x = newX;
+        final float newX = pos.x + velocityX * Gdx.graphics.getDeltaTime();
+        if (!gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
+            pos.x = newX;
         }
     }
 
@@ -100,61 +100,61 @@ public abstract class Entity {
      * Destroy this entity
      */
     public void destroy() {
-        this.destroyed = true;
+        destroyed = true;
         destroyed();
     }
 
     public float getHealth() {
-        return this.health;
+        return health;
     }
 
 
     public boolean isDestroyed() {
-        return this.destroyed;
+        return destroyed;
     }
 
     /**
      * @return Screen position of the player
      */
     public Vector2 getPos() {
-        return this.pos;
+        return pos;
     }
 
     /**
      * @return The tile position of the entity
      */
     public Vector2Int getMapPos() {
-        return new Vector2Int((int) (this.pos.x / TileType.TILE_SIZE), (int) (this.pos.y / TileType.TILE_SIZE));
+        return new Vector2Int((int) (pos.x / TileType.TILE_SIZE), (int) (pos.y / TileType.TILE_SIZE));
     }
 
     public float getX() {
-        return this.pos.x;
+        return pos.x;
     }
 
     public float getY() {
-        return this.pos.y;
+        return pos.y;
     }
 
     public float getVelocityY() {
-        return this.velocityY;
+        return velocityY;
     }
 
 
     public boolean isOnGround() {
-        return this.onGround;
+        return onGround;
     }
 
     @Nonnull
     public GameMap getGameMap() {
-        return this.gameMap;
+        return gameMap;
     }
 
     public int getFacing() {
-        return this.facing;
+        return facing;
     }
 
     public boolean isFacingRight() {
-        return this.facing == 1;
+        return facing == 1;
     }
 
     /**
@@ -177,20 +177,20 @@ public abstract class Entity {
      */
     public Vector2 teleport(final int blockX, final int blockY) {
         //TODO just ignore calls to tp out of bounds
-        int tpX = (int) (blockX * this.gameMap.getTileWidth());
-        int tpY = (int) ((getHeight() - blockY) * this.gameMap.getTileHeight());
+        int tpX = (int) (blockX * gameMap.getTileWidth());
+        int tpY = (int) ((getHeight() - blockY) * gameMap.getTileHeight());
 
-        tpX = (int) Math.max(0, Math.min(tpX, this.gameMap.getPixelWidth() - 1));
-        tpY = (int) Math.max(0, Math.min(tpY, this.gameMap.getPixelHeight() - 1));
+        tpX = (int) Math.max(0, Math.min(tpX, gameMap.getPixelWidth() - 1));
+        tpY = (int) Math.max(0, Math.min(tpY, gameMap.getPixelHeight() - 1));
 
-        if (this.gameMap.checkPlayerMapCollisionDamage(tpX, tpY, getWidth(), getHeight())) {
-            tpY = (int) ((this.gameMap.getSkylightAt(blockX) + (this.getHeight() / this.gameMap.getTileHeight())) *
-                         this.gameMap.getTileWidth());
+        if (gameMap.checkPlayerMapCollisionDamage(tpX, tpY, getWidth(), getHeight())) {
+            tpY = (int) ((gameMap.getSkylightAt(blockX) + (getHeight() / gameMap.getTileHeight())) *
+                         gameMap.getTileWidth());
         }
 
-        this.pos.x = tpX;
-        this.pos.y = tpY;
-        return new Vector2(tpX / this.gameMap.getTileWidth(), tpY / this.gameMap.getTileHeight());
+        pos.x = tpX;
+        pos.y = tpY;
+        return new Vector2(tpX / gameMap.getTileWidth(), tpY / gameMap.getTileHeight());
     }
 
 
@@ -199,7 +199,7 @@ public abstract class Entity {
      */
     @Nonnull
     public Rectangle toRect() {
-        return this.entRect.setPosition(this.pos);
+        return entRect.setPosition(pos);
     }
 
     /**

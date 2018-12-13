@@ -62,11 +62,11 @@ public class SlotActor extends ImageButton {
     }
 
     public void update() {
-        this.slot.updateStack();
-        setStyle(createStyle(this.skin, this.slot.getStack()));
+        slot.updateStack();
+        setStyle(createStyle(skin, slot.getStack()));
     }
 
     public Slot getSlot() {
-        return this.slot;
+        return slot;
     }
 }

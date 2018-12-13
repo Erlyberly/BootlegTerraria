@@ -24,17 +24,17 @@ public class CreativeInventory implements IInventory {
 
     @Override
     public void next() {
-        select(this.curr + 1);
+        select(curr + 1);
     }
 
     @Override
     public void prev() {
-        select(this.curr - 1);
+        select(curr - 1);
     }
 
     @Override
     public TileStack holding() {
-        return this.currHolding;
+        return currHolding;
     }
 
     @Override
@@ -49,12 +49,12 @@ public class CreativeInventory implements IInventory {
 
     @Override
     public int getSel() {
-        return this.curr;
+        return curr;
     }
 
     @Override
     public Entity getHolder() {
-        return this.holder;
+        return holder;
     }
 
     @Override
@@ -75,9 +75,9 @@ public class CreativeInventory implements IInventory {
         if (index < 0) {
             index = TileType.TILE_TYPES + (index % TileType.TILE_TYPES);
         }
-        this.curr = index % TileType.TILE_TYPES;
-        final TileType tt = TileType.getTileTypeById(this.curr + 1);
-        this.currHolding = new TileStack(tt, 1);
+        curr = index % TileType.TILE_TYPES;
+        final TileType tt = TileType.getTileTypeById(curr + 1);
+        currHolding = new TileStack(tt, 1);
     }
 
 

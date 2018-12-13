@@ -20,19 +20,19 @@ public class SlotSource extends Source {
 
     public SlotSource(final SlotActor actor) {
         super(actor);
-        this.sourceSlot = actor.getSlot();
+        sourceSlot = actor.getSlot();
     }
 
     @Override
     public Payload dragStart(final InputEvent event, final float x, final float y, final int pointer) {
-        if (this.sourceSlot.getStack() == null || this.sourceSlot.getStack().getAmount() == 0 ||
-            this.sourceSlot.getContainerActor().getContainer() instanceof AutoSortedContainer) {
+        if (sourceSlot.getStack() == null || sourceSlot.getStack().getAmount() == 0 ||
+            sourceSlot.getContainerActor().getContainer() instanceof AutoSortedContainer) {
             return null;
         }
 
         final Payload payload = new Payload();
-        final Slot payloadSlot = new Slot(this.sourceSlot);
-        final TileStack srcTs = this.sourceSlot.getStack();
+        final Slot payloadSlot = new Slot(sourceSlot);
+        final TileStack srcTs = sourceSlot.getStack();
 
 //        srcTs.take(srcTs.getAmount());
 

@@ -18,7 +18,7 @@ public class MouseMetadata implements EventMetadata {
         this.screenX = screenX;
         this.screenY = screenY;
 
-        this.blockX = (int) (screenX / GameMain.map.getTileWidth());
-        this.blockY = (int) (screenY / GameMain.map.getTileHeight());
+        blockX = (int) (screenX / GameMain.map.getTileWidth());
+        blockY = (int) (screenY / GameMain.map.getTileHeight());
     }
 }

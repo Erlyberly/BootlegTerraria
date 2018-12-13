@@ -38,24 +38,24 @@ public enum LightLevel {
     }
 
     LightLevel() {
-        this.lvl = ordinal();
-        this.percentage = (this.lvl / ((float) LIGHT_LEVELS - 1));
+        lvl = ordinal();
+        percentage = (lvl / ((float) LIGHT_LEVELS - 1));
     }
 
     public int getLvl() {
-        return this.lvl;
+        return lvl;
     }
 
     public float getPercentage() {
-        return this.percentage;
+        return percentage;
     }
 
     public LightLevel dimmer() {
-        return valueOf(this.lvl - 1);
+        return valueOf(lvl - 1);
     }
 
     public LightLevel brighter() {
-        return valueOf(this.lvl + 1);
+        return valueOf(lvl + 1);
     }
 
     public static LightLevel valueOf(final float lvl) {
@@ -92,7 +92,7 @@ public enum LightLevel {
 
     @Override
     public String toString() {
-        return name() + "(" + this.percentage + ")";
+        return name() + "(" + percentage + ")";
     }
 
 

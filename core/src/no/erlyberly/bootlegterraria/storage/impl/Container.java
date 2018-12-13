@@ -32,13 +32,13 @@ public class Container implements IContainer {
         this.name = name;
         this.size = size;
 
-        this.cont = new TileStack[size];
+        cont = new TileStack[size];
     }
 
 
     @Override
     public String getName() {
-        return this.name;
+        return name;
     }
 
     @Override
@@ -48,13 +48,13 @@ public class Container implements IContainer {
 
     @Override
     public int getSize() {
-        return this.size;
+        return size;
     }
 
     @Override
     public int firstEmpty() {
-        for (int i = 0; i < this.size; i++) {
-            if (this.cont[i] == null) { return i; }
+        for (int i = 0; i < size; i++) {
+            if (cont[i] == null) { return i; }
         }
         return -1;
     }
@@ -64,8 +64,8 @@ public class Container implements IContainer {
         if (tileStack == null) {
             return firstEmpty();
         }
-        for (int i = 0; i < this.size; i++) {
-            if (this.cont[i] != null && this.cont[i].equals(tileStack)) { return i; }
+        for (int i = 0; i < size; i++) {
+            if (cont[i] != null && cont[i].equals(tileStack)) { return i; }
         }
         return -1;
     }
@@ -85,10 +85,10 @@ public class Container implements IContainer {
 
             boolean added = false;
 
-            for (int j = 0; j < this.size; j++) {
-                if (this.cont[j] != null && this.cont[j].getTileType() == ts.getTileType()) {
-                    if (this.cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
-                        this.cont[j].give(ts.getAmount());
+            for (int j = 0; j < size; j++) {
+                if (cont[j] != null && cont[j].getTileType() == ts.getTileType()) {
+                    if (cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
+                        cont[j].give(ts.getAmount());
                         added = true;
                         break;
                     }
@@ -98,7 +98,7 @@ public class Container implements IContainer {
             if (!added) {
                 final int firstEmpty = firstEmpty();
                 if (firstEmpty >= 0) {
-                    this.cont[firstEmpty] = ts;
+                    cont[firstEmpty] = ts;
                     added = true;
                 }
             }
@@ -112,9 +112,9 @@ public class Container implements IContainer {
 
     @Override
     public void removeAll(final TileType tileType) {
-        for (int i = 0; i < this.size; i++) {
-            if (this.cont[i] != null && this.cont[i].getTileType() == tileType) {
-                this.cont[i] = null;
+        for (int i = 0; i < size; i++) {
+            if (cont[i] != null && cont[i].getTileType() == tileType) {
+                cont[i] = null;
             }
         }
         updateContainer();
@@ -124,16 +124,16 @@ public class Container implements IContainer {
     public int remove(final TileType tileType, final int amount) {
         Preconditions.checkArgument(amount > 0, "The amount to remove must be positive, but was " + amount);
         int counter = amount;
-        for (int i = 0, length = this.cont.length; i < length; i++) {
-            if (this.cont[i] != null && tileType == this.cont[i].getTileType()) {
-                final int newAmount = this.cont[i].getAmount() - counter;
+        for (int i = 0, length = cont.length; i < length; i++) {
+            if (cont[i] != null && tileType == cont[i].getTileType()) {
+                final int newAmount = cont[i].getAmount() - counter;
                 if (newAmount < 0) {
-                    counter -= this.cont[i].getAmount();
-                    this.cont[i] = null;
+                    counter -= cont[i].getAmount();
+                    cont[i] = null;
                 }
                 else {
-                    if (newAmount != 0) { this.cont[i].setAmount(newAmount); }
-                    else { this.cont[i] = null; }
+                    if (newAmount != 0) { cont[i].setAmount(newAmount); }
+                    else { cont[i] = null; }
                     updateContainer();
                     return 0;
                 }
@@ -146,9 +146,9 @@ public class Container implements IContainer {
     @Override
     public void remove(final TileStack tileStack) {
         Preconditions.checkNotNull(tileStack, "cannot remove a null element");
-        for (int i = 0, length = this.cont.length; i < length; i++) {
-            if (tileStack.equals(this.cont[i])) {
-                this.cont[i] = null;
+        for (int i = 0, length = cont.length; i < length; i++) {
+            if (tileStack.equals(cont[i])) {
+                cont[i] = null;
             }
         }
         updateContainer();
@@ -156,14 +156,14 @@ public class Container implements IContainer {
 
     @Override
     public void remove(final int index) {
-        this.cont[index] = null;
+        cont[index] = null;
         updateContainer();
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < this.cont.length; i++) {
-            this.cont[i] = null;
+        for (int i = 0; i < cont.length; i++) {
+            cont[i] = null;
         }
         updateContainer();
     }
@@ -180,7 +180,7 @@ public class Container implements IContainer {
 
     @Override
     public TileStack get(final int index) {
-        return this.cont[index];
+        return cont[index];
     }
 
     @Override
@@ -190,13 +190,13 @@ public class Container implements IContainer {
 
     @Override
     public void put(final int index, final TileStack tileStack) {
-        this.cont[index] = tileStack;
+        cont[index] = tileStack;
         updateContainer();
     }
 
     @Override
     public TileStack[] getContent() {
-        return this.cont;
+        return cont;
     }
 
     @Override
@@ -205,10 +205,10 @@ public class Container implements IContainer {
         if (GameMain.ui == null) {
             return;
         }
-        if (this.actor == null) {
-            this.actor = GameMain.ui.getContainerActor(this);
+        if (actor == null) {
+            actor = GameMain.ui.getContainerActor(this);
         }
-        this.actor.update();
+        actor.update();
     }
 
     @SuppressWarnings("NullableProblems")
@@ -220,12 +220,12 @@ public class Container implements IContainer {
 
             @Override
             public boolean hasNext() {
-                return this.index < Container.this.size;
+                return index < size;
             }
 
             @Override
             public ContainerSlot next() {
-                return new ContainerSlot(this.index, Container.this.cont[this.index++]);
+                return new ContainerSlot(index, cont[index++]);
             }
         };
     }

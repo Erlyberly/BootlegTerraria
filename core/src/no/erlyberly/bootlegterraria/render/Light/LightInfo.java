@@ -22,11 +22,11 @@ public class LightInfo {
         if (pos == null) {
             throw new IllegalArgumentException("Position cannot be null");
         }
-        this.currLL = LightLevel.LVL_0;
-        this.litFrom = new HashMap<>();
-        this.posf = new Vector2(pos.x, pos.y);
-        this.posi = pos;
-        this.skylight = false;
+        currLL = LightLevel.LVL_0;
+        litFrom = new HashMap<>();
+        posf = new Vector2(pos.x, pos.y);
+        posi = pos;
+        skylight = false;
     }
 
     LightInfo(final int blockX, final int blockY) {
@@ -47,7 +47,7 @@ public class LightInfo {
             return;
         }
         final float brightness;
-        if (this.posi.equals(src)) {
+        if (posi.equals(src)) {
             brightness = srcBrt.getLvl();
             if (skylight) {
                 //mark this tile as a light info tile
@@ -55,7 +55,7 @@ public class LightInfo {
             }
             else {
                 //take a not of what this tile would be emitting if it wasn't a skylight
-                this.emitting = srcBrt;
+                emitting = srcBrt;
                 if (this.skylight) {
                     //do not update the brightness if it is already skylight (as skylight should always overwrite
                     // tile light)
@@ -64,14 +64,14 @@ public class LightInfo {
             }
         }
         else {
-            brightness = srcBrt.getLvl() - this.posf.dst(src.x, src.y);
+            brightness = srcBrt.getLvl() - posf.dst(src.x, src.y);
         }
 
         //No light when brightness is less than 0 (this point is out of the light radius)
         if (brightness <= 0) {
             return;
         }
-        this.litFrom.put(src, brightness);
+        litFrom.put(src, brightness);
 
         calculateLightLevel();
     }
@@ -89,9 +89,9 @@ public class LightInfo {
 //            //do nothing when trying to remove the skylight, but this isn't
 //            return;
 //        }
-        if (this.litFrom.containsKey(src) || skylight && this.posi.equals(src)) {
-            this.litFrom.remove(src);
-            if (this.posi.equals(src)) {
+        if (litFrom.containsKey(src) || skylight && posi.equals(src)) {
+            litFrom.remove(src);
+            if (posi.equals(src)) {
                 if (!this.skylight && skylight) {
                     return;
                 }
@@ -99,7 +99,7 @@ public class LightInfo {
                     this.skylight = false;
                 }
                 else /*if (!skylight)*/ {
-                    this.emitting = LightLevel.LVL_0;
+                    emitting = LightLevel.LVL_0;
                 }
             }
             calculateLightLevel();
@@ -111,36 +111,36 @@ public class LightInfo {
      */
     private void calculateLightLevel() {
         //if nothing is shining of it the light level must be 0
-        if (this.litFrom.isEmpty()) {
-            this.currLL = LightLevel.LVL_0;
+        if (litFrom.isEmpty()) {
+            currLL = LightLevel.LVL_0;
             return;
         }
         //FIXME threw a NoSuchElementException from Collections.max
-        this.currLL = LightLevel.valueOf(Collections.max(this.litFrom.values()));
+        currLL = LightLevel.valueOf(Collections.max(litFrom.values()));
     }
 
     public LightLevel getLightLevel() {
-        return this.currLL;
+        return currLL;
     }
 
     public Map<Vector2Int, Float> litFrom() {
-        return this.litFrom;
+        return litFrom;
     }
 
     Vector2 getPosf() {
-        return this.posf;
+        return posf;
     }
 
     Vector2Int getPosi() {
-        return this.posi;
+        return posi;
     }
 
     public boolean isSkylight() {
-        return this.skylight;
+        return skylight;
     }
 
     public LightLevel getEmitting() {
-        return this.emitting;
+        return emitting;
     }
 
     @Override
@@ -150,17 +150,17 @@ public class LightInfo {
 
         final LightInfo info = (LightInfo) o;
 
-        return this.posi.equals(info.posi);
+        return posi.equals(info.posi);
     }
 
     @Override
     public int hashCode() {
-        return this.posi.hashCode();
+        return posi.hashCode();
     }
 
     @Override
     public String toString() {
-        return "LightInfo{" + "posi=" + this.posi + ", currLL=" + this.currLL + ", emitting=" + this.emitting +
-               ", skylight=" + this.skylight + ", lit from " + this.litFrom.size() + " different places" + '}';
+        return "LightInfo{" + "posi=" + posi + ", currLL=" + currLL + ", emitting=" + emitting + ", skylight=" +
+               skylight + ", lit from " + litFrom.size() + " different places" + '}';
     }
 }

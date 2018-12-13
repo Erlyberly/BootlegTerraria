@@ -22,19 +22,19 @@ public class UIController implements Disposable {
     private final Skin skin;
 
     private final Map<IContainer, ContainerActor> containers;
-    DragAndDrop dad;
+    private DragAndDrop dad;
 
     public UIController() {
-        this.skin = new Skin(Gdx.files.internal("skins/container_skin/uiskin.json"));
-        this.stage = new Stage();
-        this.containers = new HashMap<>();
-        this.dad = new DragAndDrop();
-        GameMain.inputMultiplexer.addProcessor(this.stage);
+        skin = new Skin(Gdx.files.internal("skins/container_skin/uiskin.json"));
+        stage = new Stage();
+        containers = new HashMap<>();
+        dad = new DragAndDrop();
+        GameMain.inputMultiplexer.addProcessor(stage);
     }
 
     public void resize(final int width, final int height) {
         // See below for what true means.
-        this.stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     /**
@@ -43,23 +43,23 @@ public class UIController implements Disposable {
      * @return The ContainerActor for the given container
      */
     public ContainerActor getContainerActor(final IContainer container) {
-        ContainerActor actor = this.containers.get(container);
+        ContainerActor actor = containers.get(container);
         if (actor == null) {
-            actor = new ContainerActor(container, this.dad, this.skin);
-            this.stage.addActor(actor);
-            this.containers.put(container, actor);
+            actor = new ContainerActor(container, dad, skin);
+            stage.addActor(actor);
+            containers.put(container, actor);
         }
         return actor;
     }
 
 
     public void render() {
-        this.stage.act(Gdx.graphics.getDeltaTime());
-        this.stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override
     public void dispose() {
-        this.stage.dispose();
+        stage.dispose();
     }
 }

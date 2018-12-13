@@ -29,20 +29,20 @@ public class BlockLightMap implements LightMap {
     private boolean initialized;
 
     public BlockLightMap(final GameMap map) {
-        this.initialized = false;
+        initialized = false;
         this.map = map;
-        this.lightInfoMap = new HashMap<>();
-        this.skylight = new int[(int) map.getWidth()];
+        lightInfoMap = new HashMap<>();
+        skylight = new int[(int) map.getWidth()];
         initialCalculations();
     }
 
     @Override
     public LightLevel lightAt(final Vector2Int pos) {
         //hide the real light level
-        if (realLight && pos.y >= this.skylight[pos.x]) {
+        if (realLight && pos.y >= skylight[pos.x]) {
             return SKY_LIGHT;
         }
-        final LightInfo li = this.lightInfoMap.get(pos);
+        final LightInfo li = lightInfoMap.get(pos);
         return li != null ? li.getLightLevel() : LightLevel.LVL_0;
     }
 
@@ -59,12 +59,12 @@ public class BlockLightMap implements LightMap {
         if (ll == LightLevel.LVL_0) {
             throw new IllegalArgumentException("Tried to add light level 0 as a light source");
         }
-        else if (pos.x < 0 || pos.y < 0 || pos.x >= this.map.getWidth() || pos.y >= this.map.getHeight()) {
+        else if (pos.x < 0 || pos.y < 0 || pos.x >= map.getWidth() || pos.y >= map.getHeight()) {
             throw new IllegalArgumentException("Tried to add light source outside of map");
         }
         GameMain.SECONDARY_THREAD.execute(() -> {
             final long startTime = System.currentTimeMillis();
-            final AABB2D affected = Util.fromLight(pos, this.map, ll);
+            final AABB2D affected = Util.fromLight(pos, map, ll);
             for (final Vector2Int v : affected) {
                 final LightInfo li = getLi(v);
                 li.put(pos, ll, skylight);
@@ -85,21 +85,21 @@ public class BlockLightMap implements LightMap {
     }
 
     private void removeSource(final Vector2Int pos, final boolean skylight) {
-        if (pos.x < 0 || pos.y < 0 || pos.x >= this.map.getWidth() || pos.y >= this.map.getHeight()) {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= map.getWidth() || pos.y >= map.getHeight()) {
             throw new IllegalArgumentException("Tried to remove light source outside of map");
         }
-        if (this.lightInfoMap.containsKey(pos)) {
+        if (lightInfoMap.containsKey(pos)) {
             GameMain.SECONDARY_THREAD.execute(() -> {
                 final long startTime = System.currentTimeMillis();
 
-                final LightInfo posLi = this.lightInfoMap.get(pos);
+                final LightInfo posLi = lightInfoMap.get(pos);
                 final Map<Vector2Int, Float> litFrom = posLi.litFrom();
 
                 final ArrayList<LightInfo> emittedLight = new ArrayList<>();
 
                 if (litFrom.containsKey(pos)) {
-                    for (final Vector2Int v : Util.fromLight(pos, this.map, LightLevel.valueOf(litFrom.get(pos)))) {
-                        final LightInfo li = this.lightInfoMap.get(v);
+                    for (final Vector2Int v : Util.fromLight(pos, map, LightLevel.valueOf(litFrom.get(pos)))) {
+                        final LightInfo li = lightInfoMap.get(v);
                         if (li != null) {
                             final boolean oldSkylight = li.isSkylight();
                             li.remove(pos, skylight);
@@ -108,7 +108,7 @@ public class BlockLightMap implements LightMap {
                             }
                             //remove the instance if there is no light at it
                             if (li.litFrom().isEmpty()) {
-                                this.lightInfoMap.remove(v);
+                                lightInfoMap.remove(v);
                             }
                         }
                     }
@@ -128,19 +128,19 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public int getSkylightAt(final int blockX) {
-        return this.skylight[blockX];
+        return skylight[blockX];
     }
 
     @Override
     public void calculateSkylight(final int blockX) {
-        Preconditions.checkArgument(Util.isBetween(0, blockX, this.skylight.length),
+        Preconditions.checkArgument(Util.isBetween(0, blockX, skylight.length),
                                     "The argument must be between 0 and mapWidth - 1");
         GameMain.SECONDARY_THREAD.execute(() -> {
             final long startTime = System.currentTimeMillis();
             final boolean oldLogLightTime = logLightEvents;
             logLightEvents = false;
 
-            final int oldSkylight = this.skylight[blockX];
+            final int oldSkylight = skylight[blockX];
 
             final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.map.getBlockLayer();
 
@@ -155,16 +155,16 @@ public class BlockLightMap implements LightMap {
                 final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
                 //check if the current cell is collidable, if it is this is where the skylight stops
                 if (tt.isSolid()) {
-                    this.skylight[blockX] = y + 1;
+                    skylight[blockX] = y + 1;
                     skylightFound = true;
                     break;
                 }
             }
             if (!skylightFound) {
-                this.skylight[blockX] = 0;
+                skylight[blockX] = 0;
             }
 
-            final int newSkylight = this.skylight[blockX];
+            final int newSkylight = skylight[blockX];
 
             if (oldSkylight < newSkylight) { //placed a block above skylight
                 for (int y = oldSkylight; y < newSkylight; y++) {
@@ -172,15 +172,15 @@ public class BlockLightMap implements LightMap {
 
 
                     //add lights on either end
-                    if (blockX + 1 < this.skylight.length && this.skylight[blockX + 1] < y) {
+                    if (blockX + 1 < skylight.length && skylight[blockX + 1] < y) {
                         addSkylight(blockX + 1, y);
                     }
-                    if (blockX - 1 >= 0 && this.skylight[blockX - 1] < y) {
+                    if (blockX - 1 >= 0 && skylight[blockX - 1] < y) {
                         addSkylight(blockX - 1, y);
                     }
                 }
             }
-            else if (oldSkylight > this.skylight[blockX]) { //placed a block below skylight
+            else if (oldSkylight > skylight[blockX]) { //placed a block below skylight
                 for (int y = newSkylight; y < oldSkylight; y++) {
                     addSkylight(blockX, y);
                 }
@@ -199,10 +199,10 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public LightInfo lightInfoAt(final Vector2Int pos) {
-        if (this.map.isOutsideMap(pos.x, pos.y)) {
+        if (map.isOutsideMap(pos.x, pos.y)) {
             return null;
         }
-        return this.lightInfoMap.getOrDefault(pos, new LightInfo(pos));
+        return lightInfoMap.getOrDefault(pos, new LightInfo(pos));
     }
 
     private void initialCalculations() {
@@ -214,11 +214,11 @@ public class BlockLightMap implements LightMap {
 
             final long startTimeMain = System.currentTimeMillis();
 
-            final MapLayer layer = this.map.getBlockLayer();
+            final MapLayer layer = map.getBlockLayer();
             if (layer.isVisible() && layer instanceof TiledMapTileLayer) {
                 final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
                 final int height = tiledLayer.getHeight();
-                for (int x = 0, width = (int) this.map.getWidth(); x < width; x++) {
+                for (int x = 0, width = (int) map.getWidth(); x < width; x++) {
                     for (int y = height - 1; y >= 0; y--) { //start at the top of the map
 
                         //check if the current cell is collidable
@@ -228,8 +228,8 @@ public class BlockLightMap implements LightMap {
                             continue;
                         }
                         final TileType tt = TileType.getTileTypeById(cell.getTile().getId());
-                        if (tt.isSolid() && this.skylight[x] == 0) {
-                            this.skylight[x] = y + 1;
+                        if (tt.isSolid() && skylight[x] == 0) {
+                            skylight[x] = y + 1;
 //                        System.out.printf("skylight @ (%d,%d)%n", x, this.skylight[x]);
                         }
                         if (tt.getLuminosity() != LightLevel.LVL_0) {
@@ -244,15 +244,15 @@ public class BlockLightMap implements LightMap {
 
             final long startTimeSkylight = System.currentTimeMillis();
 
-            for (int x = 0; x < this.skylight.length; x++) {
+            for (int x = 0; x < skylight.length; x++) {
                 //add lights up to the highest skylight point of either left, right and here
-                final int skyLft = this.skylight[Math.max(0, x - 1)];
-                final int skyRht = this.skylight[Math.min(x + 1, this.skylight.length - 1)];
-                int hi = Math.max(Math.max(skyLft, skyRht), this.skylight[x]);
-                hi = Util.clamp(0, hi, (int) this.map.getHeight() - 1);
+                final int skyLft = skylight[Math.max(0, x - 1)];
+                final int skyRht = skylight[Math.min(x + 1, skylight.length - 1)];
+                int hi = Math.max(Math.max(skyLft, skyRht), skylight[x]);
+                hi = Util.clamp(0, hi, (int) map.getHeight() - 1);
 //                System.out.printf("Adding skylight from %d to %d @ %d%n", this.skylight[x], hi, x);
 
-                for (int y = this.skylight[x]; y < hi + 1; y++) {
+                for (int y = skylight[x]; y < hi + 1; y++) {
 //                    System.out.printf("Adding skylight @ (%d,%d)%n", x, y);
                     addSkylight(x, y);
                 }
@@ -261,7 +261,7 @@ public class BlockLightMap implements LightMap {
 
             GameMain.SECONDARY_THREAD.execute(() -> {
                 logLightEvents = oldLogLight;
-                this.initialized = true;
+                initialized = true;
                 GameMain.console
                     .log("Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms");
                 GameMain.console.log(
@@ -271,8 +271,8 @@ public class BlockLightMap implements LightMap {
     }
 
     private LightInfo getLi(final Vector2Int pos) {
-        this.lightInfoMap.putIfAbsent(pos, new LightInfo(pos));
-        return this.lightInfoMap.get(pos);
+        lightInfoMap.putIfAbsent(pos, new LightInfo(pos));
+        return lightInfoMap.get(pos);
     }
 
     private LightInfo getLi(final int blockX, final int blockY) {
@@ -281,6 +281,6 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public boolean isInitialized() {
-        return this.initialized;
+        return initialized;
     }
 }

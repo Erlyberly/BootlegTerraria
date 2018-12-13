@@ -26,16 +26,16 @@ public class Inventory extends AbstractInventory {
 
     @Override
     public TileStack holding() {
-        return this.container.get(getSel());
+        return container.get(getSel());
     }
 
     @Override
     public int getSize() {
-        return this.container.getSize();
+        return container.getSize();
     }
 
     @Override
     public IContainer getContainer() {
-        return this.container;
+        return container;
     }
 }

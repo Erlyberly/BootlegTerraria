@@ -16,17 +16,17 @@ public class Bullet extends WeaponEntity {
 
     public Bullet(final float x, final float y, final int facing) {
         super(x, y, facing);
-        this.spawnX = x;
+        spawnX = x;
     }
 
     @Override
     public void update() {
         final float newX = getPos().x + getHorizontalSpeed() * getFacing() * Gdx.graphics.getDeltaTime();
-        final boolean colliding = this.gameMap.checkMapCollision(newX, this.pos.y, getWidth(), getHeight());
-        final boolean tooFarAway = Math.abs(this.pos.x - this.spawnX) > this.gameMap.getPlayer().getWidth() * 15;
+        final boolean colliding = gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight());
+        final boolean tooFarAway = Math.abs(pos.x - spawnX) > gameMap.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
-            this.destroyed = true;
-            this.gameMap.removeEntity();
+            destroyed = true;
+            gameMap.removeEntity();
         }
         moveX(getHorizontalSpeed() * getFacing());
     }
@@ -58,8 +58,9 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public void render(final SpriteBatch batch) {
-        batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
-                   getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
-                   TEXTURE.getRegionHeight(), !isFacingRight(), false);
+        batch
+            .draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                  TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
+                  !isFacingRight(), false);
     }
 }

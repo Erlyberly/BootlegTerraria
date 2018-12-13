@@ -25,7 +25,7 @@ public class ContainerActor extends Window {
         setResizable(false);
         setMovable(false);
 
-        this.slots = new SlotActor[container.getSize()];
+        slots = new SlotActor[container.getSize()];
 
         final TextButton closeButton = new TextButton("X", skin);
         closeButton.addListener(new HidingClickListener(this));
@@ -40,7 +40,7 @@ public class ContainerActor extends Window {
         for (final ContainerSlot cslot : container) {
             final SlotActor slotActor =
                 new SlotActor(skin, new Slot(this, cslot.getContent(), cslot.getIndex()), container);
-            this.slots[cslot.getIndex()] = slotActor;
+            slots[cslot.getIndex()] = slotActor;
             dragAndDrop.addSource(new SlotSource(slotActor));
             dragAndDrop.addTarget(new SlotTarget(slotActor));
 
@@ -66,19 +66,19 @@ public class ContainerActor extends Window {
     @Override
     public void act(final float delta) {
         super.act(delta);
-        if (this.update) {
-            for (final ContainerSlot cslot : this.container) {
-                this.slots[cslot.getIndex()].update();
+        if (update) {
+            for (final ContainerSlot cslot : container) {
+                slots[cslot.getIndex()].update();
             }
-            this.update = false;
+            update = false;
         }
     }
 
     public void update() {
-        this.update = true;
+        update = true;
     }
 
     public IContainer getContainer() {
-        return this.container;
+        return container;
     }
 }

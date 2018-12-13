@@ -24,8 +24,8 @@ public class Zombie extends LivingEntity {
 
     Zombie(final float x, final float y) {
         super(x, y);
-        this.horizontalSpeed = 40 + RNG.nextInt(40);
-        this.chasing = false;
+        horizontalSpeed = 40 + RNG.nextInt(40);
+        chasing = false;
     }
 
     @Override
@@ -33,55 +33,55 @@ public class Zombie extends LivingEntity {
 
         super.update(); //Apply gravity
 
-        final float horizontalDistanceFromPlayer = this.pos.x - this.gameMap.getPlayer().getPos().x;
+        final float horizontalDistanceFromPlayer = pos.x - gameMap.getPlayer().getPos().x;
 
-        if (horizontalDistanceFromPlayer > this.gameMap.getPlayer().getWidth() / 2 &&
-            horizontalDistanceFromPlayer < this.gameMap.getPlayer().getWidth() * 10) {
-            moveX(-this.horizontalSpeed);
+        if (horizontalDistanceFromPlayer > gameMap.getPlayer().getWidth() / 2 &&
+            horizontalDistanceFromPlayer < gameMap.getPlayer().getWidth() * 10) {
+            moveX(-horizontalSpeed);
             setFacing(-1);
-            this.chasing = true;
+            chasing = true;
         }
-        else if (horizontalDistanceFromPlayer < -this.gameMap.getPlayer().getWidth() / 2 &&
-                 horizontalDistanceFromPlayer > -this.gameMap.getPlayer().getWidth() * 10) {
-            moveX(this.horizontalSpeed);
+        else if (horizontalDistanceFromPlayer < -gameMap.getPlayer().getWidth() / 2 &&
+                 horizontalDistanceFromPlayer > -gameMap.getPlayer().getWidth() * 10) {
+            moveX(horizontalSpeed);
             setFacing(1);
-            this.chasing = true;
+            chasing = true;
         }
         else {
-            this.chasing = false;
+            chasing = false;
         }
 
-        if (this.gameMap
-                .checkMapCollision(this.pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, this.pos.y,
-                                   getWidth(), getHeight()) && this.onGround && this.chasing) {
-            this.velocityY += JUMP_VELOCITY;
+        if (gameMap
+                .checkMapCollision(pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, pos.y, getWidth(),
+                                   getHeight()) && onGround && chasing) {
+            velocityY += JUMP_VELOCITY;
         }
     }
 
     @Override
     public void modifyHp(final float amount) {
-        if (this.health > 0) {
-            this.health += amount;
+        if (health > 0) {
+            health += amount;
         }
 
-        if (this.health <= 0) {
-            this.health = 0;
-            this.destroyed = true;
-            this.gameMap.removeEnemy();
+        if (health <= 0) {
+            health = 0;
+            destroyed = true;
+            gameMap.removeEnemy();
         }
 
-        if (this.health > this.getMaxHealth()) {
-            this.health = this.getMaxHealth();
+        if (health > getMaxHealth()) {
+            health = getMaxHealth();
         }
     }
 
     public boolean isChasing() {
-        return this.chasing;
+        return chasing;
     }
 
     @Override
     public float getHorizontalSpeed() {
-        return this.horizontalSpeed;
+        return horizontalSpeed;
     }
 
     @Override
@@ -113,12 +113,12 @@ public class Zombie extends LivingEntity {
     public void render(final SpriteBatch batch) {
 
         startShade(batch);
-        batch.draw(TEXTURE.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(),
-                   getHeight(), 1, 1, 0, TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(),
-                   TEXTURE.getRegionHeight(), isFacingRight(), false);
-        batch.draw(HEALTH_BAR, this.pos.x - getWidth() / 2f, this.pos.y + 34f,
-                   (this.health / this.getMaxHealth() * getWidth() * 2f), 5f);
-        batch.draw(BAR_OUTLINE, this.pos.x - getWidth() / 2f, this.pos.y + 34f, getWidth() * 2f, 5f);
+        batch
+            .draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                  TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
+                  isFacingRight(), false);
+        batch.draw(HEALTH_BAR, pos.x - getWidth() / 2f, pos.y + 34f, (health / getMaxHealth() * getWidth() * 2f), 5f);
+        batch.draw(BAR_OUTLINE, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
         endShade(batch);
     }
 

@@ -22,54 +22,54 @@ public abstract class AbstractInventory implements IInventory {
 
     @Override
     public void next() {
-        this.sel = (this.sel + 1) % getSize();
+        sel = (sel + 1) % getSize();
     }
 
     @Override
     public void prev() {
-        if (this.sel == 0) {
-            this.sel = getSize() - 1;
+        if (sel == 0) {
+            sel = getSize() - 1;
             return;
         }
-        this.sel = (this.sel - 1) % getSize();
+        sel = (sel - 1) % getSize();
     }
 
     @Override
     public void open() {
-        if (this.actor == null) {
-            this.actor = GameMain.ui.getContainerActor(getContainer());
+        if (actor == null) {
+            actor = GameMain.ui.getContainerActor(getContainer());
         }
-        this.actor.setVisible(true);
+        actor.setVisible(true);
     }
 
     @Override
     public void close() {
-        if (this.actor == null) {
+        if (actor == null) {
             return;
         }
-        this.actor.setVisible(false);
+        actor.setVisible(false);
     }
 
     @Override
     public boolean isOpen() {
-        if (this.actor == null) {
+        if (actor == null) {
             return false;
         }
-        return this.actor.isVisible();
+        return actor.isVisible();
     }
 
     @Override
     public void select(final int index) {
-        this.sel = Preconditions.checkPositionIndex(index, getSize() - 1);
+        sel = Preconditions.checkPositionIndex(index, getSize() - 1);
     }
 
     @Override
     public int getSel() {
-        return this.sel;
+        return sel;
     }
 
     @Override
     public Entity getHolder() {
-        return this.holder;
+        return holder;
     }
 }

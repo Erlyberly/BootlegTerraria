@@ -33,46 +33,47 @@ public abstract class LivingEntity extends Entity {
     public LivingEntity(final float x, final float y) {
         super(x, y);
         float newY = y;
-        if (this.gameMap.checkPlayerMapCollisionDamage(x, y, getWidth(), getHeight())) {
-            newY = (int) ((this.gameMap.getSkylightAt((int) (x / this.gameMap.getTileHeight())) +
-                           (this.getHeight() / this.gameMap.getTileHeight())) * this.gameMap.getTileWidth());
+        if (gameMap.checkPlayerMapCollisionDamage(x, y, getWidth(), getHeight())) {
+            newY = (int) (
+                (gameMap.getSkylightAt((int) (x / gameMap.getTileHeight())) + (getHeight() / gameMap.getTileHeight())) *
+                gameMap.getTileWidth());
         }
-        this.pos.y = newY;
+        pos.y = newY;
     }
 
     public void startShade(final Batch batch) {
-        if (this.started) {
+        if (started) {
             throw new IllegalStateException("Shading is already started");
         }
-        this.started = true;
+        started = true;
         //make the player follow the lighting of the block they're standing on
 
-        this.ll = this.gameMap.lightAt(getMapPos());
-        this.oldColor = batch.getColor();
+        ll = gameMap.lightAt(getMapPos());
+        oldColor = batch.getColor();
 
-        if (this.ll != null) {
-            final Color newColor = this.oldColor.cpy();
+        if (ll != null) {
+            final Color newColor = oldColor.cpy();
 
-            newColor.r *= this.ll.getPercentage();
-            newColor.g *= this.ll.getPercentage();
-            newColor.b *= this.ll.getPercentage();
+            newColor.r *= ll.getPercentage();
+            newColor.g *= ll.getPercentage();
+            newColor.b *= ll.getPercentage();
 
             batch.setColor(newColor);
         }
     }
 
     public void endShade(final Batch batch) {
-        if (!this.started) {
+        if (!started) {
             throw new IllegalStateException("Cannot end a batch when it is not started");
         }
-        this.started = false;
-        if (this.ll != null) {
-            batch.setColor(this.oldColor);
+        started = false;
+        if (ll != null) {
+            batch.setColor(oldColor);
         }
     }
 
     public IInventory getInv() {
-        return this.inv;
+        return inv;
     }
 
     public void setInv(final IInventory inv) {

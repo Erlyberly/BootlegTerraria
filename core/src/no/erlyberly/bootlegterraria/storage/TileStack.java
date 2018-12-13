@@ -47,14 +47,14 @@ public class TileStack implements Comparable<TileStack> {
      * @return The type of the stack this is
      */
     public TileType getTileType() {
-        return this.tt;
+        return tt;
     }
 
     /**
      * @return How big this stack is, will always be 0 or greater
      */
     public int getAmount() {
-        return this.amount;
+        return amount;
     }
 
     /**
@@ -82,7 +82,7 @@ public class TileStack implements Comparable<TileStack> {
      */
     public void give(final int add) {
         Preconditions.checkArgument(add >= 0, "Amount added must be greater than or equal to 0");
-        setAmount(this.amount + add);
+        setAmount(amount + add);
     }
 
     /**
@@ -97,7 +97,7 @@ public class TileStack implements Comparable<TileStack> {
      */
     public void take(final int remove) {
         Preconditions.checkArgument(remove >= 0, "Amount removed must be greater than or equal to 0");
-        setAmount(Math.max(this.amount - remove, 0));
+        setAmount(Math.max(amount - remove, 0));
     }
 
     /**
@@ -150,19 +150,19 @@ public class TileStack implements Comparable<TileStack> {
      * @return UI friendly name
      */
     public String displayName() {
-        return this.tt.toString();
+        return tt.toString();
     }
 
     /**
      * @return If this stack is valid with regard to the {@link TileType#getMaxStackSize()}
      */
     public boolean isValid() {
-        return this.amount >= 0 && this.amount <= this.tt.getMaxStackSize();
+        return amount >= 0 && amount <= tt.getMaxStackSize();
     }
 
     @Override
     public String toString() {
-        return "TileStack{" + "tt=" + this.tt + ", amount=" + this.amount + '}';
+        return "TileStack{" + "tt=" + tt + ", amount=" + amount + '}';
     }
 
     @Override
@@ -172,22 +172,22 @@ public class TileStack implements Comparable<TileStack> {
 
         final TileStack stack = (TileStack) o;
 
-        if (this.amount != stack.amount) { return false; }
-        return this.tt == stack.tt;
+        if (amount != stack.amount) { return false; }
+        return tt == stack.tt;
     }
 
     @Override
     public int hashCode() {
-        int result = this.tt.hashCode();
-        result = 31 * result + this.amount;
+        int result = tt.hashCode();
+        result = 31 * result + amount;
         return result;
     }
 
     @Override
     public int compareTo(final TileStack o) {
-        final int ttct = this.tt.compareTo(o.tt);
+        final int ttct = tt.compareTo(o.tt);
         if (ttct == 0) {
-            return this.amount - o.amount;
+            return amount - o.amount;
         }
         return ttct;
     }

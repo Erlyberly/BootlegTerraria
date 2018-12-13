@@ -16,10 +16,10 @@ public class ContainerSlot {
     }
 
     public int getIndex() {
-        return this.index;
+        return index;
     }
 
     public TileStack getContent() {
-        return this.content;
+        return content;
     }
 }

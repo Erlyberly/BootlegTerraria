@@ -38,14 +38,14 @@ public class CommandHandler extends CommandExecutor {
     private final ConsoleHandler cmdH;
 
     CommandHandler(final ConsoleHandler consoleHandler) {
-        this.cmdH = consoleHandler;
+        cmdH = consoleHandler;
     }
 
     public void god() {
         final Player player = GameMain.map.getPlayer();
         player.god = !player.god;
         heal((byte) 3);
-        this.console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
+        console.log("Godmode is " + (player.god ? "enabled" : "disabled"), LogLevel.SUCCESS);
     }
 
     @ConsoleDoc(description = "Heal player in different ways", paramDescriptions = {"\n0b01 - health\n0b10 - stamina"})
@@ -72,7 +72,7 @@ public class CommandHandler extends CommandExecutor {
     @ConsoleDoc(paramDescriptions = "Change gravity")
     public void gravity(final float newGravity) {
         GameMap.gravity = newGravity;
-        this.console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
+        console.log("New gravity is " + newGravity, LogLevel.SUCCESS);
     }
 
     @ConsoleDoc(description = "Switch weapon", paramDescriptions = {"Available weapon types are 'gun' and 'sword'"})
@@ -89,7 +89,7 @@ public class CommandHandler extends CommandExecutor {
                 weapon = new Sword("The Roll");
                 break;
             default:
-                this.console.log("Could not find weaponType '" + weaponType + "'", LogLevel.ERROR);
+                console.log("Could not find weaponType '" + weaponType + "'", LogLevel.ERROR);
                 return;
         }
 
@@ -106,25 +106,25 @@ public class CommandHandler extends CommandExecutor {
     @HiddenCommand
     public void logLight() {
         logLightEvents = !logLightEvents;
-        this.console.log("Logging light is now " + logLightEvents);
+        console.log("Logging light is now " + logLightEvents);
     }
 
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
     public void tp(final int x, final int y) {
         if (!Util.isBetween(0, x, (int) GameMain.map.getWidth())) {
-            this.cmdH.log("Cannot teleport player outside of map", LogLevel.ERROR);
+            cmdH.log("Cannot teleport player outside of map", LogLevel.ERROR);
             return;
         }
         final GameMap gameMap = GameMain.map;
-        this.cmdH.logf("Trying to teleport player to (%d, %d)", x, y);
+        cmdH.logf("Trying to teleport player to (%d, %d)", x, y);
         final Vector2 v = gameMap.getPlayer().teleport(x, y);
 
         if (!v.equals(new Vector2(x, y))) {
-            this.cmdH.log("Failed to teleport player to original coordinate.");
-            this.cmdH.logf(LogLevel.SUCCESS, "Player teleported to (%.0f, %.0f)", v.x, v.y);
+            cmdH.log("Failed to teleport player to original coordinate.");
+            cmdH.logf(LogLevel.SUCCESS, "Player teleported to (%.0f, %.0f)", v.x, v.y);
         }
         else {
-            this.cmdH.log("Successfully teleported player", LogLevel.SUCCESS);
+            cmdH.log("Successfully teleported player", LogLevel.SUCCESS);
         }
     }
 
@@ -158,6 +158,7 @@ public class CommandHandler extends CommandExecutor {
                 paramDescriptions = {"The inventory to use, can be 'creative' or 'autosort'"})
     public void inv(final String invType) {
         final Player player = GameMain.map.getPlayer();
+        player.getInv().close();
         switch (invType.toLowerCase()) {
             case "creative":
             case "crea":
@@ -186,6 +187,31 @@ public class CommandHandler extends CommandExecutor {
                 return;
         }
         GameMain.console.log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
+    }
+
+    @ConsoleDoc(description = "Unbind a binding, NOT WORKING ATM!! Binding needs to be rewritten with UUIDs in mind")
+    @HiddenCommand
+    public void unbind(final String settingStr) {
+        final InputSetting setting;
+        try {
+            try {
+                setting = InputSetting.valueOf(settingStr.toUpperCase());
+            } catch (final IllegalArgumentException | NullPointerException e) {
+                GameMain.console.logf(LogLevel.ERROR, "No setting found with the name '%s'", settingStr);
+                return;
+            }
+            final InputHandler inputHandler = GameMain.input;
+
+            final boolean success =
+                inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[0]);
+            if (!success) {
+                return;
+            }
+
+            GameMain.console.log(setting.toString() + " removed");
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @ConsoleDoc(description = "Bind three keys to a setting",
@@ -271,7 +297,7 @@ public class CommandHandler extends CommandExecutor {
             } catch (final GdxRuntimeException ignore) { }
         }
         if (execFile != null && execFile.exists() && !execFile.isDirectory()) {
-            this.console.log("Executing console commands from file '" + execFile.name() + "'", LogLevel.SUCCESS);
+            console.log("Executing console commands from file '" + execFile.name() + "'", LogLevel.SUCCESS);
             final String[] cmds = execFile.readString().replace("\r\n", "\n").replace("\r", "\n").split("\n");
 
             for (final String cmd : cmds) {
@@ -285,11 +311,11 @@ public class CommandHandler extends CommandExecutor {
                 }
                 GameMain.console.execCommand(cmd.substring(0, comment));
             }
-            this.console.log("Finished executing all commands from file", LogLevel.SUCCESS);
+            console.log("Finished executing all commands from file", LogLevel.SUCCESS);
         }
         else {
-            this.console.log("Failed to execute given file \"" + (execFile == null ? "???" : execFile.name()) +
-                             "\", does it exist? is it a directory?", LogLevel.ERROR);
+            console.log("Failed to execute given file \"" + (execFile == null ? "???" : execFile.name()) +
+                        "\", does it exist? is it a directory?", LogLevel.ERROR);
         }
     }
 

@@ -124,7 +124,7 @@ public final class SortOrder {
 
         //create a  comparator that is using all the comparators
 
-        this.comp = (ts1, ts2) -> {
+        comp = (ts1, ts2) -> {
             for (final Comparator<TileStack> loopComp : sorts) {
                 if (loopComp == null) {
                     throw new IllegalArgumentException("None of the comparators can be null");
@@ -151,15 +151,15 @@ public final class SortOrder {
      * Reverse the current sort order
      */
     public void reverse() {
-        this.rev = !this.rev;
-        this.comp = this.comp.reversed();
+        rev = !rev;
+        comp = comp.reversed();
     }
 
     /**
      * @return If the current sort order is reversed
      */
     public boolean isReversed() {
-        return this.rev;
+        return rev;
     }
 
     /**
@@ -173,7 +173,7 @@ public final class SortOrder {
 
 
         //finally sort the array using the compiled settings
-        Arrays.sort(a, this.comp);
+        Arrays.sort(a, comp);
     }
 
     /**

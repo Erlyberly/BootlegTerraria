@@ -17,22 +17,22 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2Int> {
     private final AABB1D y;
 
     public AABB2D(final int minX, final int maxX, final int minY, final int maxY) {
-        this.x = new AABB1D(minX, maxX);
-        this.y = new AABB1D(minY, maxY);
+        x = new AABB1D(minX, maxX);
+        y = new AABB1D(minY, maxY);
     }
 
     @Override
     public boolean overlap(final AABB2D other) {
-        return this.x.overlap(other.x) && this.y.overlap(other.y);
+        return x.overlap(other.x) && y.overlap(other.y);
     }
 
     public boolean hasPoint(final Vector2Int p) {
-        return Util.isBetween(this.x.min, p.x, this.x.max) && Util.isBetween(this.y.min, p.y, this.y.max);
+        return Util.isBetween(x.min, p.x, x.max) && Util.isBetween(y.min, p.y, y.max);
     }
 
     @Override
     public String toString() {
-        return "AABB2D{" + "x=" + this.x + ", y=" + this.y + '}';
+        return "AABB2D{" + "x=" + x + ", y=" + y + '}';
     }
 
     @Override
@@ -52,28 +52,28 @@ public class AABB2D extends AABB<AABB2D> implements Iterable<Vector2Int> {
         int cY;
 
         AABB2DIterator(final AABB2D aabb) {
-            this.minX = aabb.x.min;
-            this.maxX = aabb.x.max;
+            minX = aabb.x.min;
+            maxX = aabb.x.max;
 
-            this.minY = aabb.y.min;
-            this.maxY = aabb.y.max;
+            minY = aabb.y.min;
+            maxY = aabb.y.max;
 
-            this.cX = this.minX;
-            this.cY = this.minY;
+            cX = minX;
+            cY = minY;
         }
 
 
         @Override
         public boolean hasNext() {
-            return this.cY < this.maxY;
+            return cY < maxY;
         }
 
         @Override
         public Vector2Int next() {
-            final Vector2Int v = new Vector2Int(this.cX++, this.cY);
-            if (this.cX >= this.maxX) {
-                this.cY++;
-                this.cX = this.minX;
+            final Vector2Int v = new Vector2Int(cX++, cY);
+            if (cX >= maxX) {
+                cY++;
+                cX = minX;
             }
             return v;
         }

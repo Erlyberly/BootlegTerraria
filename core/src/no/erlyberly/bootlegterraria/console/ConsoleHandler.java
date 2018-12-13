@@ -14,8 +14,8 @@ public class ConsoleHandler extends GUIConsole {
         super(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
         setCommandExecutor(new CommandHandler(this));
         GameMain.inputMultiplexer.addProcessor(getInputProcessor());
-        this.logToSystem = true;
-        this.consoleTrace = true;
+        logToSystem = true;
+        consoleTrace = true;
 
         log("INITIATING #" + Util.getLastGitCommitID(false), LogLevel.SUCCESS);
     }

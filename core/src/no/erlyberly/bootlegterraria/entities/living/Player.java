@@ -39,8 +39,8 @@ public class Player extends LivingEntity {
     public int maxStamina = 10000;
     public float dodgeStaminaUsage = 3000;
 
-    private final float calculatedSpeed = HORIZONTAL_SPEED * this.speedModifier;
-    private float stamina = this.maxStamina; //player start with max stamina
+    private final float calculatedSpeed = HORIZONTAL_SPEED * speedModifier;
+    private float stamina = maxStamina; //player start with max stamina
 
     private Weapon weapon;
     private boolean invincible = false;
@@ -212,30 +212,30 @@ public class Player extends LivingEntity {
     public Player(final float x, final float y) {
         super(x, y);
 
-        this.weapon = new Gun();
+        weapon = new Gun();
         setInv(new Inventory(this, 40));
     }
 
     @Override
     public void update() {
-        if (this.dodging) {
+        if (dodging) {
             moveX(DODGE_SPEED * getFacing());
-            this.dodgeTime += Gdx.graphics.getDeltaTime();
-            if (this.dodgeTime >= DODGE_TIME) {
-                this.dodgeTime = 0;
-                this.dodging = false;
-                this.invincible = false;
+            dodgeTime += Gdx.graphics.getDeltaTime();
+            if (dodgeTime >= DODGE_TIME) {
+                dodgeTime = 0;
+                dodging = false;
+                invincible = false;
             }
         }
 
-        this.weapon.cooldown();
+        weapon.cooldown();
 
-        modifyStamina(this.staminaRegen * Gdx.graphics.getDeltaTime());
-        if (this.dodgeCooldown < DODGE_COOLDOWN) {
-            this.dodgeCooldown += Gdx.graphics.getDeltaTime();
+        modifyStamina(staminaRegen * Gdx.graphics.getDeltaTime());
+        if (dodgeCooldown < DODGE_COOLDOWN) {
+            dodgeCooldown += Gdx.graphics.getDeltaTime();
         }
         else {
-            this.dodgeCooldown = DODGE_COOLDOWN;
+            dodgeCooldown = DODGE_COOLDOWN;
         }
 
         //only apply gravity when the player is not flying
@@ -247,7 +247,7 @@ public class Player extends LivingEntity {
 
     @Override
     public float getHorizontalSpeed() {
-        return HORIZONTAL_SPEED * this.speedModifier;
+        return HORIZONTAL_SPEED * speedModifier;
     }
 
     @Override
@@ -257,30 +257,30 @@ public class Player extends LivingEntity {
 
     @Override
     public void modifyHp(final float amount) {
-        if (this.god) {
+        if (god) {
             return;
         }
 
         if (amount < 0) {
             //let the player display the hurt sprite for quarter-(ish) of a second
-            this.hurtTimer = Gdx.graphics.getFramesPerSecond() / 4;
+            hurtTimer = Gdx.graphics.getFramesPerSecond() / 4;
         }
 
-        if (this.health > 0) {
-            this.health += amount;
+        if (health > 0) {
+            health += amount;
         }
 
-        if (this.health <= 0) {
-            this.health = 0;
+        if (health <= 0) {
+            health = 0;
         }
 
-        if (this.health > this.getMaxHealth()) {
-            this.health = this.getMaxHealth();
+        if (health > getMaxHealth()) {
+            health = getMaxHealth();
         }
     }
 
     public int getMaxStamina() {
-        return this.maxStamina;
+        return maxStamina;
     }
 
     public void setMaxStamina(final int maxStamina) {
@@ -288,7 +288,7 @@ public class Player extends LivingEntity {
     }
 
     public float getStamina() {
-        return this.stamina;
+        return stamina;
     }
 
     public void setStamina(final int stamina) {
@@ -296,21 +296,21 @@ public class Player extends LivingEntity {
     }
 
     public void modifyStamina(final float amount) {
-        if (this.god) {
+        if (god) {
             return;
         }
 
-        if (this.stamina >= -this.maxStamina) {
-            this.stamina += amount;
+        if (stamina >= -maxStamina) {
+            stamina += amount;
         }
 
-        if (this.stamina > this.maxStamina) {
-            this.stamina = this.maxStamina;
+        if (stamina > maxStamina) {
+            stamina = maxStamina;
         }
     }
 
     public Weapon getWeapon() {
-        return this.weapon;
+        return weapon;
     }
 
     public void setWeapon(final Weapon weapon) {
@@ -318,7 +318,7 @@ public class Player extends LivingEntity {
     }
 
     public boolean isInvincible() {
-        return this.invincible;
+        return invincible;
     }
 
     public void setInvincible(final boolean invincible) {
@@ -345,28 +345,27 @@ public class Player extends LivingEntity {
         //""animation"" of the player, flips the sprite back and forth on a time scale put by
         // ANIMATION_DIRECTION_DURATION
         if (InputSetting.MOVE_LEFT.isKeyPressed() || InputSetting.MOVE_RIGHT.isKeyPressed()) {
-            this.animationTime += Gdx.graphics.getRawDeltaTime();
-            if (ANIMATION_DIRECTION_DURATION >= this.animationTime) {
+            animationTime += Gdx.graphics.getRawDeltaTime();
+            if (ANIMATION_DIRECTION_DURATION >= animationTime) {
                 direction *= -1;
             }
-            else if (ANIMATION_DIRECTION_DURATION * 2 < this.animationTime) {
-                this.animationTime = 0;
+            else if (ANIMATION_DIRECTION_DURATION * 2 < animationTime) {
+                animationTime = 0;
             }
         }
 
         TextureRegion region = PLAYER_TEXTURE;
-        if (this.hurtTimer > 0) {
-            this.hurtTimer--;
+        if (hurtTimer > 0) {
+            hurtTimer--;
             region = HURT_TEXTURE;
         }
 
-        final float rotation = this.dodgeTime / DODGE_TIME * -getFacing() * 360 * 2;
+        final float rotation = dodgeTime / DODGE_TIME * -getFacing() * 360 * 2;
 
         startShade(batch);
-        batch
-            .draw(region.getTexture(), this.pos.x, this.pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(),
-                  1, 1, rotation, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                  region.getRegionHeight(), direction != -1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
+                   rotation, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
+                   region.getRegionHeight(), direction != -1, false);
         endShade(batch);
     }
 
@@ -377,7 +376,7 @@ public class Player extends LivingEntity {
 
     @Override
     public boolean isFlying() {
-        return this.flying;
+        return flying;
     }
 
 

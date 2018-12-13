@@ -85,19 +85,19 @@ public class AutoSortedContainer implements IContainer {
         this.sortOrder = sortOrder;
         this.name = name;
 
-        this.cont = new TileStack[size];
+        cont = new TileStack[size];
     }
 
 
     @Override
     public int getSize() {
-        return this.size;
+        return size;
     }
 
     @Override
     public int firstEmpty() {
-        for (int i = 0; i < this.size; i++) {
-            if (this.cont[i] == null) { return i; }
+        for (int i = 0; i < size; i++) {
+            if (cont[i] == null) { return i; }
         }
         return -1;
     }
@@ -108,11 +108,11 @@ public class AutoSortedContainer implements IContainer {
             return firstEmpty();
         }
         // if invalid stacks is not allows this cannot have a invalid validate
-        if (this.disallowInvalid && !tileStack.isValid()) {
+        if (disallowInvalid && !tileStack.isValid()) {
             return -1;
         }
-        for (int i = 0; i < this.size; i++) {
-            final TileStack loopTs = this.cont[i];
+        for (int i = 0; i < size; i++) {
+            final TileStack loopTs = cont[i];
             if (loopTs != null && loopTs.getTileType() == tileStack.getTileType() &&
                 loopTs.getAmount() <= tileStack.getAmount()) {
                 return i;
@@ -129,16 +129,16 @@ public class AutoSortedContainer implements IContainer {
 
         for (int i = 0, size1 = tileStacks.size(); i < size1; i++) {
             final TileStack ts = tileStacks.get(i);
-            if (ts == null || (this.disallowInvalid && !ts.isValid())) {
+            if (ts == null || (disallowInvalid && !ts.isValid())) {
                 throw new IllegalArgumentException("Element nr " + i + " is either null or invalid (" + ts + ")");
             }
 
             boolean added = false;
 
-            for (int j = 0; j < this.size; j++) {
-                if (this.cont[j] != null && this.cont[j].getTileType() == ts.getTileType()) {
-                    if (this.cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
-                        this.cont[j].give(ts.getAmount());
+            for (int j = 0; j < size; j++) {
+                if (cont[j] != null && cont[j].getTileType() == ts.getTileType()) {
+                    if (cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
+                        cont[j].give(ts.getAmount());
                         added = true;
                         break;
                     }
@@ -148,7 +148,7 @@ public class AutoSortedContainer implements IContainer {
             if (!added) {
                 final int firstEmpty = firstEmpty();
                 if (firstEmpty >= 0) {
-                    this.cont[firstEmpty] = ts;
+                    cont[firstEmpty] = ts;
                     added = true;
                 }
             }
@@ -163,9 +163,9 @@ public class AutoSortedContainer implements IContainer {
 
     @Override
     public void removeAll(final TileType tileType) {
-        for (int i = 0; i < this.size; i++) {
-            if (this.cont[i] != null && this.cont[i].getTileType() == tileType) {
-                this.cont[i] = null;
+        for (int i = 0; i < size; i++) {
+            if (cont[i] != null && cont[i].getTileType() == tileType) {
+                cont[i] = null;
             }
         }
         sort();
@@ -175,16 +175,16 @@ public class AutoSortedContainer implements IContainer {
     public int remove(final TileType tileType, final int amount) {
         Preconditions.checkArgument(amount > 0, "The amount to remove must be positive, but was " + amount);
         int counter = amount;
-        for (int i = 0, length = this.cont.length; i < length; i++) {
-            if (this.cont[i] != null && tileType == this.cont[i].getTileType()) {
-                final int newAmount = this.cont[i].getAmount() - counter;
+        for (int i = 0, length = cont.length; i < length; i++) {
+            if (cont[i] != null && tileType == cont[i].getTileType()) {
+                final int newAmount = cont[i].getAmount() - counter;
                 if (newAmount < 0) {
-                    counter -= this.cont[i].getAmount();
-                    this.cont[i] = null;
+                    counter -= cont[i].getAmount();
+                    cont[i] = null;
                 }
                 else {
-                    if (newAmount != 0) { this.cont[i].setAmount(newAmount); }
-                    else { this.cont[i] = null; }
+                    if (newAmount != 0) { cont[i].setAmount(newAmount); }
+                    else { cont[i] = null; }
                     sort();
                     return 0;
                 }
@@ -197,12 +197,12 @@ public class AutoSortedContainer implements IContainer {
     @Override
     public void remove(final TileStack tileStack) {
         Preconditions.checkNotNull(tileStack, "cannot remove a null element");
-        if (this.disallowInvalid && !tileStack.isValid()) {
+        if (disallowInvalid && !tileStack.isValid()) {
             return;
         }
-        for (int i = 0, length = this.cont.length; i < length; i++) {
-            if (tileStack.equals(this.cont[i])) {
-                this.cont[i] = null;
+        for (int i = 0, length = cont.length; i < length; i++) {
+            if (tileStack.equals(cont[i])) {
+                cont[i] = null;
             }
         }
         sort();
@@ -210,20 +210,20 @@ public class AutoSortedContainer implements IContainer {
 
     @Override
     public void remove(final int index) {
-        Preconditions.checkPositionIndex(index, this.size - 1);
-        this.cont[index] = null;
+        Preconditions.checkPositionIndex(index, size - 1);
+        cont[index] = null;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < this.cont.length; i++) {
-            this.cont[i] = null;
+        for (int i = 0; i < cont.length; i++) {
+            cont[i] = null;
         }
     }
 
     @Override
     public boolean contains(final TileStack tileStack) {
-        if (tileStack == null || (this.disallowInvalid && !tileStack.isValid())) {
+        if (tileStack == null || (disallowInvalid && !tileStack.isValid())) {
             return false;
         }
         for (final ContainerSlot slot : this) {
@@ -242,29 +242,29 @@ public class AutoSortedContainer implements IContainer {
 
     @Override
     public TileStack get(final int index) {
-        Preconditions.checkPositionIndex(index, this.size - 1);
-        return this.cont[index];
+        Preconditions.checkPositionIndex(index, size - 1);
+        return cont[index];
     }
 
     @Override
     public TileStack[] getValid(final int index) {
-        Preconditions.checkPositionIndex(index, this.size - 1);
-        return TileStack.validate(this.cont[index]);
+        Preconditions.checkPositionIndex(index, size - 1);
+        return TileStack.validate(cont[index]);
     }
 
     @Override
     public void put(final int index, final TileStack tileStack) {
-        Preconditions.checkPositionIndex(index, this.size - 1);
-        if (this.disallowInvalid && tileStack != null && !tileStack.isValid()) {
+        Preconditions.checkPositionIndex(index, size - 1);
+        if (disallowInvalid && tileStack != null && !tileStack.isValid()) {
             throw new IllegalArgumentException("This container does not allow invalid stacks");
         }
-        this.cont[index] = null;
+        cont[index] = null;
         add(tileStack);
     }
 
     @Override
     public TileStack[] getContent() {
-        return this.cont;
+        return cont;
     }
 
     @Override
@@ -273,20 +273,20 @@ public class AutoSortedContainer implements IContainer {
         if (GameMain.ui == null) {
             return;
         }
-        if (this.actor == null) {
-            this.actor = GameMain.ui.getContainerActor(this);
+        if (actor == null) {
+            actor = GameMain.ui.getContainerActor(this);
         }
-        this.actor.update();
+        actor.update();
     }
 
 
     private void sort() {
-        this.sortOrder.sort(this.cont);
+        sortOrder.sort(cont);
         updateContainer();
     }
 
     public SortOrder getSortOrder() {
-        return this.sortOrder;
+        return sortOrder;
     }
 
 
@@ -299,19 +299,19 @@ public class AutoSortedContainer implements IContainer {
 
             @Override
             public boolean hasNext() {
-                return this.index < AutoSortedContainer.this.size;
+                return index < size;
             }
 
             @Override
             public ContainerSlot next() {
-                return new ContainerSlot(this.index, AutoSortedContainer.this.cont[this.index++]);
+                return new ContainerSlot(index, cont[index++]);
             }
         };
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return name;
     }
 
     @Override

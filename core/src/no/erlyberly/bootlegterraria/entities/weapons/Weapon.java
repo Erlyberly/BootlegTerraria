@@ -19,10 +19,10 @@ public abstract class Weapon {
      * @return The display name of this weapon
      */
     public String getName() {
-        if (this.name == null) {
+        if (name == null) {
             return getClass().getSimpleName();
         }
-        return this.name;
+        return name;
     }
 
     /**
@@ -41,11 +41,11 @@ public abstract class Weapon {
     }
 
     public float getCooldown() {
-        return this.cooldown;
+        return cooldown;
     }
 
     public void resetCooldown() {
-        this.cooldown = 0;
+        cooldown = 0;
     }
 
     /**
@@ -53,7 +53,7 @@ public abstract class Weapon {
      */
     public void cooldown() {
         if (!isCooledDown()) {
-            this.cooldown += Gdx.graphics.getRawDeltaTime();
+            cooldown += Gdx.graphics.getRawDeltaTime();
         }
     }
 

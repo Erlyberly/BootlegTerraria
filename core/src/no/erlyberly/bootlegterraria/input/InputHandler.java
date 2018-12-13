@@ -31,11 +31,11 @@ public class InputHandler implements InputProcessor {
     private final static GenericMetadata DEFAULT_METADATA = new GenericMetadata();
 
     public InputHandler() {
-        this.pressed = new HashSet<>();
-        this.activeKeysPressed = new HashMap<>();
-        this.actionMap = new EnumMap<>(EventType.class);
+        pressed = new HashSet<>();
+        activeKeysPressed = new HashMap<>();
+        actionMap = new EnumMap<>(EventType.class);
         for (final EventType eventType : EventType.values()) {
-            this.actionMap.put(eventType, new HashMap<>());
+            actionMap.put(eventType, new HashMap<>());
         }
 
         GameMain.inputMultiplexer.addProcessor(this);
@@ -58,7 +58,7 @@ public class InputHandler implements InputProcessor {
         if (Arrays.equals(oldKeys, newKeys)) {
             return false;
         }
-        final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
+        final Map<Set<Integer>, EventRunnable> eventMap = actionMap.get(eventType);
         final EventRunnable er = eventMap.remove(ImmutableSet.copyOf(oldKeys));
         if (er != null) {
             if (eventMap.containsKey(ImmutableSet.copyOf(newKeys))) {
@@ -67,7 +67,7 @@ public class InputHandler implements InputProcessor {
                                       "done", eventType.name(), Util.keysToString(newKeys));
                 return false;
             }
-            eventMap.put(ImmutableSet.copyOf(newKeys), er);
+            if (newKeys.length > 0) { eventMap.put(ImmutableSet.copyOf(newKeys), er); }
         }
         else {
             GameMain.console.logf(LogLevel.ERROR, "Failed to re-bind listener, eventType: %s keys: %s", eventType,
@@ -82,7 +82,7 @@ public class InputHandler implements InputProcessor {
      */
     public EventRunnable unregisterListener(final EventType eventType, final Integer... keys) {
         Preconditions.checkNotNull(eventType);
-        final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
+        final Map<Set<Integer>, EventRunnable> eventMap = actionMap.get(eventType);
         final Set<Integer> setKeys = ImmutableSet.copyOf(keys);
 
         //give a warning to make it easier to track down these kind of bugs
@@ -118,7 +118,7 @@ public class InputHandler implements InputProcessor {
     public void registerListener(final EventRunnable action, final EventType eventType, final Integer... keys) {
         Preconditions.checkNotNull(action);
         Preconditions.checkNotNull(eventType);
-        final Map<Set<Integer>, EventRunnable> eventMap = this.actionMap.get(eventType);
+        final Map<Set<Integer>, EventRunnable> eventMap = actionMap.get(eventType);
         final Set<Integer> setKeys = ImmutableSet.copyOf(keys);
 
         if (eventMap.containsKey(setKeys)) {
@@ -157,16 +157,16 @@ public class InputHandler implements InputProcessor {
         }
 
         if (eventType == EventType.TOUCH_DOWN || eventType == EventType.KEY_DOWN) {
-            this.actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
-                if (this.pressed.containsAll(keys)) { this.activeKeysPressed.put(keys, runnable); }
+            actionMap.get(EventType.KEY_PRESSED).forEach((keys, runnable) -> {
+                if (pressed.containsAll(keys)) { activeKeysPressed.put(keys, runnable); }
             });
         }
         else if (eventType == EventType.TOUCH_UP || eventType == EventType.KEY_UP) {
-            this.activeKeysPressed.entrySet().removeIf(entry -> !this.pressed.containsAll(entry.getKey()));
+            activeKeysPressed.entrySet().removeIf(entry -> !pressed.containsAll(entry.getKey()));
         }
         //run all runnables if the key combination is held
-        this.actionMap.get(eventType).forEach((keys, runnable) -> {
-            if (this.pressed.containsAll(keys)) { runnable.run(eventMetadata); }
+        actionMap.get(eventType).forEach((keys, runnable) -> {
+            if (pressed.containsAll(keys)) { runnable.run(eventMetadata); }
         });
     }
 
@@ -178,7 +178,7 @@ public class InputHandler implements InputProcessor {
      * other update methods
      */
     public void update() {
-        this.activeKeysPressed.values().forEach(runnable -> runnable.run(DEFAULT_METADATA));
+        activeKeysPressed.values().forEach(runnable -> runnable.run(DEFAULT_METADATA));
     }
 
     @Override
@@ -189,14 +189,14 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(final int keycode) {
-        this.pressed.add(keycode);
+        pressed.add(keycode);
         fireEvent(EventType.KEY_DOWN, new KeyMetadata(keycode));
         return false;
     }
 
     @Override
     public boolean keyUp(final int keycode) {
-        this.pressed.remove(keycode);
+        pressed.remove(keycode);
         fireEvent(EventType.KEY_UP, new KeyMetadata(keycode));
         return false;
     }
@@ -209,14 +209,14 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
-        this.pressed.add(MouseInput.fromGdxButton(button));
+        pressed.add(MouseInput.fromGdxButton(button));
         fireEvent(EventType.TOUCH_DOWN, new MouseMetadata(screenX, screenY));
         return false;
     }
 
     @Override
     public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
-        this.pressed.remove(MouseInput.fromGdxButton(button));
+        pressed.remove(MouseInput.fromGdxButton(button));
         fireEvent(EventType.TOUCH_UP, new MouseMetadata(screenX, screenY));
         return false;
     }
