@@ -1,5 +1,6 @@
 package no.erlyberly.bootlegterraria.storage.impl;
 
+import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.storage.AbstractInventory;
 import no.erlyberly.bootlegterraria.storage.IContainer;
@@ -59,7 +60,7 @@ public class CreativeInventory implements IInventory {
 
     @Override
     public void open() {
-        holder.getGameMap().getUIMessage().sendMessage("Cannot open a creative inventory", 1500);
+        GameMain.ui.sendMessage("Cannot open a creative inventory", 1500);
     }
 
     @Override

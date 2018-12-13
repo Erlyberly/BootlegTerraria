@@ -16,7 +16,6 @@ import no.erlyberly.bootlegterraria.entities.Entity;
 import no.erlyberly.bootlegterraria.entities.living.Player;
 import no.erlyberly.bootlegterraria.render.light.LightLevel;
 import no.erlyberly.bootlegterraria.render.light.api.LightMap;
-import no.erlyberly.bootlegterraria.render.ui.UIMessage;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
@@ -49,7 +48,6 @@ public abstract class GameMap {
     private Texture barOutline;
     private Texture staminaBar;
     Texture loadingSplashScreen;
-    UIMessage uiMessage;
 
 
     GameMap(final String fileName, final boolean headless) {
@@ -58,7 +56,6 @@ public abstract class GameMap {
         addEnimies = new ArrayList<>();
         entities = new ArrayList<>();
         addEntities = new ArrayList<>();
-        uiMessage = new UIMessage(this);
 
         if (!headless) {
 
@@ -173,8 +170,6 @@ public abstract class GameMap {
         for (int i = 0; i < msgs.length; i++) {
             font.draw(batch, msgs[i], 7f, GameInfo.HEIGHT / (1.07f + 0.030f * i));
         }
-
-        uiMessage.draw(batch);
 
         batch.end();
     }
@@ -405,9 +400,6 @@ public abstract class GameMap {
 
     public abstract LightMap getLightMap();
 
-    public UIMessage getUIMessage() {
-        return uiMessage;
-    }
 
     public String getFileName() {
         return fileName;
