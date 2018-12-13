@@ -58,7 +58,9 @@ public class CreativeInventory implements IInventory {
     }
 
     @Override
-    public void open() {}
+    public void open() {
+        holder.getGameMap().getUIMessage().sendMessage("Cannot open a creative inventory", 1500);
+    }
 
     @Override
     public void close() {}

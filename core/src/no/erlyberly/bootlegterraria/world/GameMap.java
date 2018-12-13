@@ -42,12 +42,13 @@ public abstract class GameMap {
 
     private Player player;
 
-    BitmapFont font;
+    public final BitmapFont font;
 
     private Texture hpBar;
     private Texture barOutline;
     private Texture staminaBar;
     Texture loadingSplashScreen;
+    UIMessage uiMessage;
 
     GameMap(final String fileName, final boolean headless) {
         this.fileName = fileName;
@@ -55,6 +56,7 @@ public abstract class GameMap {
         this.addEnimies = new ArrayList<>();
         this.entities = new ArrayList<>();
         this.addEntities = new ArrayList<>();
+        uiMessage = new UIMessage(this);
 
 
         if (!headless) {
@@ -172,6 +174,9 @@ public abstract class GameMap {
         for (int i = 0; i < msgs.length; i++) {
             this.font.draw(batch, msgs[i], 7f, GameInfo.HEIGHT / (1.07f + 0.030f * i));
         }
+
+        uiMessage.draw(batch);
+
         batch.end();
     }
 
@@ -419,4 +424,12 @@ public abstract class GameMap {
     public abstract LightLevel lightAt(Vector2Int pos);
 
     public abstract LightMap getLightMap();
+
+    public UIMessage getUIMessage() {
+        return uiMessage;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
 }
