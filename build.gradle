@@ -5,6 +5,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://raw.githubusercontent.com/kh498/maven2/repo" }
         jcenter()
     }
     dependencies {
@@ -105,6 +106,8 @@ project(":core") {
         compile "org.junit.jupiter:junit-jupiter-api:5.0.0"
         compile "com.strongjoshua:libgdx-inGameConsole:0.7.1"
         compile "org.apache.commons:commons-lang3:3.8.1"
+        
+        compile group: 'no.kh498.util', name: 'CommonUtil', version: '1.0.2'
     }
 }
 

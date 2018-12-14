@@ -79,6 +79,7 @@ public class GameMain extends Game {
         camera.update();
 
         console = new ConsoleHandler();
+        console.setAlpha(0.75f);
         ui = new UIController();
         input = new InputHandler();
 
