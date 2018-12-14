@@ -20,7 +20,8 @@ public class SlotActor extends ImageButton {
 
     static {
         if (!GameMain.isHeadless()) {
-            final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.Alpha);
+            final Pixmap pixmap =
+                new Pixmap((int) TileType.TILE_SIZE * 4, (int) TileType.TILE_SIZE * 4, Pixmap.Format.Alpha);
             EMPTY = new TextureRegion(new Texture(pixmap));
         }
         else { EMPTY = null; }

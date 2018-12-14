@@ -31,15 +31,14 @@ public class ContainerActor extends Window {
         closeButton.addListener(new HidingClickListener(this));
         getTitleTable().add(closeButton).height(getPadTop());
 
-        setPosition(Gdx.graphics.getWidth() / 2 - getWidth(), Gdx.graphics.getHeight() / 2);
-
-        defaults().space(8);
+        defaults().space(5);
         row().fill().expandX();
 
         int i = 0;
         for (final ContainerSlot cslot : container) {
             final SlotActor slotActor =
                 new SlotActor(skin, new Slot(this, cslot.getContent(), cslot.getIndex()), container);
+
             slots[cslot.getIndex()] = slotActor;
             dragAndDrop.addSource(new SlotSource(slotActor));
             dragAndDrop.addTarget(new SlotTarget(slotActor));
@@ -56,7 +55,9 @@ public class ContainerActor extends Window {
             }
         }
 
+
         pack();
+        setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
 
         //Hidden by default
         setVisible(false);
