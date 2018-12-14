@@ -15,7 +15,7 @@ import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
 import no.erlyberly.bootlegterraria.input.event.metadata.ScrolledMetadata;
 import no.erlyberly.bootlegterraria.storage.IInventory;
-import no.erlyberly.bootlegterraria.storage.impl.Inventory;
+import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
@@ -213,7 +213,7 @@ public class Player extends LivingEntity {
         super(x, y);
 
         weapon = new Gun();
-        setInv(new Inventory(this, 40));
+        setInv(new CreativeInventory(this));
     }
 
     @Override
