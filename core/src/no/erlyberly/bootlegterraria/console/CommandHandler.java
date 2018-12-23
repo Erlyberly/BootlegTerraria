@@ -329,6 +329,7 @@ public class CommandHandler extends CommandExecutor {
     }
 
     public void give(final String tileType, final int amount) {
+        if (GameMain.map.getPlayer().getInv().getContainer() == null) { return; }
         final TileType tt;
         try {
             tt = TileType.valueOf(tileType.toUpperCase());
