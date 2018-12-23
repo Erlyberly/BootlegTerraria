@@ -20,12 +20,17 @@ import no.erlyberly.bootlegterraria.input.InputSetting;
 import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
+import no.erlyberly.bootlegterraria.storage.TileStack;
+import no.erlyberly.bootlegterraria.storage.impl.AutoSortedContainer;
 import no.erlyberly.bootlegterraria.storage.impl.Container;
 import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.storage.impl.Inventory;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightEvents;
 
@@ -155,38 +160,36 @@ public class CommandHandler extends CommandExecutor {
     }
 
     @ConsoleDoc(description = "Switch inventory of player",
-                paramDescriptions = {"The inventory to use, can be 'creative' or 'autosort'"})
+                paramDescriptions = {"The inventory to use, can be 'creative', 'autosort' or 'container'"})
     public void inv(final String invType) {
         final Player player = GameMain.map.getPlayer();
         player.getInv().close();
+        TileStack[] oldContent = null;
+        if (player.getInv().getContainer() != null) {
+            oldContent = Arrays.stream(player.getInv().getContainer().getContent()).filter(Objects::nonNull)
+                               .toArray(TileStack[]::new);
+        }
         switch (invType.toLowerCase()) {
             case "creative":
-            case "crea":
-            case "c":
+            case "cr":
                 player.setInv(new CreativeInventory(player));
-
                 break;
             case "as":
             case "autosort":
-                player.setInv(new Inventory(player, 40));
-
-                player.getInv().getContainer().add(TileType.TORCH, 2);
-                player.getInv().getContainer().add(TileType.CLOUD, 1);
-                player.getInv().getContainer().add(TileType.DIRT, 3);
+                player.setInv(new Inventory(player, new AutoSortedContainer("Auto Sorted Inventory", 40)));
                 break;
             case "container":
-            case "cont":
+            case "co":
                 player.setInv(new Inventory(player, new Container("Inventory", 40)));
-
-                player.getInv().getContainer().add(TileType.LAVA, 7);
-                player.getInv().getContainer().add(TileType.LEAVES, 4);
-                player.getInv().getContainer().add(TileType.GRASS, 1);
                 break;
             default:
                 GameMain.console.log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
                 return;
         }
-        GameMain.console.log("New storage " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
+        if (oldContent != null && player.getInv().getContainer() != null) {
+            player.getInv().getContainer().add(oldContent);
+        }
+        GameMain.console.log("New inventory type is " + player.getInv().getClass().getSimpleName(), LogLevel.SUCCESS);
     }
 
     @ConsoleDoc(description = "Unbind a binding, NOT WORKING ATM!! Binding needs to be rewritten with UUIDs in mind")
