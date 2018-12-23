@@ -126,23 +126,22 @@ public class TileStack implements Comparable<TileStack> {
      * @return An array of valid TileStacks, {@code null} if {@code tt} is {@code null} or if {@code size} is less
      * than 0
      */
+    //FIXME if given more than two sizes it outputs incorrectly
     public static TileStack[] validate(final TileType tt, final int size) {
         if (tt == null || size < 0) {
             return null;
         }
-        final int ss = tt.getMaxStackSize();
-        int currSize = size;
+        final int maxSS = tt.getMaxStackSize();
 
         final ArrayList<TileStack> stacks = new ArrayList<>();
 
-        while (currSize > 0) {
-            int stackSize = currSize - ss;
-            if (stackSize <= 0) {
-                stackSize = currSize;
-            }
-            stacks.add(new TileStack(tt, stackSize));
-            currSize -= stackSize;
+        int length = size / maxSS;
+
+        for (int i = 0; i < length; i++) {
+            stacks.add(new TileStack(tt, maxSS));
         }
+        int amount = size % maxSS;
+        if (amount != 0) { stacks.add(new TileStack(tt, amount)); }
         return stacks.toArray(new TileStack[0]);
     }
 

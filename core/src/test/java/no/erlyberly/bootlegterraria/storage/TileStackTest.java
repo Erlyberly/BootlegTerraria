@@ -74,4 +74,22 @@ class TileStackTest {
             assertArrayEquals(ets5, ats5);
         }
     }
+
+    @Test
+    void validate() {
+        TileType tt = TileType.CLOUD;
+        assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize() + 1)),
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()), new TileStack(tt, 1)});
+
+        assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize())),
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize())});
+
+        assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize() * 2)),
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()),
+                              new TileStack(tt, tt.getMaxStackSize())});
+
+        assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize() * 3)),
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()),
+                              new TileStack(tt, tt.getMaxStackSize()), new TileStack(tt, tt.getMaxStackSize())});
+    }
 }
