@@ -25,7 +25,7 @@ public class AutoSortedContainer extends Container {
      *     The size of the container
      */
     public AutoSortedContainer(final int size) {
-        this("Container", size);
+        this("Auto Sorted Container", size);
     }
 
     /**

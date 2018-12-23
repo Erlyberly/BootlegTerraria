@@ -22,7 +22,7 @@ public class Container implements IContainer {
 
     final TileStack[] cont;
     private ContainerActor actor;
-    private boolean disallowInvalid;
+    private boolean validOnly;
 
     public Container(final int size) {
         this("Container", size);
@@ -32,11 +32,11 @@ public class Container implements IContainer {
         this(name, size, true);
     }
 
-    public Container(final String name, final int size, boolean disallowInvalid) {
+    public Container(final String name, final int size, boolean validOnly) {
 
         this.name = name;
         this.size = size;
-        this.disallowInvalid = disallowInvalid;
+        this.validOnly = validOnly;
         cont = new TileStack[size];
     }
 
@@ -70,7 +70,7 @@ public class Container implements IContainer {
             return firstEmpty();
         }
         // if invalid stacks is not allows this cannot have a invalid validate
-        if (disallowInvalid && !tileStack.isValid()) {
+        if (validOnly && !tileStack.isValid()) {
             return -1;
         }
         for (int i = 0; i < getSize(); i++) {
@@ -92,7 +92,7 @@ public class Container implements IContainer {
 
         for (int i = 0, size1 = tileStacks.size(); i < size1; i++) {
             final TileStack ts = tileStacks.get(i);
-            if (ts == null || (disallowInvalid && !ts.isValid())) {
+            if (ts == null || (validOnly && !ts.isValid())) {
                 throw new IllegalArgumentException("Element nr " + i + " is either null or invalid (" + ts + ")");
             }
 
@@ -159,7 +159,7 @@ public class Container implements IContainer {
     @Override
     public void remove(final TileStack tileStack) {
         Preconditions.checkNotNull(tileStack, "cannot remove a null element");
-        if (disallowInvalid && !tileStack.isValid()) {
+        if (validOnly && !tileStack.isValid()) {
             return;
         }
         for (int i = 0, length = cont.length; i < length; i++) {
@@ -187,7 +187,7 @@ public class Container implements IContainer {
 
     @Override
     public boolean contains(final TileStack tileStack) {
-        if (tileStack == null || (disallowInvalid && !tileStack.isValid())) {
+        if (tileStack == null || (validOnly && !tileStack.isValid())) {
             return false;
         }
         for (final ContainerSlot slot : this) {
@@ -219,7 +219,7 @@ public class Container implements IContainer {
     @Override
     public void put(final int index, final TileStack tileStack) {
         Preconditions.checkPositionIndex(index, size - 1);
-        if (disallowInvalid && tileStack != null && !tileStack.isValid()) {
+        if (validOnly && tileStack != null && !tileStack.isValid()) {
             throw new IllegalArgumentException("This container does not allow invalid stacks");
         }
         cont[index] = null;

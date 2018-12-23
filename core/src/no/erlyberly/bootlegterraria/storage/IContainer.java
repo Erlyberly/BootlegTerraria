@@ -71,7 +71,7 @@ public interface IContainer extends Iterable<ContainerSlot> {
      * Add an item to the container
      *
      * @throws IllegalArgumentException
-     *     if one of the {@code tileStack}s is {@code null} or if amount is less than zero
+     *     if {@code TileType} is {@code null} or amount is less than zero
      */
     default void add(final TileType tileType, final int amount) {
         add(TileStack.validate(tileType, amount));

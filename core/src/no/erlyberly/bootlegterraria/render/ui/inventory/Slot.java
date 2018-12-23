@@ -38,7 +38,6 @@ public class Slot {
         return stack;
     }
 
-
     public void updateStack() {
         stack = actor.getContainer().get(index);
     }

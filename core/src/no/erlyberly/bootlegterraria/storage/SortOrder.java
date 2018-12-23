@@ -100,15 +100,9 @@ public final class SortOrder {
     };
 
     private static int nullCmp(final Object o1, final Object o2) {
-        if (o1 == null) {
-            return 1;
-        }
-        else if (o2 == null) {
-            return -1;
-        }
-        else {
-            return 0;
-        }
+        if (o1 == null) { return 1; }
+        else if (o2 == null) { return -1; }
+        else { return 0; }
     }
 
     /**

@@ -1,6 +1,7 @@
 package no.erlyberly.bootlegterraria.storage;
 
 import no.erlyberly.bootlegterraria.entities.Entity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author kheba
@@ -10,6 +11,7 @@ public interface IInventory {
     /**
      * @return The item currently active
      */
+    @Nullable
     TileStack holding();
 
     /**
@@ -27,6 +29,9 @@ public interface IInventory {
      */
     int getSize();
 
+    /**
+     * @return If the inventory is currently open
+     */
     boolean isOpen();
 
     /**
@@ -44,7 +49,7 @@ public interface IInventory {
      * @return The entity that holds this container. Only this entity should have access to the container, if it is
      * {@code null} everyone should be able to modify and see the content of this container
      */
-    Entity getHolder();
+    @Nullable Entity getHolder();
 
     /**
      * @param entity
@@ -69,5 +74,5 @@ public interface IInventory {
     /**
      * @return The container of this inventory
      */
-    IContainer getContainer();
+    @Nullable IContainer getContainer();
 }

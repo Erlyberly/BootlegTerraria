@@ -14,10 +14,6 @@ public class Inventory extends AbstractInventory {
 
     private final IContainer container;
 
-    public Inventory(final Entity holder, final int size) {
-        this(holder, new AutoSortedContainer("Inventory", size));
-    }
-
     public Inventory(final Entity holder, final IContainer container) {
         super(holder);
         this.container = container;

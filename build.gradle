@@ -6,20 +6,17 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://raw.githubusercontent.com/kh498/maven2/repo" }
+
         jcenter()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.3'
-
-
     }
 }
 
 def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('dd.MM.yyyy-HH.mm.ss')
-    return formattedDate
+    return new Date().format('dd.MM.yyyy-HH.mm.ss')
 }
 
 allprojects {
@@ -42,6 +39,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://raw.githubusercontent.com/kh498/maven2/repo" }
     }
 }
 
@@ -106,8 +104,8 @@ project(":core") {
         compile "org.junit.jupiter:junit-jupiter-api:5.0.0"
         compile "com.strongjoshua:libgdx-inGameConsole:0.7.1"
         compile "org.apache.commons:commons-lang3:3.8.1"
-        
-        compile group: 'no.kh498.util', name: 'CommonUtil', version: '1.0.2'
+        compile "no.kh498.util:CommonUtil:1.0.2"
+        compile 'org.jetbrains:annotations:16.0.2'
     }
 }
 
