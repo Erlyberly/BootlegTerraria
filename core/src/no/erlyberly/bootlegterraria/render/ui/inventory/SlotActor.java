@@ -2,10 +2,11 @@ package no.erlyberly.bootlegterraria.render.ui.inventory;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.TileStack;
@@ -20,8 +21,7 @@ public class SlotActor extends ImageButton {
 
     static {
         if (!GameMain.isHeadless()) {
-            final Pixmap pixmap =
-                new Pixmap((int) TileType.TILE_SIZE * 4, (int) TileType.TILE_SIZE * 4, Pixmap.Format.Alpha);
+            final Pixmap pixmap = new Pixmap((int) TileType.TILE_SIZE, (int) TileType.TILE_SIZE, Pixmap.Format.Alpha);
             EMPTY = new TextureRegion(new Texture(pixmap));
         }
         else { EMPTY = null; }
@@ -49,15 +49,17 @@ public class SlotActor extends ImageButton {
 
     private static ImageButtonStyle createStyle(final Skin skin, final TileStack tileStack) {
         final TextureRegion image;
-        if (tileStack != null) {
-            image = tileStack.getTileType().getTextureRegion();
-        }
-        else {
-            image = EMPTY;
-        }
+        if (tileStack != null) { image = tileStack.getTileType().getTextureRegion(); }
+        else { image = EMPTY; }
+
         final ImageButtonStyle style = new ImageButtonStyle(skin.get(ButtonStyle.class));
-        style.imageUp = new TextureRegionDrawable(image);
-        style.imageDown = new TextureRegionDrawable(image);
+
+        Sprite sprite = new Sprite(image);
+
+        sprite.setSize(sprite.getHeight() * 4, sprite.getWidth() * 4);
+
+        style.imageUp = new SpriteDrawable(sprite);
+        style.imageDown = new SpriteDrawable(sprite);
 
         return style;
     }

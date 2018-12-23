@@ -23,7 +23,7 @@ public class ContainerActor extends Window {
         super(container.getName(), skin);
         this.container = container;
         setResizable(false);
-        setMovable(false);
+        setMovable(true);
 
         slots = new SlotActor[container.getSize()];
 
@@ -31,7 +31,7 @@ public class ContainerActor extends Window {
         closeButton.addListener(new HidingClickListener(this));
         getTitleTable().add(closeButton).height(getPadTop());
 
-        defaults().space(5);
+        defaults().space(3);
         row().fill().expandX();
 
         int i = 0;
@@ -42,10 +42,6 @@ public class ContainerActor extends Window {
             slots[cslot.getIndex()] = slotActor;
             dragAndDrop.addSource(new SlotSource(slotActor));
             dragAndDrop.addTarget(new SlotTarget(slotActor));
-
-
-//            slotActor.setScale(4);
-//            slotActor.align(Align.center);
 
             add(slotActor);
 
