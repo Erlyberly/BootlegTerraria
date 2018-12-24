@@ -100,7 +100,7 @@ public class GameMain extends Game {
         final String fileName = args.get(AUTO_EXEC_FLAG);
         if (fileName != null) {
             console.log("Auto executing " + fileName);
-            console.execCommand("exec " + fileName);
+            SECONDARY_THREAD.scheduleSync(() -> console.execCommand("exec " + fileName), 100L);
         }
         else {
             console.log("No auto executable file specified");

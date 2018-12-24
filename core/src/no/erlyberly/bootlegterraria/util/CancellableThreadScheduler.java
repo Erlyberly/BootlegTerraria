@@ -1,5 +1,7 @@
 package no.erlyberly.bootlegterraria.util;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -42,20 +44,43 @@ public class CancellableThreadScheduler {
      * @param runnable
      *     What to do
      */
-    public void execute(final Runnable runnable) {
+    public void executeAsync(final Runnable runnable) {
         tasks.add(executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
     }
 
     /**
-     * Run a task in the future
+     * Execute a task as soon as possible
+     *
+     * @param runnable
+     *     What to do
+     */
+    public void executeSync(final Runnable runnable) {
+        tasks.add(executorService.schedule(() -> Gdx.app.postRunnable(runnable), 0, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Run a task in the future async
      *
      * @param runnable
      *     What to do
      * @param ms
      *     How many milliseconds to wait before running the task
      */
-    public void schedule(final Runnable runnable, final long ms) {
+    public void scheduleAsync(final Runnable runnable, final long ms) {
         tasks.add(executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
+    }
+
+
+    /**
+     * Run a task in the future on the main thread
+     *
+     * @param runnable
+     *     What to do
+     * @param ms
+     *     How many milliseconds to wait before running the task
+     */
+    public void scheduleSync(final Runnable runnable, final long ms) {
+        tasks.add(executorService.schedule(() -> Gdx.app.postRunnable(runnable), ms, TimeUnit.MILLISECONDS));
     }
 
     /**

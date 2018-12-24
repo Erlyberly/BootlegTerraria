@@ -140,6 +140,6 @@ public class UIController implements Disposable {
     }
 
     public void delete(UIMessage message, long timeLeftMs) {
-        GameMain.SECONDARY_THREAD.schedule(() -> deleteUIMessage(message), timeLeftMs);
+        GameMain.SECONDARY_THREAD.scheduleAsync(() -> deleteUIMessage(message), timeLeftMs);
     }
 }
