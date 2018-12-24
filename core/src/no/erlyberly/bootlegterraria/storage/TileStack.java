@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author kheba
  */
-public class TileStack implements Comparable<TileStack> {
+public class TileStack implements Comparable<TileStack>, Cloneable {
 
     private final TileType tt;
     private int amount;
@@ -189,5 +189,11 @@ public class TileStack implements Comparable<TileStack> {
             return amount - o.amount;
         }
         return ttct;
+    }
+
+    @SuppressWarnings({"MethodDoesntCallSuperMethod"})
+    @Override
+    public TileStack clone() {
+        return new TileStack(tt, amount);
     }
 }

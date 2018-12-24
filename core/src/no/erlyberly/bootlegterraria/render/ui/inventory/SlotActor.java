@@ -17,6 +17,7 @@ import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
+import java.util.Objects;
 /**
  * @author kheba
  */
@@ -36,15 +37,17 @@ public class SlotActor extends ImageButton {
     }
 
     private final Skin skin;
-
     private final Slot slot;
     private final IContainer container;
+    private TileStack oldStack;
 
     SlotActor(final Skin skin, final Slot slot, final IContainer container) {
         super(createStyle(skin, slot.getStack()));
         this.slot = slot;
         this.container = container;
         this.skin = skin;
+
+        oldStack = slot.getStack() == null ? null : slot.getStack().clone();
 
         //TODO tooltip
 //        final SlotTooltip tooltip = new SlotTooltip(slot, skin);
@@ -115,6 +118,12 @@ public class SlotActor extends ImageButton {
 
     public void update() {
         slot.updateStack();
+
+        if (Objects.equals(slot.getStack(), oldStack)) {
+            return;
+        }
+        oldStack = slot.getStack() == null ? null : slot.getStack().clone();
+
         setStyle(createStyle(skin, slot.getStack()));
     }
 
