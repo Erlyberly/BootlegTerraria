@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import no.erlyberly.bootlegterraria.GameMain;
 import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.TileStack;
@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 public class SlotActor extends ImageButton {
 
-    private static final Sprite EMPTY;
+    private static final TextureRegion EMPTY;
     private static final int SCALE = 4;
     private static SpriteBatch batch = new SpriteBatch();
 
@@ -32,7 +32,7 @@ public class SlotActor extends ImageButton {
         if (!GameMain.isHeadless()) {
             final Pixmap pixmap =
                 new Pixmap((int) TileType.TILE_SIZE * SCALE, (int) TileType.TILE_SIZE * SCALE, Pixmap.Format.Alpha);
-            EMPTY = new Sprite(new Texture(pixmap));
+            EMPTY = new TextureRegion(new Texture(pixmap));
         }
         else { EMPTY = null; }
     }
@@ -60,7 +60,7 @@ public class SlotActor extends ImageButton {
     }
 
     private static ImageButtonStyle createStyle(final Skin skin, final TileStack tileStack) {
-        final Sprite sprite;
+        final TextureRegion tex;
         if (tileStack != null) {
 
             //draw everything to this buffer to overlap the stacks texture with how many there are in the stack
@@ -69,9 +69,10 @@ public class SlotActor extends ImageButton {
 
             //this is the texture that will store the combined texture.
             //it is a region so we can flip it
-            TextureRegion tex = new TextureRegion(frameBuffer.getColorBufferTexture());
+            tex = new TextureRegion(frameBuffer.getColorBufferTexture());
 
             // the sprite _must_ be the size of the given graphics size
+            //TODO find out why
             Sprite rawSprite = new Sprite(tileStack.getTileType().getTextureRegion());
 
             rawSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -84,7 +85,6 @@ public class SlotActor extends ImageButton {
 
             //start the batch (as you would normally)
             batch.begin();
-
 
             //draw the tile texture
             rawSprite.draw(batch);
@@ -105,15 +105,15 @@ public class SlotActor extends ImageButton {
             batch.end();
             frameBuffer.end();
 
+            //make sure the sprite will be displayed correctly
             tex.flip(false, true);
-            sprite = new Sprite(tex);
         }
-        else { sprite = EMPTY; }
+        else { tex = EMPTY; }
 
         final ImageButtonStyle style = new ImageButtonStyle(skin.get(ButtonStyle.class));
 
-        style.imageUp = new SpriteDrawable(sprite);
-        style.imageDown = new SpriteDrawable(sprite);
+        style.imageUp = new TextureRegionDrawable(tex);
+        style.imageDown = new TextureRegionDrawable(tex);
 
         return style;
     }
