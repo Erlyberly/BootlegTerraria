@@ -18,14 +18,15 @@ import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.Objects;
+
 /**
  * @author kheba
  */
 public class SlotActor extends ImageButton {
 
     private static final Sprite EMPTY;
-
     private static final int SCALE = 4;
+    private static SpriteBatch batch = new SpriteBatch();
 
     static {
         if (!GameMain.isHeadless()) {
@@ -61,30 +62,32 @@ public class SlotActor extends ImageButton {
     private static ImageButtonStyle createStyle(final Skin skin, final TileStack tileStack) {
         final Sprite sprite;
         if (tileStack != null) {
+
             //draw everything to this buffer to overlap the stacks texture with how many there are in the stack
             FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA4444, (int) TileType.TILE_SIZE * SCALE,
                                                       (int) TileType.TILE_SIZE * SCALE, false);
-            SpriteBatch batch = new SpriteBatch(10);
 
-            //this is the region that will store the combined texture
+            //this is the texture that will store the combined texture.
+            //it is a region so we can flip it
             TextureRegion tex = new TextureRegion(frameBuffer.getColorBufferTexture());
 
             // the sprite _must_ be the size of the given graphics size
             Sprite rawSprite = new Sprite(tileStack.getTileType().getTextureRegion());
+
             rawSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
             //Start drawing everything to the framebuffer
             frameBuffer.begin();
 
-            //clear junk that might appear behind transparent textures3
+            //clear junk that might appear behind transparent textures
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //start the batch (as you would normally)
             batch.begin();
 
+
             //draw the tile texture
             rawSprite.draw(batch);
-
 
             //scale the font so we can read it
             BitmapFont font = GameMain.map.font;
@@ -101,7 +104,6 @@ public class SlotActor extends ImageButton {
 
             batch.end();
             frameBuffer.end();
-
 
             tex.flip(false, true);
             sprite = new Sprite(tex);
