@@ -77,7 +77,7 @@ public class SlotActor extends ImageButton {
             frameBuffer.begin();
 
             //clear junk that might appear behind transparent textures3
-            Gdx.gl.glClear(GL20.GL_COLOR_CLEAR_VALUE);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //start the batch (as you would normally)
             batch.begin();
