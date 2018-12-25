@@ -269,8 +269,7 @@ public class Container implements IContainer {
         if (validOnly && tileStack != null && !tileStack.isValid()) {
             throw new IllegalArgumentException("This container does not allow invalid stacks");
         }
-        cont[index] = null;
-        add(tileStack);
+        cont[index] = tileStack;
     }
 
     @Override

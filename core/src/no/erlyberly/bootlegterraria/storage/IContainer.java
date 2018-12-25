@@ -36,6 +36,8 @@ public interface IContainer extends Iterable<ContainerSlot> {
      */
     int getSize();
 
+    boolean isValidOnly();
+
     /**
      * @return The first empty slot in the container, return a negative number if none is found
      */

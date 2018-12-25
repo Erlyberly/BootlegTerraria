@@ -78,4 +78,14 @@ public class AutoSortedContainer extends Container {
     public SortOrder getSortOrder() {
         return sortOrder;
     }
+
+    @Override
+    public void put(final int index, final TileStack tileStack) {
+        Preconditions.checkPositionIndex(index, getSize() - 1);
+        if (isValidOnly() && tileStack != null && !tileStack.isValid()) {
+            throw new IllegalArgumentException("This container does not allow invalid stacks");
+        }
+        cont[index] = null;
+        add(tileStack);
+    }
 }
