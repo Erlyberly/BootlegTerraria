@@ -8,9 +8,8 @@ import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.world.TileType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author kheba
@@ -19,17 +18,52 @@ public class Container implements IContainer {
 
     private String name;
     private final int size;
+    private boolean validOnly;
 
     final TileStack[] cont;
     private ContainerActor actor;
-    private boolean validOnly;
 
-    public Container(final int size) {
-        this("Container", size);
-    }
+    public static class ContainerBuilder {
 
-    public Container(final String name, final int size) {
-        this(name, size, true);
+        private String name = "Container";
+        private int size;
+        private boolean validOnly = true;
+
+
+        public ContainerBuilder(int size) {
+            this.size = size;
+        }
+
+        public Container build() {
+            return new Container(name, size, validOnly);
+        }
+
+        public ContainerBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public ContainerBuilder setSize(int size) {
+            this.size = size;
+            return this;
+        }
+
+        public ContainerBuilder setValidOnly(boolean validOnly) {
+            this.validOnly = validOnly;
+            return this;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public boolean isValidOnly() {
+            return validOnly;
+        }
     }
 
     public Container(final String name, final int size, boolean validOnly) {
@@ -57,6 +91,11 @@ public class Container implements IContainer {
     }
 
     @Override
+    public boolean isValidOnly() {
+        return validOnly;
+    }
+
+    @Override
     public int firstEmpty() {
         for (int i = 0; i < size; i++) {
             if (cont[i] == null) { return i; }
@@ -76,51 +115,59 @@ public class Container implements IContainer {
         for (int i = 0; i < getSize(); i++) {
             final TileStack loopTs = cont[i];
             if (loopTs != null && loopTs.getTileType() == tileStack.getTileType() &&
-                loopTs.getAmount() <= tileStack.getAmount()) {
+                tileStack.getAmount() <= loopTs.getAmount()) {
                 return i;
             }
         }
         return -1;
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
-    public List<TileStack> add(final List<TileStack> tileStacks) {
-        Preconditions.checkNotNull(tileStacks, "Cannot add a null list");
+    public int add(TileType tileType, int amount) {
 
-        final List<TileStack> returnList = new ArrayList<>(tileStacks.size());
 
-        for (int i = 0, size1 = tileStacks.size(); i < size1; i++) {
-            final TileStack ts = tileStacks.get(i);
-            if (ts == null || (validOnly && !ts.isValid())) {
-                throw new IllegalArgumentException("Element nr " + i + " is either null or invalid (" + ts + ")");
-            }
+        int index = first(tileType);
+        if (index < 0) { index = firstEmpty(); }
+        if (index < 0) { return amount; }
+        else if (!validOnly) {
+            TileStack ts = cont[index];
+            if (ts == null) { cont[index] = new TileStack(tileType, amount); }
+            else { ts.give(amount); }
+            return 0;
+        }
 
-            boolean added = false;
+        //from here validOnly must be true, ie
+        //assert (validOnly);
 
-            for (int j = 0; j < getSize(); j++) {
-                if (cont[j] != null && cont[j].getTileType() == ts.getTileType()) {
-                    if (cont[j].getAmount() + ts.getAmount() <= ts.getTileType().getMaxStackSize()) {
-                        cont[j].give(ts.getAmount());
-                        added = true;
-                        break;
-                    }
-                }
-            }
-            //add item to the list at the first empty position
-            if (!added) {
-                final int firstEmpty = firstEmpty();
-                if (firstEmpty >= 0) {
-                    cont[firstEmpty] = ts;
-                    added = true;
-                }
-            }
-            if (!added) {
-                returnList.add(ts);
+        for (TileStack stack : cont) {
+            if (stack != null && stack.getTileType() == tileType && stack.getAmount() < tileType.getMaxStackSize()) {
+                int needed = tileType.getMaxStackSize() - stack.getAmount();
+                int given = Math.min(amount, needed);
+                stack.give(given);
+                amount -= given;
+                if (amount == 0) { return 0; }
             }
         }
-        updateContainer();
-        return returnList;
+
+        TileStack[] validStacks = TileStack.validate(new TileStack(tileType, amount));
+
+        int toSkip = -1;
+        for (int i = 0, length = validStacks.length; i < length; i++) {
+            index = firstEmpty();
+            if (index < 0) {
+                toSkip = i;
+                break; //no more empty slots
+            }
+            cont[index] = validStacks[i];
+        }
+
+        //if we do not need to skip anything the loop finished successfully
+        if (toSkip == -1) {
+            return 0;
+        }
+
+        //skip the ones already added, then sum up the rest
+        return Arrays.stream(validStacks).skip(toSkip).mapToInt(TileStack::getAmount).sum();
     }
 
     @Override

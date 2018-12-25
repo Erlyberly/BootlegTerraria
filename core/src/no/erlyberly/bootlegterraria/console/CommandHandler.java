@@ -180,7 +180,7 @@ public class CommandHandler extends CommandExecutor {
                 break;
             case "container":
             case "co":
-                player.setInv(new Inventory(player, new Container("Inventory", 40)));
+                player.setInv(new Inventory(player, new Container("Inventory", 40, true)));
                 break;
             default:
                 GameMain.console.log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);

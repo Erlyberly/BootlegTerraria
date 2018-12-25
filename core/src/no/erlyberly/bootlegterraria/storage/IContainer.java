@@ -2,8 +2,7 @@ package no.erlyberly.bootlegterraria.storage;
 
 import no.erlyberly.bootlegterraria.world.TileType;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * An interface for things that holds items.
@@ -70,12 +69,12 @@ public interface IContainer extends Iterable<ContainerSlot> {
     /**
      * Add an item to the container
      *
+     * @return How many of the given tiletype not added
+     *
      * @throws IllegalArgumentException
      *     if {@code TileType} is {@code null} or amount is less than zero
      */
-    default void add(final TileType tileType, final int amount) {
-        add(TileStack.validate(tileType, amount));
-    }
+    int add(final TileType tileType, final int amount);
 
     /**
      * Add one or more items to the container
@@ -93,13 +92,35 @@ public interface IContainer extends Iterable<ContainerSlot> {
     /**
      * Add one or more items to the container
      *
-     * @param tileStack
+     * @param tileStacks
      *     What to add
+     *
+     * @return A list of all tiles not added, the returned stack might not be valid.
      *
      * @throws IllegalArgumentException
      *     if one of the {@code tileStack}s is {@code null}
      */
-    List<TileStack> add(List<TileStack> tileStack);
+    default List<TileStack> add(List<TileStack> tileStacks) {
+        Map<TileType, Integer> collector = new HashMap<>();
+
+        //tally up how many we got of each type
+        for (TileStack stack : tileStacks) {
+//            if (stack == null) { continue; }
+            collector.put(stack.getTileType(), collector.getOrDefault(stack.getTileType(), 0) + stack.getAmount());
+        }
+
+        List<TileStack> notAdded = new ArrayList<>();
+
+        //then add them all type by type
+        for (Map.Entry<TileType, Integer> entry : collector.entrySet()) {
+            int failedToAdd = add(entry.getKey(), entry.getValue());
+            //if any tiles failed to be added add them here
+            if (failedToAdd > 0) {
+                notAdded.add(new TileStack(entry.getKey(), failedToAdd));
+            }
+        }
+        return notAdded;
+    }
 
     /**
      * Remove all tile stacks with the given tile type
