@@ -46,6 +46,26 @@ public class ConsoleHandler extends GUIConsole {
     }
 
     public void logf(final LogLevel level, final String msg, final Object... objs) {
-        super.log(String.format(msg, objs), level);
+        log(String.format(msg, objs), level);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.strongjoshua.console.Console#log(java.lang.String, com.strongjoshua.console.GUIConsole.LogLevel)
+     */
+    @Override
+    public void log(String msg, LogLevel level) {
+        try {
+            super.log(msg, level);
+        } catch (Exception ex) {
+            System.err.printf("Failed to log the message '%s' with level %s due to the exception %s: %s%n", msg,
+                              level.toString(), ex.getClass().getSimpleName(), ex.getMessage());
+        }
+    }
+
+    @Override
+    public void log(String msg) {
+        log(msg, LogLevel.DEFAULT);
     }
 }

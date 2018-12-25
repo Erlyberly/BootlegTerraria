@@ -20,6 +20,7 @@ import no.erlyberly.bootlegterraria.input.InputSetting;
 import no.erlyberly.bootlegterraria.input.MouseInput;
 import no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer;
 import no.erlyberly.bootlegterraria.render.light.BlockLightMap;
+import no.erlyberly.bootlegterraria.storage.IContainer;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.storage.impl.AutoSortedContainer;
 import no.erlyberly.bootlegterraria.storage.impl.Container;
@@ -71,7 +72,11 @@ public class CommandHandler extends CommandExecutor {
         if (!mapName.toLowerCase().endsWith(".tmx")) {
             mapName += ".tmx";
         }
-        GameMain.loadMap(mapName);
+        try {
+            GameMain.loadMap(mapName);
+        } catch (IllegalArgumentException ex) {
+            console.log("Unknown map '" + mapName + "'", LogLevel.ERROR);
+        }
     }
 
     @ConsoleDoc(paramDescriptions = "Change gravity")
@@ -340,6 +345,20 @@ public class CommandHandler extends CommandExecutor {
             GameMain.console.logf(LogLevel.ERROR, "Unknown tileType '%s'", tileType);
             return;
         }
-        GameMain.map.getPlayer().getInv().getContainer().add(tt, amount);
+
+        IContainer container = GameMain.map.getPlayer().getInv().getContainer();
+
+
+        int failedToAdd;
+        if (amount >= 0) { failedToAdd = container.add(tt, amount); }
+        else { failedToAdd = container.remove(tt, Math.abs(amount)); }
+
+        if (failedToAdd > 0) {
+            console.log("Failed to add " + amount + " " + tt, LogLevel.ERROR);
+        }
+        else {
+            console.log("Successfully added " + failedToAdd + " " + tt, LogLevel.SUCCESS);
+        }
+        container.updateContainer();
     }
 }

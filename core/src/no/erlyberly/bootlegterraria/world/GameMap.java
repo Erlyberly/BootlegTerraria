@@ -19,6 +19,7 @@ import no.erlyberly.bootlegterraria.render.light.api.LightMap;
 import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.util.GameInfo;
 import no.erlyberly.bootlegterraria.util.Vector2Int;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -390,12 +391,26 @@ public abstract class GameMap {
      */
     public abstract void spawnPlayer();
 
+    /**
+     *
+     * @param blockX
+     * @return
+     * @throws IllegalArgumentException If the block location is outside the map
+     */
     public abstract int getSkylightAt(int blockX);
 
+    /**
+     * @return The LightLevel at the given pos or null if the pos is invalid
+     */
+    @Nullable
     public LightLevel lightAt(final int blockX, final int blockY) {
         return lightAt(new Vector2Int(blockX, blockY));
     }
 
+    /**
+     * @return The LightLevel at the given pos or null if the pos is invalid
+     */
+    @Nullable
     public abstract LightLevel lightAt(Vector2Int pos);
 
     public abstract LightMap getLightMap();

@@ -1,2 +1,3 @@
 inv container
 openInv true
+give lava 5

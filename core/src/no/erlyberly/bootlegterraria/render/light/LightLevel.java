@@ -13,11 +13,17 @@ public enum LightLevel {
 
     public static final int LIGHT_LEVELS = 9;
 
+    /**
+     * Default light level for tiles to shine
+     */
+    public static final LightLevel DEFAULT_LIGHT_LEVEL = LightLevel.LVL_0;
+    /**
+     * The brightness of which the skylight will be shining
+     */
     public static final LightLevel SKY_LIGHT = LightLevel.LVL_8;
 
     final int lvl;
     final float percentage;
-
 
     private static final LightLevel[] values;
 
