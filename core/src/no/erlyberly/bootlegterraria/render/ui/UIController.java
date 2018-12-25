@@ -32,7 +32,6 @@ public class UIController implements Disposable {
     }
 
     public void resize(final int width, final int height) {
-        // See below for what true means.
         stage.getViewport().update(width, height, true);
     }
 
@@ -64,6 +63,9 @@ public class UIController implements Disposable {
     }
 
     /**
+     *
+     * Create a message that will not be removed until manually removed
+     *
      * @param text
      *     The text of the message
      *
@@ -80,15 +82,12 @@ public class UIController implements Disposable {
      *     x coordinate of message
      * @param y
      *     y coordinate of message
-     * @param width
-     *     height of message
-     * @param height
-     *     height of message
      *
      * @return The message created
      */
-    public UIMessage sendMessage(String text, float x, float y, float width, float height) {
-        return sendMessage(text, x, y, width, height, 0);
+    public UIMessage sendMessage(String text, float x, float y, long displayTimeMs) {
+        return sendMessage(text, x, y, GameMain.map.font.getSpaceWidth() * text.length(),
+                           GameMain.map.font.getCapHeight(), displayTimeMs, 0.75f);
     }
 
     /**
@@ -102,7 +101,7 @@ public class UIController implements Disposable {
     public UIMessage sendMessage(String text, long displayTimeMs) {
         return sendMessage(text, (Gdx.graphics.getWidth() / 2f) - GameMain.map.font.getSpaceWidth() * text.length() / 2,
                            Gdx.graphics.getHeight() / 4f, GameMain.map.font.getSpaceWidth() * text.length(),
-                           GameMain.map.font.getCapHeight(), displayTimeMs);
+                           GameMain.map.font.getCapHeight(), displayTimeMs, 0.75f);
     }
 
     /**
@@ -118,20 +117,19 @@ public class UIController implements Disposable {
      *     height of message
      * @param displayTimeMs
      *     If greater than 0, delete after given ms
+     * @param fadeTime How long it will take for the message to fade away, in seconds
      *
      * @return The message created
      */
-    public UIMessage sendMessage(String text, float x, float y, float width, float height, long displayTimeMs) {
-//        System.out.println(
-//            "text = [" + text + "], x = [" + x + "], y = [" + y + "], width = [" + width + "], height = [" + height +
-//            "], displayTimeMs = [" + displayTimeMs + "]");
-        UIMessage msg = new UIMessage(text);
+    public UIMessage sendMessage(String text, float x, float y, float width, float height, long displayTimeMs,
+                                 float fadeTime) {
+        UIMessage msg = new UIMessage(text, fadeTime);
         stage.addActor(msg);
         msg.getLabel().setBounds(x, y, width, height);
         if (displayTimeMs > 0) {
             delete(msg, displayTimeMs);
         }
-        GameMain.console.logf("<t: %d> %s", displayTimeMs, text);
+        GameMain.console.logf("<dt: %d ft %.2f> %s", displayTimeMs, fadeTime, text);
         return msg;
     }
 
