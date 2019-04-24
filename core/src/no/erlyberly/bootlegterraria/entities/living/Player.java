@@ -15,6 +15,7 @@ import no.erlyberly.bootlegterraria.input.event.EventType;
 import no.erlyberly.bootlegterraria.input.event.metadata.MouseMetadata;
 import no.erlyberly.bootlegterraria.input.event.metadata.ScrolledMetadata;
 import no.erlyberly.bootlegterraria.storage.IInventory;
+import no.erlyberly.bootlegterraria.storage.TileStack;
 import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
@@ -109,8 +110,8 @@ public class Player extends LivingEntity {
         GameMain.input.registerListener(metadata -> {
             final GameMap map = GameMain.map;
             final Player player = map.getPlayer();
-
-            if (player.getInv().holding() == null) {
+            TileStack holding = player.getInv().holding();
+            if (holding == null) {
                 return;
             }
 
@@ -119,7 +120,7 @@ public class Player extends LivingEntity {
             final int blockX = (int) (pos.x / TileType.TILE_SIZE);
             final int blockY = (int) (pos.y / TileType.TILE_SIZE);
 
-            map.setTile(blockX, blockY, player.getInv().holding().getTileType());
+            map.setTile(blockX, blockY, holding.getTileType());
         }, InputSetting.PLACE_BLOCK);
 
         /*
@@ -193,6 +194,12 @@ public class Player extends LivingEntity {
             }
         }, InputSetting.ATTACK);
 
+        GameMain.input.registerListener(md -> {
+            final IInventory inv = GameMain.map.getPlayer().getInv();
+            if (inv.isOpen()) { inv.close(); }
+            else { inv.open(); }
+        }, InputSetting.INVENTORY);
+
         /*
          * Debug input
          */
@@ -202,12 +209,6 @@ public class Player extends LivingEntity {
             final Player player = map.getPlayer();
             map.addEnemy(new Zombie(player.pos.x, player.pos.y + player.getHeight() * 2));
         }, EventType.KEY_DOWN, Input.Keys.Z);
-
-        GameMain.input.registerListener(md -> {
-            final IInventory inv = GameMain.map.getPlayer().getInv();
-            if (inv.isOpen()) { inv.close(); }
-            else { inv.open(); }
-        }, InputSetting.INVENTORY);
 
     }
 

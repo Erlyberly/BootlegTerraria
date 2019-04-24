@@ -48,7 +48,7 @@ public class LightInfo {
             throw new IllegalArgumentException("Cannot set the light to 0, please use the remove method");
         }
 
-        float brightness = 0;
+        float brightness;
 
         //place at this light levels location
         if (posi.equals(src)) {
@@ -167,7 +167,7 @@ public class LightInfo {
 
     @Override
     public String toString() {
-        return "LightInfo{" + "posi=" + posi + ", currLL=" + currLL + ", emitting=" + emitting + ", skylight=" +
-               skylight + ", lit from " + litFrom.size() + " different places" + '}';
+        return "LightInfo{" + "posi=" + posi + ", currLL=" + currLL + ", emitting=" + emitting + ", skylight=" + skylight +
+               ", lit from " + litFrom.size() + " different places" + '}';
     }
 }
