@@ -26,7 +26,7 @@ public class SwordSwing extends WeaponEntity {
         attackTime -= Gdx.graphics.getRawDeltaTime();
         if (attackTime <= 0) {
             destroyed = true;
-            gameMap.removeEntity();
+            gameMap.cleanEntities();
         }
     }
 

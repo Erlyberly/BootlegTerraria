@@ -22,6 +22,7 @@ import no.erlyberly.bootlegterraria.util.Vector2Int;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.ceil;
 import static no.erlyberly.bootlegterraria.GameMain.FONTS_FOLDER;
@@ -33,15 +34,13 @@ public abstract class GameMap {
     public static float cameraLerp = 2.5f;
     private final String fileName;
 
-    private final ArrayList<Entity> enemies;
-    private final ArrayList<Entity> addEnimies;
-    private boolean addWaitingEnimies = false;
-    private boolean removeWaitingEnimies = false;
+    private final List<Entity> enemies;
+//    private final List<Entity> addEnemies;
 
-    private final ArrayList<Entity> entities;
-    private final ArrayList<Entity> addEntities;
-    private boolean addWaitingEntities = false;
-    private boolean removeWaitingEntities = false;
+    private final List<Entity> entities;
+    //    private final List<Entity> addEntities;
+//    private boolean addWaitingEntities = false;
+    private boolean removeDestroyedEntities = false;
 
     private Player player;
 
@@ -56,9 +55,9 @@ public abstract class GameMap {
     GameMap(final String fileName, final boolean headless) {
         this.fileName = fileName;
         enemies = new ArrayList<>();
-        addEnimies = new ArrayList<>();
+//        addEnemies = new ArrayList<>();
         entities = new ArrayList<>();
-        addEntities = new ArrayList<>();
+//        addEntities = new ArrayList<>();
 
         if (!headless) {
 
@@ -79,21 +78,18 @@ public abstract class GameMap {
     }
 
     public void addEnemy(final Entity entity) {
-        addEnimies.add(entity);
-        addWaitingEnimies = true;
-    }
-
-    public void removeEnemy() {
-        removeWaitingEnimies = true;
+        enemies.add(entity);
     }
 
     public void addEntity(final Entity entity) {
-        addEntities.add(entity);
-        addWaitingEntities = true;
+        enemies.add(entity);
     }
 
-    public void removeEntity() {
-        removeWaitingEntities = true;
+    /**
+     * Remove all destroyed entities and enemies
+     */
+    public void cleanEntities() {
+        removeDestroyedEntities = true;
     }
 
     public void render(final OrthographicCamera camera, final OrthographicCamera hudCamera, final SpriteBatch batch) {
@@ -112,9 +108,6 @@ public abstract class GameMap {
         final Vector3 position = camera.position;
         position.x += (player.getX() - position.x) * cameraLerp * player.speedModifier * Gdx.graphics.getDeltaTime();
         position.y += (player.getY() - position.y) * cameraLerp * player.speedModifier * Gdx.graphics.getDeltaTime();
-
-//        camera.position.x = player.getX();
-//        camera.position.y = player.getY();
 
         batch.setProjectionMatrix(hudCamera.combined);
 
@@ -182,31 +175,13 @@ public abstract class GameMap {
 
         player.update();
 
-        for (final Entity entity : enemies) {
-            entity.update();
-        }
+        enemies.forEach(Entity::update);
+        entities.forEach(Entity::update);
 
-        for (final Entity entity : entities) {
-            entity.update();
-        }
-
-        if (addWaitingEntities) {
-            entities.addAll(addEntities);
-            addEntities.clear();
-            addWaitingEntities = false;
-        }
-
-        if (removeWaitingEntities) {
-            final ArrayList<Entity> removeEntities = new ArrayList<>();
-            for (final Entity i : entities) {
-                if (i.isDestroyed()) {
-                    removeEntities.add(i);
-                }
-            }
-            for (final Entity remove : removeEntities) {
-                entities.remove(remove);
-            }
-            removeWaitingEntities = false;
+        if (removeDestroyedEntities) {
+            enemies.removeIf(Entity::isDestroyed);
+            entities.removeIf(Entity::isDestroyed);
+            removeDestroyedEntities = false;
         }
     }
 

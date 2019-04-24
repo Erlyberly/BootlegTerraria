@@ -68,7 +68,7 @@ public class Zombie extends LivingEntity {
         if (health <= 0) {
             health = 0;
             destroyed = true;
-            gameMap.removeEnemy();
+            gameMap.cleanEntities();
         }
 
         if (health > getMaxHealth()) {

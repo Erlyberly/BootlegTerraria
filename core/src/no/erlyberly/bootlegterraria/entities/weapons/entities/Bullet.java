@@ -28,7 +28,8 @@ public class Bullet extends WeaponEntity {
         final boolean tooFarAway = Math.abs(pos.x - spawnX) > gameMap.getPlayer().getWidth() * 15;
         if (colliding || tooFarAway) {
             destroyed = true;
-            gameMap.removeEntity();
+            gameMap.cleanEntities();
+            return;
         }
         moveX(getHorizontalSpeed() * getFacing());
     }
