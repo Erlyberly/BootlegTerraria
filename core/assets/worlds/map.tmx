@@ -4,8 +4,8 @@
   <property name="spawnX" type="int" value="50"/>
   <property name="spawnY" type="int" value="66"/>
  </properties>
- <tileset firstgid="1" source="tiles_padded.tsx"/>
- <tileset firstgid="9" source="tiles_padded_background.tsx"/>
+ <tileset firstgid="1" source="../tiles/tiles_padded.tsx"/>
+ <tileset firstgid="9" source="../tiles/tiles_padded_background.tsx"/>
  <layer id="5" name="background" width="112" height="112">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

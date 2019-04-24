@@ -16,6 +16,7 @@ import no.erlyberly.bootlegterraria.util.CancellableThreadScheduler;
 import no.erlyberly.bootlegterraria.util.Util;
 import no.erlyberly.bootlegterraria.world.TiledGameMap;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,14 @@ public class GameMain extends Game {
 
     private static boolean headless;
 
-    private static final String DEFAULT_MAP = "map.tmx";
+    public static final String FONTS_FOLDER = "fonts" + File.separatorChar;
+    public static final String WORLDS_FOLDER = "worlds" + File.separatorChar;
+    public static final String IMAGES_FOLDER = "images" + File.separatorChar;
+    public static final String SCRIPTS_FOLDER = "scrips" + File.separatorChar;
+
+    private static final String DEFAULT_MAP = WORLDS_FOLDER + "map.tmx";
     public static final String VERSION_FILE = "version";
+
 
     //For the interpreter to see it as a flag a dash(-) must be at the start of the argument
     //An asterisk (*) means that a value is required, it is given as: -key=value
@@ -77,7 +84,7 @@ public class GameMain extends Game {
         camera.update();
 
         console = new ConsoleHandler();
-        console.setAlpha(0.75f);
+        console.setAlpha(0.7f);
         ui = new UIController();
         input = new InputHandler();
 
@@ -108,9 +115,8 @@ public class GameMain extends Game {
 
         if (args.containsKey(MOUSEPAD_FLAG)) {
             //bind place_block LMB l-shift
-            console.execCommand(
-                "bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
-                Input.Keys.toString(Input.Keys.SHIFT_LEFT));
+            console.execCommand("bind " + InputSetting.PLACE_BLOCK.name() + " " + MouseInput.toString(MouseInput.LEFT_MB) + " " +
+                                Input.Keys.toString(Input.Keys.SHIFT_LEFT));
         }
 
         if (args.containsKey(SAVE_COMMIT_ID_FLAG)) {
@@ -128,7 +134,7 @@ public class GameMain extends Game {
      */
     public static void loadMap(final String map) {
         SECONDARY_THREAD.cancelTasks();
-        console.log("Loading map '" + map + '\'');
+        console.logf("Loading map '%s'", map);
         if (GameMain.map != null) { GameMain.map.dispose(); }
 
         if (GameMain.map != null) {

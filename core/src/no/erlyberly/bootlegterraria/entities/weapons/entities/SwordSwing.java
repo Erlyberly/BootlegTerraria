@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.WeaponEntity;
 import no.erlyberly.bootlegterraria.world.TileType;
 
+import static no.erlyberly.bootlegterraria.GameMain.IMAGES_FOLDER;
+
 public class SwordSwing extends WeaponEntity {
 
     public static final float SWORD_LENGTH = TileType.TILE_SIZE * 5f;
-    private static final TextureRegion TEXTURE = new TextureRegion(new Texture("sword.png"));
+    private static final TextureRegion TEXTURE = new TextureRegion(new Texture(IMAGES_FOLDER + "sword.png"));
 
     private float attackTime = 0.5f;
 

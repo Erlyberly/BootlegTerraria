@@ -8,11 +8,13 @@ import no.erlyberly.bootlegterraria.world.TileType;
 
 import java.util.Random;
 
+import static no.erlyberly.bootlegterraria.GameMain.IMAGES_FOLDER;
+
 public class Zombie extends LivingEntity {
 
-    private final static Texture HEALTH_BAR = new Texture("hp_fill.png");
-    private final static Texture BAR_OUTLINE = new Texture("bar_outline.png");
-    private final static TextureRegion TEXTURE = new TextureRegion(new Texture("zombie.png"));
+    private final static Texture HEALTH_BAR = new Texture(IMAGES_FOLDER + "hp_fill.png");
+    private final static Texture BAR_OUTLINE = new Texture(IMAGES_FOLDER + "bar_outline.png");
+    private final static TextureRegion TEXTURE = new TextureRegion(new Texture(IMAGES_FOLDER + "zombie.png"));
 
     private static final Random RNG = new Random();
     private static final int JUMP_VELOCITY = 300;

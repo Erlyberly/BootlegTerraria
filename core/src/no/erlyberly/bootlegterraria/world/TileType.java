@@ -45,16 +45,16 @@ public enum TileType {
     private final int maxStackSize;
 
     TileType(final int id, final String name) {
-        this(id, name, DEFAULT_DAMAGE_PER_SECOND, LightLevel.DEFAULT_LIGHT_LEVEL, DEFAULT_VISCOSITY,
-             DEFAULT_MAX_STACK_SIZE);
+        this(id, name, DEFAULT_DAMAGE_PER_SECOND, LightLevel.DEFAULT_LIGHT_LEVEL, DEFAULT_VISCOSITY, DEFAULT_MAX_STACK_SIZE);
     }
 
     TileType(final int id, final String name, final float viscosity) {
         this(id, name, DEFAULT_DAMAGE_PER_SECOND, LightLevel.DEFAULT_LIGHT_LEVEL, viscosity, DEFAULT_MAX_STACK_SIZE);
     }
 
+
     TileType(final int id, final String name, final LightLevel lightLevel) {
-        this(id, name, DEFAULT_DAMAGE_PER_SECOND, lightLevel, DEFAULT_VISCOSITY, DEFAULT_MAX_STACK_SIZE);
+        this(id, name, 0, lightLevel, DEFAULT_VISCOSITY, DEFAULT_MAX_STACK_SIZE);
     }
 
     TileType(final int id, final String name, final int dps, final LightLevel lightLevel, final float viscosity) {

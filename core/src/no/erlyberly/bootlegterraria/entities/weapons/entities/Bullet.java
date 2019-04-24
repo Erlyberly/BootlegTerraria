@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import no.erlyberly.bootlegterraria.entities.weapons.WeaponEntity;
 import no.erlyberly.bootlegterraria.world.TileType;
 
+import static no.erlyberly.bootlegterraria.GameMain.IMAGES_FOLDER;
+
 public class Bullet extends WeaponEntity {
 
-    private static final TextureRegion TEXTURE = new TextureRegion(new Texture("bullet.png"));
+    private static final TextureRegion TEXTURE = new TextureRegion(new Texture(IMAGES_FOLDER + "bullet.png"));
 
     private final float spawnX;
 

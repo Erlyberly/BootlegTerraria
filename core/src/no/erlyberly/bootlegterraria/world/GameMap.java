@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static java.lang.Math.ceil;
+import static no.erlyberly.bootlegterraria.GameMain.FONTS_FOLDER;
+import static no.erlyberly.bootlegterraria.GameMain.IMAGES_FOLDER;
 
 public abstract class GameMap {
 
@@ -61,18 +63,17 @@ public abstract class GameMap {
         if (!headless) {
 
             final FreeTypeFontGenerator generator =
-                new FreeTypeFontGenerator(Gdx.files.internal("fonts/UbuntuMono-R.ttf"));
-            final FreeTypeFontGenerator.FreeTypeFontParameter parameter =
-                new FreeTypeFontGenerator.FreeTypeFontParameter();
+                new FreeTypeFontGenerator(Gdx.files.internal(FONTS_FOLDER + "UbuntuMono-R.ttf"));
+            final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             parameter.size = 20;
             parameter.minFilter = Texture.TextureFilter.Linear;
             font = generator.generateFont(parameter);
             generator.dispose();
 
-            hpBar = new Texture("hp_fill.png");
-            barOutline = new Texture("bar_outline.png");
-            staminaBar = new Texture("stamina_fill.png");
-            loadingSplashScreen = new Texture("goodlogic.png");
+            hpBar = new Texture(IMAGES_FOLDER + "hp_fill.png");
+            barOutline = new Texture(IMAGES_FOLDER + "bar_outline.png");
+            staminaBar = new Texture(IMAGES_FOLDER + "stamina_fill.png");
+            loadingSplashScreen = new Texture(IMAGES_FOLDER + "goodlogic.png");
         }
         else { font = null; }
     }
@@ -100,8 +101,8 @@ public abstract class GameMap {
 
         player.render(batch);
 
-        for (final Entity enimies : enemies) {
-            enimies.render(batch);
+        for (final Entity enemies : enemies) {
+            enemies.render(batch);
         }
 
         for (final Entity entities : entities) {
@@ -120,8 +121,8 @@ public abstract class GameMap {
         final float hpBarModifier = 1.03f;
 
         //hp bar
-        batch.draw(hpBar, 6f, GameInfo.HEIGHT / hpBarModifier,
-                   ((player.getHealth() / player.getMaxHealth()) * hpBar.getWidth()), hpBar.getHeight());
+        batch.draw(hpBar, 6f, GameInfo.HEIGHT / hpBarModifier, ((player.getHealth() / player.getMaxHealth()) * hpBar.getWidth()),
+                   hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / hpBarModifier);
         font.draw(batch, (int) player.getHealth() + " / " + (int) player.getMaxHealth(), barOutline.getWidth() + 10f,
                   12f + GameInfo.HEIGHT / hpBarModifier);
@@ -131,8 +132,7 @@ public abstract class GameMap {
         //stamina bar
         final float staminaPercent = player.getStamina() / (float) player.getMaxStamina();
 
-        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * hpBar.getWidth(),
-                   hpBar.getHeight());
+        batch.draw(staminaBar, 6f, GameInfo.HEIGHT / staminaBarModifier, staminaPercent * hpBar.getWidth(), hpBar.getHeight());
         batch.draw(barOutline, 5f, GameInfo.HEIGHT / staminaBarModifier);
         font.draw(batch, (int) player.getStamina() + " / " + player.getMaxStamina(), barOutline.getWidth() + 10f,
                   12f + GameInfo.HEIGHT / staminaBarModifier);
@@ -153,8 +153,8 @@ public abstract class GameMap {
             selBlk = "None";
         }
         else {
-            selBlk = String.format("%s %s[%s]", holding.getAmount(), holding.getTileType().getName(),
-                                   holding.getTileType().getId());
+            selBlk =
+                String.format("%s %s[%s]", holding.getAmount(), holding.getTileType().getName(), holding.getTileType().getId());
         }
 
         final String[] msgs = {//
@@ -162,8 +162,7 @@ public abstract class GameMap {
             "FPS : " + Gdx.graphics.getFramesPerSecond(), //
             "Sel Blk : " + selBlk + " {sel=" + player.getInv().getSel() + "}", //
             //BC - block coordinates, MC - mouse coordinates, SL - SkyLight
-            String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y,
-                          skylight), //
+            String.format("Mouse : BC (%d, %d) MC (%.1f, %.1f) SL %s", blockX, blockY, mousePos.x, mousePos.y, skylight), //
             String.format("Blk@Mus: Blk %s LI %s", tile, getLightMap().lightInfoAt(pos)), //
             String.format("World : Name %s width %.0f height %.0f", fileName, getWidth(), getHeight()), //
         };
@@ -224,8 +223,7 @@ public abstract class GameMap {
             return true;
         }
 
-        for (int row = (int) (y / TileType.TILE_SIZE), rows = (int) ceil((y + height) / TileType.TILE_SIZE);
-             row < rows; row++) {
+        for (int row = (int) (y / TileType.TILE_SIZE), rows = (int) ceil((y + height) / TileType.TILE_SIZE); row < rows; row++) {
             for (int col = (int) (x / TileType.TILE_SIZE), cols = (int) Math.ceil((x + width) / TileType.TILE_SIZE);
                  col < cols; col++) {
                 final TileType type = getTileTypeByCoordinate(getBlockLayer(), col, row);
@@ -289,6 +287,18 @@ public abstract class GameMap {
 
     public static boolean isOutsideMap(final int blockX, final int blockY, final int width, final int height) {
         return blockX < 0 || blockY < 0 || blockX >= width || blockY >= height;
+    }
+
+    /**
+     * @param x
+     *     The x coordinate to check
+     * @param y
+     *     The y coordinate to check
+     *
+     * @return The given position is out side the maps bounds
+     */
+    public boolean checkMapCollision(float x, float y) {
+        return x < 0 || y < 0 || x / TileType.TILE_SIZE > getWidth() - 1 || y / TileType.TILE_SIZE > (int) getHeight() - 1;
     }
 
     public void checkPlayerEnemyCollision() {
@@ -392,10 +402,12 @@ public abstract class GameMap {
     public abstract void spawnPlayer();
 
     /**
-     *
      * @param blockX
+     *
      * @return
-     * @throws IllegalArgumentException If the block location is outside the map
+     *
+     * @throws IllegalArgumentException
+     *     If the block location is outside the map
      */
     public abstract int getSkylightAt(int blockX);
 

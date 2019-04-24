@@ -19,7 +19,7 @@ public class DesktopLauncher {
         config.samples = 16;
         config.resizable = false; //it's not you, it's the lines
         config.title = "Bootleg Terraria";
-        config.addIcon("ErlyBerly_TheGreat_icon.png", Files.FileType.Internal);
+        config.addIcon(GameMain.IMAGES_FOLDER + "ErlyBerly_TheGreat_icon.png", Files.FileType.Internal);
         new LwjglApplication(new GameMain(arg), config);
     }
 }
