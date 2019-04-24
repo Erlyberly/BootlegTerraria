@@ -3,6 +3,8 @@ package no.erlyberly.bootlegterraria.storage;
 import no.erlyberly.bootlegterraria.world.TileType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -58,6 +60,8 @@ class TileStackTest {
                 new TileStack(tt, 1), //
                 new TileStack(tt, tt.getMaxStackSize()) //
             };
+            Arrays.sort(ats3);
+            Arrays.sort(ets3);
             assertArrayEquals(ets3, ats3);
 
             //exactly one stacks returned
@@ -85,11 +89,10 @@ class TileStackTest {
                           new TileStack[] {new TileStack(tt, tt.getMaxStackSize())});
 
         assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize() * 2)),
-                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()),
-                              new TileStack(tt, tt.getMaxStackSize())});
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()), new TileStack(tt, tt.getMaxStackSize())});
 
         assertArrayEquals(TileStack.validate(new TileStack(tt, tt.getMaxStackSize() * 3)),
-                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()),
-                              new TileStack(tt, tt.getMaxStackSize()), new TileStack(tt, tt.getMaxStackSize())});
+                          new TileStack[] {new TileStack(tt, tt.getMaxStackSize()), new TileStack(tt, tt.getMaxStackSize()),
+                              new TileStack(tt, tt.getMaxStackSize())});
     }
 }

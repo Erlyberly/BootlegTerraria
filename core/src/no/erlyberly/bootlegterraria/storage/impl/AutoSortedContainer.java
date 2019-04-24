@@ -59,10 +59,8 @@ public class AutoSortedContainer extends Container {
      * @param sortOrder
      *     The way to sort the validate each time it is modified
      */
-    public AutoSortedContainer(final String name, final int size, final boolean disallowInvalid,
-                               final SortOrder sortOrder) {
+    public AutoSortedContainer(final String name, final int size, final boolean disallowInvalid, final SortOrder sortOrder) {
         super(name, size, disallowInvalid);
-        Preconditions.checkArgument(size > 0, "Inventory size must be greater than zero");
         Preconditions.checkNotNull(sortOrder, "The sort order cannot be null");
 
         this.disallowInvalid = disallowInvalid;

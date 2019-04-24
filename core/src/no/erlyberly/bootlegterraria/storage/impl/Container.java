@@ -67,7 +67,7 @@ public class Container implements IContainer {
     }
 
     public Container(final String name, final int size, boolean validOnly) {
-
+        Preconditions.checkArgument(size > 0, "Inventory size must be greater than zero");
         this.name = name;
         this.size = size;
         this.validOnly = validOnly;

@@ -72,9 +72,8 @@ class AutoSortedContainerTest {
 
     @Test
     void addTest2() {
-        final AutoSortedContainer cont = new AutoSortedContainer("test", 40, true,
-                                                                 new SortOrder(false, SortOrder.TT_NAME_DESC,
-                                                                               SortOrder.AMOUNT_DESC));
+        final AutoSortedContainer cont =
+            new AutoSortedContainer("test", 40, true, new SortOrder(false, SortOrder.TT_NAME_DESC, SortOrder.AMOUNT_DESC));
 
         final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);
         final TileStack tsTorch = new TileStack(TileType.TORCH, 2);
@@ -94,21 +93,19 @@ class AutoSortedContainerTest {
         final int amount = 25;
 
         final TileStack tsDirt = new TileStack(TileType.DIRT, amount);
-        final List<TileStack> returned = cont.add(tsDirt);
+        final List<TileStack> returned = cont.add(tsDirt.clone());
 
         assertTrue(returned.isEmpty());
         assertEquals(tsDirt, cont.getContent()[0]);
         assertEquals(tsDirt, cont.get(0));
-        assertEquals(amount, cont.getContent()[0].getAmount());
-        assertEquals(amount, cont.get(0).getAmount());
 
         //ts' amount should be doubled
         final List<TileStack> returned2 = cont.add(tsDirt);
 
         assertTrue(returned2.isEmpty());
+        assertEquals(amount * 2, tsDirt.getAmount());
         assertEquals(tsDirt, cont.getContent()[0]);
         assertEquals(tsDirt, cont.get(0));
-        assertEquals(amount * 2, tsDirt.getAmount());
 
         final TileStack tsCloud = new TileStack(TileType.CLOUD, 1);
 
