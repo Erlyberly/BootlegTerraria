@@ -33,6 +33,10 @@ import no.erlyberly.bootlegterraria.world.TileType;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static com.strongjoshua.console.LogLevel.COMMAND;
+import static com.strongjoshua.console.LogLevel.ERROR;
+import static no.erlyberly.bootlegterraria.GameMain.SCRIPTS_FOLDER;
+import static no.erlyberly.bootlegterraria.GameMain.WORLDS_FOLDER;
 import static no.erlyberly.bootlegterraria.render.SimpleOrthogonalTiledMapRenderer.logLightEvents;
 
 /**
@@ -75,7 +79,7 @@ public class CommandHandler extends CommandExecutor {
         try {
             GameMain.loadMap(mapName);
         } catch (IllegalArgumentException ex) {
-            console.log("Unknown map '" + mapName + "'", LogLevel.ERROR);
+            console.log("Unknown map '" + mapName + "'", ERROR);
         }
     }
 
@@ -99,7 +103,7 @@ public class CommandHandler extends CommandExecutor {
                 weapon = new Sword("The Roll");
                 break;
             default:
-                console.log("Could not find weaponType '" + weaponType + "'", LogLevel.ERROR);
+                console.log("Could not find weaponType '" + weaponType + "'", ERROR);
                 return;
         }
 
@@ -122,7 +126,7 @@ public class CommandHandler extends CommandExecutor {
     @ConsoleDoc(description = "Teleport the player to a valid location", paramDescriptions = {"X value", "Y value"})
     public void tp(final int x, final int y) {
         if (!Util.isBetween(0, x, (int) GameMain.map.getWidth())) {
-            cmdH.log("Cannot teleport player outside of map", LogLevel.ERROR);
+            cmdH.log("Cannot teleport player outside of map", ERROR);
             return;
         }
         final GameMap gameMap = GameMain.map;
@@ -171,8 +175,8 @@ public class CommandHandler extends CommandExecutor {
         player.getInv().close();
         TileStack[] oldContent = null;
         if (player.getInv().getContainer() != null) {
-            oldContent = Arrays.stream(player.getInv().getContainer().getContent()).filter(Objects::nonNull)
-                               .toArray(TileStack[]::new);
+            oldContent =
+                Arrays.stream(player.getInv().getContainer().getContent()).filter(Objects::nonNull).toArray(TileStack[]::new);
         }
         switch (invType.toLowerCase()) {
             case "creative":
@@ -188,7 +192,7 @@ public class CommandHandler extends CommandExecutor {
                 player.setInv(new Inventory(player, new Container("Inventory", 40, true)));
                 break;
             default:
-                GameMain.console.log("Unknown storage type '" + invType + '\'', LogLevel.ERROR);
+                GameMain.console.log("Unknown storage type '" + invType + '\'', ERROR);
                 return;
         }
         if (oldContent != null && player.getInv().getContainer() != null) {
@@ -205,13 +209,12 @@ public class CommandHandler extends CommandExecutor {
             try {
                 setting = InputSetting.valueOf(settingStr.toUpperCase());
             } catch (final IllegalArgumentException | NullPointerException e) {
-                GameMain.console.logf(LogLevel.ERROR, "No setting found with the name '%s'", settingStr);
+                GameMain.console.logf(ERROR, "No setting found with the name '%s'", settingStr);
                 return;
             }
             final InputHandler inputHandler = GameMain.input;
 
-            final boolean success =
-                inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[0]);
+            final boolean success = inputHandler.rebindListener(setting.getEventType(), setting.getKeys(), new Integer[0]);
             if (!success) {
                 return;
             }
@@ -249,7 +252,7 @@ public class CommandHandler extends CommandExecutor {
             try {
                 setting = InputSetting.valueOf(settingStr.toUpperCase());
             } catch (final IllegalArgumentException | NullPointerException e) {
-                GameMain.console.logf(LogLevel.ERROR, "No setting found with the name '%s'", settingStr);
+                GameMain.console.logf(ERROR, "No setting found with the name '%s'", settingStr);
                 return;
             }
             final Integer[] keys = new Integer[keyStr.length];
@@ -261,7 +264,7 @@ public class CommandHandler extends CommandExecutor {
                     keyInt = MouseInput.valueOf(key.toUpperCase());
                 }
                 if (keyInt == -1) {
-                    GameMain.console.logf(LogLevel.ERROR, "Could not find any input with the name of '%s'", key);
+                    GameMain.console.logf(ERROR, "Could not find any input with the name of '%s'", key);
                     return;
                 }
                 keys[i] = keyInt;
@@ -297,7 +300,7 @@ public class CommandHandler extends CommandExecutor {
 
         for (final Files.FileType type : Files.FileType.values()) {
             try {
-                execFile = Gdx.files.getFileHandle(absFile, type);
+                execFile = Gdx.files.getFileHandle(SCRIPTS_FOLDER + absFile, type);
                 if (execFile.exists() && !execFile.isDirectory()) {
                     GameMain.console.logf("Found given file '%s' using the FileType '%s'", absFile, type);
                     break;
@@ -323,13 +326,13 @@ public class CommandHandler extends CommandExecutor {
         }
         else {
             console.log("Failed to execute given file \"" + (execFile == null ? "???" : execFile.name()) +
-                        "\", does it exist? is it a directory?", LogLevel.ERROR);
+                        "\", does it exist? is it a directory?", ERROR);
         }
     }
 
-    public void openInv(final boolean open) {
+    public void openInv(final boolean shouldOpen) {
         try {
-            if (open) { GameMain.map.getPlayer().getInv().open(); }
+            if (shouldOpen) { GameMain.map.getPlayer().getInv().open(); }
             else { GameMain.map.getPlayer().getInv().close(); }
         } catch (final Exception e) {
             e.printStackTrace();
@@ -343,7 +346,7 @@ public class CommandHandler extends CommandExecutor {
         try {
             tt = TileType.valueOf(tileType.toUpperCase());
         } catch (final IllegalArgumentException e) {
-            GameMain.console.logf(LogLevel.ERROR, "Unknown tileType '%s'", tileType);
+            GameMain.console.logf(ERROR, "Unknown tileType '%s'", tileType);
             return;
         }
 
@@ -355,7 +358,7 @@ public class CommandHandler extends CommandExecutor {
         else { failedToAdd = container.remove(tt, Math.abs(amount)); }
 
         if (failedToAdd > 0) {
-            console.log("Failed to add " + amount + " " + tt, LogLevel.ERROR);
+            console.log("Failed to add " + amount + " " + tt, ERROR);
         }
         else {
             console.log("Successfully added " + failedToAdd + " " + tt, LogLevel.SUCCESS);
