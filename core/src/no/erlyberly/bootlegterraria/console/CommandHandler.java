@@ -371,4 +371,28 @@ public class CommandHandler extends CommandExecutor {
     public void noclip() {
         GameMain.map.getPlayer().collision = !GameMain.map.getPlayer().collision;
     }
+
+    public void list(String type) {
+        FileHandle folder;
+        switch (type.toLowerCase()) {
+            case "worlds":
+                folder = Gdx.app.getFiles().internal(WORLDS_FOLDER);
+                break;
+            case "scripts":
+                folder = Gdx.app.getFiles().internal(SCRIPTS_FOLDER);
+                break;
+            default:
+                console.log("You can list 'worlds' or 'scripts'", COMMAND);
+                return;
+        }
+
+        if (!folder.isDirectory() || !folder.exists()) {
+            console.log("The " + type.toLowerCase() + " folder is not a folder or does not exists", ERROR);
+            return;
+        }
+
+        Object[] children = Arrays.stream(folder.list()).filter(handle -> !handle.isDirectory()).map(FileHandle::name).toArray();
+        console.log("There are " + children.length + " " + type.toLowerCase() + " in the " + type.toLowerCase() + " folder");
+        console.log(Arrays.toString(children));
+    }
 }
