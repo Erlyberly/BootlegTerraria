@@ -22,6 +22,7 @@ public abstract class Entity {
     protected boolean onGround;
     protected boolean destroyed;
     protected float health;
+    public boolean collision;
     private int facing;
 
     private final Rectangle entRect;
@@ -42,14 +43,17 @@ public abstract class Entity {
         velocityY = 0;
         onGround = false;
         destroyed = false;
+        collision = true;
         facing = 1;
         entRect = new Rectangle(x, y, getWidth(), getHeight());
     }
 
     public void update() {
+        if (!collision) { return; }
         velocityY -= Math.signum(GameMap.gravity) * TileType.TILE_SIZE * GameMap.gravity * GameMap.gravity *
                      Gdx.graphics.getDeltaTime();
         final float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
+
 
         //check for damage from tiles
         if (this instanceof Player) {
@@ -58,8 +62,9 @@ public abstract class Entity {
 
         //check for collision with the map
         if (gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
+
             if (velocityY < 0) {
-                pos.y = (float) Math.floor(pos.y);
+                pos.y = Math.max((float) Math.floor(pos.y), 0);
                 onGround = true;
             }
             velocityY = 0;
@@ -78,7 +83,8 @@ public abstract class Entity {
      */
     public void moveY(final float velocityY) {
         final float newY = pos.y + velocityY * Gdx.graphics.getDeltaTime();
-        if (!gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
+        if ((!collision && !gameMap.checkMapCollision(pos.x, newY)) ||
+            !gameMap.checkMapCollision(pos.x, newY, getWidth(), getHeight())) {
             pos.y = newY;
         }
     }
@@ -91,7 +97,8 @@ public abstract class Entity {
      */
     public void moveX(final float velocityX) {
         final float newX = pos.x + velocityX * Gdx.graphics.getDeltaTime();
-        if (!gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
+        if ((!collision && !gameMap.checkMapCollision(newX, pos.y)) ||
+            !gameMap.checkMapCollision(newX, pos.y, getWidth(), getHeight())) {
             pos.x = newX;
         }
     }

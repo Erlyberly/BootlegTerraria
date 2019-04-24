@@ -228,7 +228,7 @@ public class SimpleOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         }
     }
 
-    /**
+    /*
      * Manually overwrite this to fix an internal LibGDX array reusability error
      */
     @Override

@@ -124,18 +124,18 @@ class LightInfoTest {
     void skylight() {
 
         final Vector2Int src00 = new Vector2Int(0, 0);
-        final Vector2Int src11 = new Vector2Int(-1, -1);
+        final Vector2Int src11 = new Vector2Int(0, 1);
         final LightInfo li = new LightInfo(src00);
 
         li.put(src00, LightLevel.LVL_8, true);
-        li.put(src00, LightLevel.LVL_7, false);
+        li.put(src00, LightLevel.LVL_7, false); //ie a torch
         li.put(src11, LightLevel.LVL_3, false); //test light
 
         assertTrue(li.isSkylight());
         assertEquals(LightLevel.LVL_8, li.getLightLevel());
 
         li.remove(src00, true);
-        li.put(src00, li.getEmitting(), false); //simulate putting on the real light
+        li.put(src00, li.getEmitting(), false); //simulate putting a lava block
         assertFalse(li.isSkylight());
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
 
@@ -143,7 +143,7 @@ class LightInfoTest {
         assertFalse(li.isSkylight());
         assertEquals(LightLevel.LVL_7, li.getLightLevel());
 
-        li.remove(src00, false);
+        li.remove(src11, false);
         assertEquals(LightLevel.LVL_2, li.getLightLevel());
     }
 
@@ -185,9 +185,26 @@ class LightInfoTest {
         liUp.put(src01, LightLevel.SKY_LIGHT, true);
         li.put(src01, LightLevel.SKY_LIGHT, true);
 
-        final int i = 0;
         li.remove(src00, true);
 
         assertFalse(li.isSkylight());
+    }
+
+    @Test
+    void skylightTransparent() {
+        final Vector2Int src00 = new Vector2Int(0, 0);
+        final LightInfo li = new LightInfo(src00);
+
+        li.put(src00, LightLevel.LVL_8, true);
+        assertTrue(li.isSkylight());
+        assertEquals(LightLevel.LVL_8, li.getLightLevel());
+
+        li.put(src00, LightLevel.LVL_7, false); //ie a torch
+        assertTrue(li.isSkylight());
+        assertEquals(LightLevel.LVL_8, li.getLightLevel());
+
+
+        li.remove(src00, true);
+        assertEquals(LightLevel.LVL_8, li.getLightLevel(), li.toString());
     }
 }

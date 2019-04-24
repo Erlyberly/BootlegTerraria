@@ -3,7 +3,7 @@ package no.erlyberly.bootlegterraria.render.ui.inventory;
 /**
  * @author Daniel Holderbaum
  */
-public class SlotTooptip {//extends Window implements SlotListener {
+public class SlotTooltip /*extends Window implements SlotListener*/ {
 
 //    private final Skin skin;
 //
@@ -28,7 +28,7 @@ public class SlotTooptip {//extends Window implements SlotListener {
 //        // title displays the amount
 //        setTitle(slot.getAmount() + "x " + slot.getItem());
 //        clear();
-//        final Label label = new Label("Super awesome description of " + slot.getItem(), this.skin);
+//        final Label label = new Label("Super awesome description of " + slot.getItem(), skin);
 //        add(label);
 //        pack();
 //    }
@@ -38,7 +38,7 @@ public class SlotTooptip {//extends Window implements SlotListener {
 //        super.setVisible(visible);
 //        // the listener sets this to true in case the slot is hovered
 //        // however, we don't want that in case the slot is empty
-//        if (this.slot.isEmpty()) {
+//        if (slot.isEmpty()) {
 //            super.setVisible(false);
 //        }
 //    }

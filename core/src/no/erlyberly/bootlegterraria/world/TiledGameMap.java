@@ -68,7 +68,7 @@ public class TiledGameMap extends GameMap implements Loadable {
             tiledMap = new TmxMapLoader().load(map);
         } catch (final Exception e) {
             GameMain.console.logf(LogLevel.ERROR, "Failed to load map '%s'", map);
-            throw new IllegalArgumentException("Invalid map");
+            throw e;
         }
 
         final MapProperties mapProperties = tiledMap.getProperties();
@@ -170,8 +170,7 @@ public class TiledGameMap extends GameMap implements Loadable {
         //there is no block at the given location
         //the location is outside the map
         //the block overlaps the player and is solid
-        if (oldID == tt || isOutsideMap(blockX, blockY) ||
-            (overlapPlayer(blockX, blockY) && tt != null && tt.isSolid())) {
+        if (oldID == tt || isOutsideMap(blockX, blockY) || (overlapPlayer(blockX, blockY) && tt != null && tt.isSolid())) {
             return;
         }
 

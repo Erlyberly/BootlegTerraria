@@ -93,4 +93,8 @@ public interface LightMap extends Loadable {
      * pos} is outside of the map bound {@code null} will be returned
      */
     LightInfo lightInfoAt(Vector2Int pos);
+
+    boolean isDisabled();
+
+    void setDisabled(boolean disabled);
 }

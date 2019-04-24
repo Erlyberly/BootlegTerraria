@@ -19,6 +19,8 @@ import no.erlyberly.bootlegterraria.storage.impl.CreativeInventory;
 import no.erlyberly.bootlegterraria.world.GameMap;
 import no.erlyberly.bootlegterraria.world.TileType;
 
+import static no.erlyberly.bootlegterraria.GameMain.IMAGES_FOLDER;
+
 public class Player extends LivingEntity {
 
     private static final int HORIZONTAL_SPEED = 120;
@@ -30,8 +32,9 @@ public class Player extends LivingEntity {
     private static final float DODGE_COOLDOWN = 1f;
     private static final float DODGE_SPEED = HORIZONTAL_SPEED * 2.5f;
 
-    private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat.png"));
-    private static final TextureRegion HURT_TEXTURE = new TextureRegion(new Texture("ErlyBerly_TheGreat_hurt.png"));
+    private static final TextureRegion PLAYER_TEXTURE = new TextureRegion(new Texture(IMAGES_FOLDER + "ErlyBerly_TheGreat.png"));
+    private static final TextureRegion HURT_TEXTURE =
+        new TextureRegion(new Texture(IMAGES_FOLDER + "ErlyBerly_TheGreat_hurt.png"));
 
     public boolean god = false; //is the player in god mode?
     public float speedModifier = 1; //how fast is the player going (2 is twice as fast)
@@ -79,8 +82,8 @@ public class Player extends LivingEntity {
 
             if (type != null) {
                 GameMain.console.log(
-                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() +
-                    " coord: (" + blockX + ", " + blockY + ")");
+                    "Tile clicked: " + type.getName() + ", id: " + type.getId() + ", dmg: " + type.getDps() + " coord: (" +
+                    blockX + ", " + blockY + ")");
             }
             else {
                 GameMain.console.log("Not a tile");
@@ -146,8 +149,7 @@ public class Player extends LivingEntity {
          */
         GameMain.input.registerListener(md -> {
             final Player player = GameMain.map.getPlayer();
-            if (!player.dodging && player.dodgeCooldown == DODGE_COOLDOWN &&
-                player.stamina - player.dodgeStaminaUsage >= 0) {
+            if (!player.dodging && player.dodgeCooldown == DODGE_COOLDOWN && player.stamina - player.dodgeStaminaUsage >= 0) {
 
                 player.dodging = true;
                 player.dodgeCooldown = 0;
@@ -164,7 +166,7 @@ public class Player extends LivingEntity {
             if (player.isFlying()) {
                 player.moveY(player.calculatedSpeed);
             }
-            else if (player.onGround && !player.dodging) {
+            else if ((!player.collision || player.onGround) && !player.dodging) {
                 player.velocityY = JUMP_VELOCITY;
             }
         }, InputSetting.JUMP);
@@ -239,7 +241,7 @@ public class Player extends LivingEntity {
         }
 
         //only apply gravity when the player is not flying
-        if (!isFlying()) {
+        if (!isFlying() || !collision) {
             super.update();
         }
 
@@ -363,9 +365,9 @@ public class Player extends LivingEntity {
         final float rotation = dodgeTime / DODGE_TIME * -getFacing() * 360 * 2;
 
         startShade(batch);
-        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1,
-                   rotation, region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                   region.getRegionHeight(), direction != -1, false);
+        batch.draw(region.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation,
+                   region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(), direction != -1,
+                   false);
         endShade(batch);
     }
 
@@ -376,7 +378,7 @@ public class Player extends LivingEntity {
 
     @Override
     public boolean isFlying() {
-        return flying;
+        return flying || !collision;
     }
 
 

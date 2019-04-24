@@ -60,9 +60,8 @@ public class Bullet extends WeaponEntity {
 
     @Override
     public void render(final SpriteBatch batch) {
-        batch
-            .draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
-                  TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
-                  !isFacingRight(), false);
+        batch.draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                   TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
+                   !isFacingRight(), false);
     }
 }

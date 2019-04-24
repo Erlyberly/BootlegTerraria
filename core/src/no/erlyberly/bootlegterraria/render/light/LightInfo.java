@@ -11,19 +11,19 @@ public class LightInfo {
 
     private final HashMap<Vector2Int, Float> litFrom; // where this light is lit from
 
-    private LightLevel currLL; //the current calculated light level
-    private LightLevel emitting; //How much brightness this tile is emitting (not including skylight)
+    private LightLevel currLL; //the current calculated light level (including skylight)
+    private LightLevel emitting; //How much brightness this tile is emitting (NOT including skylight)
     private final Vector2 posf;
     private final Vector2Int posi;
 
-    private boolean skylight;
+    private boolean skylight; //if this light is lit by the sky
 
     LightInfo(final Vector2Int pos) {
         if (pos == null) {
             throw new IllegalArgumentException("Position cannot be null");
         }
         currLL = LightLevel.LVL_0;
-        litFrom = new HashMap<>();
+        litFrom = new HashMap<>(30);
         posf = new Vector2(pos.x, pos.y);
         posi = pos;
         skylight = false;
@@ -34,6 +34,8 @@ public class LightInfo {
     }
 
     /**
+     * Setting the {@code srcBrt} to {@link LightLevel#LVL_0} is the same as {@link #remove(Vector2Int, boolean)}
+     *
      * @param src
      *     The source of the light
      * @param srcBrt
@@ -43,28 +45,39 @@ public class LightInfo {
      */
     public void put(final Vector2Int src, final LightLevel srcBrt, final boolean skylight) {
         if (srcBrt == LightLevel.LVL_0) {
-            remove(src, skylight);
-            return;
+            throw new IllegalArgumentException("Cannot set the light to 0, please use the remove method");
         }
-        final float brightness;
+
+        float brightness = 0;
+
+        //place at this light levels location
         if (posi.equals(src)) {
             brightness = srcBrt.getLvl();
             if (skylight) {
                 //mark this tile as a light info tile
                 this.skylight = true;
+//                brightness = LightLevel.max().getLvl();
             }
             else {
-                //take a not of what this tile would be emitting if it wasn't a skylight
+                //take a note of what this tile would be emitting if it wasn't a skylight
                 emitting = srcBrt;
                 if (this.skylight) {
                     //do not update the brightness if it is already skylight (as skylight should always overwrite
                     // tile light)
                     return;
                 }
+//                brightness = srcBrt.getLvl();
             }
         }
         else {
             brightness = srcBrt.getLvl() - posf.dst(src.x, src.y);
+//            brightness = (skylight ? LightLevel.LVL_8 : srcBrt).getLvl() - posf.dst(src.x, src.y);
+//            if (brightness == 3.8377223) {
+//                System.out.println("---\nposi = " + posi);
+//                System.out.println("src = [" + src + "], srcBrt = [" + srcBrt + "], skylight = [" + skylight + "]");
+//                System.out.println("litFrom MAX = " + litFrom.values().stream().max(Float::compareTo));
+//                System.out.println("litFrom = " + litFrom.values());
+//            }
         }
 
         //No light when brightness is less than 0 (this point is out of the light radius)
@@ -72,7 +85,6 @@ public class LightInfo {
             return;
         }
         litFrom.put(src, brightness);
-
         calculateLightLevel();
     }
 
@@ -85,26 +97,22 @@ public class LightInfo {
      *     If the removed light is skylight
      */
     public void remove(final Vector2Int src, final boolean skylight) {
-//        if (!this.skylight && skylight) {
-//            //do nothing when trying to remove the skylight, but this isn't
-//            return;
-//        }
-        if (litFrom.containsKey(src) || skylight && posi.equals(src)) {
-            litFrom.remove(src);
-            if (posi.equals(src)) {
-                if (!this.skylight && skylight) {
-                    return;
-                }
-                if (skylight /*&& this.skylight*/) { //this was a skylight, but now it's not
-                    this.skylight = false;
-                }
-                else /*if (!skylight)*/ {
-                    emitting = LightLevel.LVL_0;
-                }
+        litFrom.remove(src);
+        if (posi.equals(src)) {
+//            if (!this.skylight && skylight) {
+//                return;
+//            }
+            if (skylight /*&& this.skylight*/) { //this was a skylight, but now it's not
+                this.skylight = false;
             }
-            calculateLightLevel();
+            else /*if (!skylight)*/ { //this location is no longer emitting light
+                emitting = LightLevel.LVL_0;
+            }
         }
+
+        calculateLightLevel();
     }
+
 
     /**
      * Calculate the brightness of this based on the objects that shine on it
@@ -113,10 +121,9 @@ public class LightInfo {
         //if nothing is shining of it the light level must be 0
         if (litFrom.isEmpty()) {
             currLL = LightLevel.LVL_0;
-            return;
         }
-        //FIXME threw a NoSuchElementException from Collections.max
-        currLL = LightLevel.valueOf(Collections.max(litFrom.values()));
+        else if (skylight) { currLL = LightLevel.max(); }
+        else { currLL = LightLevel.valueOf(Collections.max(litFrom.values())); }
     }
 
     public LightLevel getLightLevel() {

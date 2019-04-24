@@ -102,7 +102,7 @@ public class Util {
      * <a href="https://stackoverflow.com/questions/1670862/obtaining-a-powerset-of-a-set-in-java#1670871">original
      * found here</a>
      *
-     * @return The power set of a set
+     * @return The powerset of a set
      */
     public static <T> Set<Set<T>> powerSet(final Set<T> originalSet) {
         final Set<Set<T>> sets = new HashSet<>();
@@ -186,7 +186,7 @@ public class Util {
                     //find the key and value from the index of the first equal sign, but do not include it in the
                     // key or value
                     final String key = arg.substring(1, equal);
-                    final String val = arg.substring(equal + 1, arg.length());
+                    final String val = arg.substring(equal + 1);
                     argsMap.put(key, val);
                 }
             }

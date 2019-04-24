@@ -27,6 +27,7 @@ public class BlockLightMap implements LightMap {
     public static boolean realLight = true;
 
     private boolean initialized;
+    private boolean disabled = false;
 
     public BlockLightMap(final GameMap map) {
         initialized = false;
@@ -39,7 +40,7 @@ public class BlockLightMap implements LightMap {
     @Override
     public LightLevel lightAt(final Vector2Int pos) {
         //hide the real light level
-        if (realLight && pos.y >= skylight[pos.x]) {
+        if (disabled || realLight && pos.y >= skylight[pos.x]) {
             return SKY_LIGHT;
         }
         final LightInfo li = lightInfoMap.get(pos);
@@ -55,20 +56,26 @@ public class BlockLightMap implements LightMap {
         addSource(new Vector2Int(blockX, blockY), LightLevel.SKY_LIGHT, true);
     }
 
-    private void addSource(final Vector2Int pos, final LightLevel ll,
-                           final boolean skylight) {
+    private void addSource(final Vector2Int pos, final LightLevel ll, final boolean skylight) {
         if (ll == LightLevel.LVL_0) {
             throw new IllegalArgumentException("Tried to add light level 0 as a light source");
         }
         else if (pos.x < 0 || pos.y < 0 || pos.x >= map.getWidth() || pos.y >= map.getHeight()) {
             throw new IllegalArgumentException("Tried to add light source outside of map");
         }
+
+//        GameMain.SECONDARY_THREAD.execute(() -> {
         GameMain.SECONDARY_THREAD.executeAsync(() -> {
             final long startTime = System.currentTimeMillis();
             final AABB2D affected = Util.fromLight(pos, map, ll);
-            for (final Vector2Int v : affected) {
-                final LightInfo li = getLi(v);
-                li.put(pos, ll, skylight);
+
+
+//            getLi(pos).put(pos, ll, skylight);
+            if (skylight || !getLi(pos).isSkylight()) {
+                for (final Vector2Int v : affected) {
+                    //FIXME totally borken lol
+                    getLi(v).put(pos, ll, skylight);
+                }
             }
             if (logLightEvents) {
                 GameMain.console.log("Adding light took " + (System.currentTimeMillis() - startTime) + " ms");
@@ -99,9 +106,7 @@ public class BlockLightMap implements LightMap {
                 final ArrayList<LightInfo> emittedLight = new ArrayList<>();
 
                 if (litFrom.containsKey(pos)) {
-                    for (final Vector2Int v : Util.fromLight(pos, map,
-                                                             LightLevel
-                                                                 .valueOf(litFrom.get(pos)))) {
+                    for (final Vector2Int v : Util.fromLight(pos, map, LightLevel.valueOf(litFrom.get(pos)))) {
                         final LightInfo li = lightInfoMap.get(v);
                         if (li != null) {
                             final boolean oldSkylight = li.isSkylight();
@@ -136,8 +141,8 @@ public class BlockLightMap implements LightMap {
 
     @Override
     public void calculateSkylight(final int blockX) {
-        Preconditions.checkArgument(Util.isBetween(0, blockX, skylight.length),
-                                    "The argument must be between 0 and mapWidth - 1");
+        Preconditions
+            .checkArgument(Util.isBetween(0, blockX, skylight.length), "The argument must be between 0 and mapWidth - 1");
         GameMain.SECONDARY_THREAD.executeAsync(() -> {
             final long startTime = System.currentTimeMillis();
             final boolean oldLogLightTime = logLightEvents;
@@ -145,7 +150,7 @@ public class BlockLightMap implements LightMap {
 
             final int oldSkylight = skylight[blockX];
 
-            final TiledMapTileLayer tiledLayer = (TiledMapTileLayer) GameMain.map.getBlockLayer();
+            final TiledMapTileLayer tiledLayer = GameMain.map.getBlockLayer();
 
             boolean skylightFound = false;
 
@@ -171,6 +176,7 @@ public class BlockLightMap implements LightMap {
 
             if (oldSkylight < newSkylight) { //placed a block above skylight
                 for (int y = oldSkylight; y < newSkylight; y++) {
+
                     removeSkylight(blockX, y);
 
 
@@ -192,9 +198,8 @@ public class BlockLightMap implements LightMap {
                 addSkylight(blockX, newSkylight);
             }
             if (oldLogLightTime) {
-                GameMain.console.log(
-                    "Calculating skylight column " + blockX + " took " + (System.currentTimeMillis() - startTime) +
-                    " ms");
+                GameMain.console
+                    .log("Calculating skylight column " + blockX + " took " + (System.currentTimeMillis() - startTime) + " ms");
             }
             logLightEvents = oldLogLightTime;
         });
@@ -206,6 +211,16 @@ public class BlockLightMap implements LightMap {
             return null;
         }
         return lightInfoMap.getOrDefault(pos, new LightInfo(pos));
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     private void initialCalculations() {
@@ -242,8 +257,8 @@ public class BlockLightMap implements LightMap {
                 }
             }
 
-            GameMain.console.log(
-                "Finding skylight and light emitters took " + (System.currentTimeMillis() - startTimeMain) + " ms");
+            GameMain.console
+                .log("Finding skylight and light emitters took " + (System.currentTimeMillis() - startTimeMain) + " ms");
 
             final long startTimeSkylight = System.currentTimeMillis();
 
@@ -265,10 +280,9 @@ public class BlockLightMap implements LightMap {
             GameMain.SECONDARY_THREAD.executeAsync(() -> {
                 logLightEvents = oldLogLight;
                 initialized = true;
+                GameMain.console.log("Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms");
                 GameMain.console
-                    .log("Adding all skylights took " + (System.currentTimeMillis() - startTimeSkylight) + " ms");
-                GameMain.console.log(
-                    "Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
+                    .log("Total initial light calculation took " + (System.currentTimeMillis() - startTimeMain) + " ms");
             });
         });
     }

@@ -53,9 +53,8 @@ public class Zombie extends LivingEntity {
             chasing = false;
         }
 
-        if (gameMap
-                .checkMapCollision(pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, pos.y, getWidth(),
-                                   getHeight()) && onGround && chasing) {
+        if (gameMap.checkMapCollision(pos.x + (getWidth() - TileType.TILE_SIZE / 2) * getFacing() / 2, pos.y, getWidth(),
+                                      getHeight()) && onGround && chasing) {
             velocityY += JUMP_VELOCITY;
         }
     }
@@ -115,10 +114,9 @@ public class Zombie extends LivingEntity {
     public void render(final SpriteBatch batch) {
 
         startShade(batch);
-        batch
-            .draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
-                  TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
-                  isFacingRight(), false);
+        batch.draw(TEXTURE.getTexture(), pos.x, pos.y, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 0,
+                   TEXTURE.getRegionX(), TEXTURE.getRegionY(), TEXTURE.getRegionWidth(), TEXTURE.getRegionHeight(),
+                   isFacingRight(), false);
         batch.draw(HEALTH_BAR, pos.x - getWidth() / 2f, pos.y + 34f, (health / getMaxHealth() * getWidth() * 2f), 5f);
         batch.draw(BAR_OUTLINE, pos.x - getWidth() / 2f, pos.y + 34f, getWidth() * 2f, 5f);
         endShade(batch);

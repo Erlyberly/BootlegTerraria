@@ -47,8 +47,8 @@ public class SwordSwing extends WeaponEntity {
         if (isFacingRight()) { rotation = attackTime * 180f - 20; }
         else { rotation = -attackTime * 180f + 200; }
 
-        batch.draw(TEXTURE, gameMap.getPlayer().getX() + gameMap.getPlayer().getWidth() / 2, gameMap.getPlayer().getY(),
-                   0, getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
+        batch.draw(TEXTURE, gameMap.getPlayer().getX() + gameMap.getPlayer().getWidth() / 2, gameMap.getPlayer().getY(), 0,
+                   getHeight() / 2, getWidth(), getHeight(), 1, 1, rotation);
     }
 
     @Override
