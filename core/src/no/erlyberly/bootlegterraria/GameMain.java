@@ -41,7 +41,7 @@ public class GameMain extends Game {
     public static final String FONTS_FOLDER = "fonts" + File.separatorChar;
     public static final String WORLDS_FOLDER = "worlds" + File.separatorChar;
     public static final String IMAGES_FOLDER = "images" + File.separatorChar;
-    public static final String SCRIPTS_FOLDER = "scrips" + File.separatorChar;
+    public static final String SCRIPTS_FOLDER = "scripts" + File.separatorChar;
 
     private static final String DEFAULT_MAP = WORLDS_FOLDER + "map.tmx";
     public static final String VERSION_FILE = "version";
