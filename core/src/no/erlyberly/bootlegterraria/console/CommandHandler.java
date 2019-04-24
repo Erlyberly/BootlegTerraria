@@ -336,6 +336,7 @@ public class CommandHandler extends CommandExecutor {
         }
     }
 
+    @ConsoleDoc(description = "Give the player an item", paramDescriptions = {"tileType", "amount"})
     public void give(final String tileType, final int amount) {
         if (GameMain.map.getPlayer().getInv().getContainer() == null) { return; }
         final TileType tt;
@@ -360,5 +361,14 @@ public class CommandHandler extends CommandExecutor {
             console.log("Successfully added " + failedToAdd + " " + tt, LogLevel.SUCCESS);
         }
         container.updateContainer();
+    }
+
+    @ConsoleDoc(description = "Toggle the lighting engine")
+    public void toggleLight() {
+        GameMain.map.getLightMap().setDisabled(!GameMain.map.getLightMap().isDisabled());
+    }
+
+    public void noclip() {
+        GameMain.map.getPlayer().collision = !GameMain.map.getPlayer().collision;
     }
 }
