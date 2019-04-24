@@ -1,6 +1,8 @@
 package no.erlyberly.bootlegterraria.util;
 
 import com.badlogic.gdx.Gdx;
+import com.strongjoshua.console.LogLevel;
+import no.erlyberly.bootlegterraria.GameMain;
 
 import java.util.Collections;
 import java.util.Set;
@@ -23,6 +25,7 @@ public class CancellableThreadScheduler {
     public CancellableThreadScheduler() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         tasks = Collections.newSetFromMap(new WeakHashMap<>());
+
     }
 
     /**
@@ -38,6 +41,19 @@ public class CancellableThreadScheduler {
         return tasks.size();
     }
 
+    private Runnable caughtRunnable(Runnable runnable) {
+        return () -> {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                Gdx.app.postRunnable(() -> {
+                    GameMain.console.log("Exception caught on secondary thread", LogLevel.ERROR);
+                    throw e; //throw any errors onto the main thread so it can be seen
+                });
+            }
+        };
+    }
+
     /**
      * Execute a task as soon as possible
      *
@@ -45,7 +61,7 @@ public class CancellableThreadScheduler {
      *     What to do
      */
     public void executeAsync(final Runnable runnable) {
-        tasks.add(executorService.schedule(runnable, 0, TimeUnit.NANOSECONDS));
+        tasks.add(executorService.schedule(caughtRunnable(runnable), 0, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -67,7 +83,7 @@ public class CancellableThreadScheduler {
      *     How many milliseconds to wait before running the task
      */
     public void scheduleAsync(final Runnable runnable, final long ms) {
-        tasks.add(executorService.schedule(runnable, ms, TimeUnit.MILLISECONDS));
+        tasks.add(executorService.schedule(caughtRunnable(runnable), ms, TimeUnit.MILLISECONDS));
     }
 
 
@@ -87,6 +103,6 @@ public class CancellableThreadScheduler {
      * Shut down the thread
      */
     public void shutdown() {
-        executorService.shutdown();
+        executorService.shutdownNow();
     }
 }
