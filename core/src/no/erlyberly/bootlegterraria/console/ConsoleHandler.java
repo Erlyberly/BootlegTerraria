@@ -1,10 +1,9 @@
 package no.erlyberly.bootlegterraria.console;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.kotcrab.vis.ui.VisUI;
 import com.strongjoshua.console.GUIConsole;
 import com.strongjoshua.console.LogLevel;
 import no.erlyberly.bootlegterraria.GameMain;
@@ -16,7 +15,7 @@ public class ConsoleHandler extends GUIConsole {
     private Window consoleWindow;
 
     public ConsoleHandler() {
-        super(new Skin(Gdx.files.internal("skins/l33t_skin/uiskin.json")), false, Input.Keys.APOSTROPHE);
+        super(VisUI.getSkin(), false, Input.Keys.APOSTROPHE);
         setCommandExecutor(new CommandHandler(this));
         GameMain.inputMultiplexer.addProcessor(getInputProcessor());
         logToSystem = true;
@@ -59,8 +58,8 @@ public class ConsoleHandler extends GUIConsole {
         try {
             super.log(msg, level);
         } catch (Exception ex) {
-            System.err.printf("Failed to log the message '%s' with level %s due to the exception %s: %s%n", msg,
-                              level.toString(), ex.getClass().getSimpleName(), ex.getMessage());
+            System.err.printf("Failed to log the message '%s' with level %s due to the exception %s: %s%n", msg, level.toString(),
+                              ex.getClass().getSimpleName(), ex.getMessage());
         }
     }
 

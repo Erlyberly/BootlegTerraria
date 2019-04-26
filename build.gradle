@@ -105,6 +105,7 @@ project(":core") {
         compile "org.apache.commons:commons-lang3:3.8.1"
         compile "no.kh498.util:CommonUtil:1.0.2"
         compile 'org.jetbrains:annotations:16.0.2'
+        compile "com.kotcrab.vis:vis-ui:1.4.1"
     }
 }
 

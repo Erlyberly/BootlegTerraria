@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.kotcrab.vis.ui.VisUI;
 import no.erlyberly.bootlegterraria.console.ConsoleHandler;
 import no.erlyberly.bootlegterraria.input.InputHandler;
 import no.erlyberly.bootlegterraria.input.InputSetting;
@@ -82,9 +83,9 @@ public class GameMain extends Game {
 
 //        camera.position.put(800f, 500f, 0); //Unlocked cam for debugging
         camera.update();
-
+        VisUI.load();
         console = new ConsoleHandler();
-        console.setAlpha(0.7f);
+//        console.setAlpha(0.7f);
         ui = new UIController();
         input = new InputHandler();
 
